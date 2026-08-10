@@ -1,0 +1,439 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Payment Management | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body class="admin-page">
+
+
+    <div class="admin-shell">
+
+
+        <!-- Sidebar -->
+
+        <div id="adminSidebarContainer"></div>
+
+
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- =================================================
+                     HEADER
+                     ================================================= -->
+
+                <header class="admin-page-header">
+
+                    <div>
+
+                        <span class="admin-page-label">
+                            PAYMENT MANAGEMENT
+                        </span>
+
+                        <h1>
+                            Payments
+                        </h1>
+
+                        <p>
+                            Review booking payment status,
+                            amounts, references and receipts
+                            for each event.
+                        </p>
+
+                    </div>
+
+                </header>
+
+
+
+                <!-- Message -->
+
+                <div id="adminPaymentsMessage"
+                     class="alert hidden">
+                </div>
+
+
+
+                <!-- =================================================
+                     EVENT SELECTOR
+                     ================================================= -->
+
+                <section class="admin-payment-event-card">
+
+
+                    <div>
+
+                        <label for="adminPaymentEventSelect">
+                            Select Event
+                        </label>
+
+
+                        <select id="adminPaymentEventSelect"
+                                class="form-control">
+
+                            <option value="">
+                                Select an event
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <div class="admin-payment-selected-event">
+
+                        <span>
+                            Current Event
+                        </span>
+
+                        <strong id="adminPaymentSelectedEventName">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                     NO EVENT
+                     ================================================= -->
+
+                <section id="adminPaymentsNoEvent"
+                         class="admin-payments-empty">
+
+                    <div class="admin-payments-empty-icon">
+                        $
+                    </div>
+
+                    <h2>
+                        Select an event
+                    </h2>
+
+                    <p>
+                        Choose an event to review booking
+                        payment information.
+                    </p>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     CONTENT
+                     ================================================= -->
+
+                <section id="adminPaymentsContent"
+                         class="hidden">
+
+
+                    <!-- Summary -->
+
+                    <section class="admin-payment-summary-grid">
+
+
+                        <article class="admin-payment-summary-card">
+
+                            <span>
+                                Booking Payments
+                            </span>
+
+                            <strong id="adminPaymentTotalCount">
+                                0
+                            </strong>
+
+                        </article>
+
+
+
+                        <article class="admin-payment-summary-card">
+
+                            <span>
+                                Completed
+                            </span>
+
+                            <strong id="adminPaymentCompletedCount">
+                                0
+                            </strong>
+
+                        </article>
+
+
+
+                        <article class="admin-payment-summary-card">
+
+                            <span>
+                                Not Paid / Pending
+                            </span>
+
+                            <strong id="adminPaymentPendingCount">
+                                0
+                            </strong>
+
+                        </article>
+
+
+
+                        <article class="admin-payment-summary-card">
+
+                            <span>
+                                Revenue Collected
+                            </span>
+
+                            <strong id="adminPaymentRevenue">
+                                LKR 0.00
+                            </strong>
+
+                        </article>
+
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         FILTER
+                         ================================================= -->
+
+                    <section class="admin-payment-filter-card">
+
+
+                        <div>
+
+                            <label for="adminPaymentSearch">
+                                Search Payment
+                            </label>
+
+                            <input type="text"
+                                   id="adminPaymentSearch"
+                                   class="form-control"
+                                   placeholder="Booking number, customer or payment reference...">
+
+                        </div>
+
+
+
+                        <div>
+
+                            <label for="adminPaymentStatusFilter">
+                                Payment Status
+                            </label>
+
+                            <select id="adminPaymentStatusFilter"
+                                    class="form-control">
+
+                                <option value="">
+                                    All Statuses
+                                </option>
+
+                                <option value="completed">
+                                    Completed
+                                </option>
+
+                                <option value="pending">
+                                    Pending / Not Paid
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+
+                        <button type="button"
+                                id="clearAdminPaymentFilters"
+                                class="btn btn-outline">
+                            Clear
+                        </button>
+
+
+                    </section>
+
+
+
+                    <!-- Result Header -->
+
+                    <section class="admin-payment-result-header">
+
+                        <div>
+
+                            <h2>
+                                Payment Records
+                            </h2>
+
+                            <p>
+                                Server-authoritative payment
+                                information for event bookings.
+                            </p>
+
+                        </div>
+
+
+                        <span id="adminPaymentResultCount">
+                            0 records
+                        </span>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         LOADING
+                         ================================================= -->
+
+                    <div id="adminPaymentsLoading"
+                         class="admin-payments-loading hidden">
+
+                        <div class="spinner"></div>
+
+                        <p id="adminPaymentsLoadingText">
+                            Loading payment information...
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- =================================================
+                         TABLE
+                         ================================================= -->
+
+                    <section id="adminPaymentsTableContainer"
+                             class="admin-payments-table-card hidden">
+
+                        <div class="admin-table-scroll">
+
+
+                            <table class="admin-payments-table">
+
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Booking
+                                        </th>
+
+                                        <th>
+                                            Customer
+                                        </th>
+
+                                        <th>
+                                            Amount
+                                        </th>
+
+                                        <th>
+                                            Payment Status
+                                        </th>
+
+                                        <th>
+                                            Reference
+                                        </th>
+
+                                        <th>
+                                            Payment Date
+                                        </th>
+
+                                        <th>
+                                            Actions
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody id="adminPaymentsTableBody">
+                                </tbody>
+
+
+                            </table>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         EMPTY
+                         ================================================= -->
+
+                    <section id="adminPaymentsEmpty"
+                             class="admin-payments-empty hidden">
+
+                        <div class="admin-payments-empty-icon">
+                            $
+                        </div>
+
+                        <h2>
+                            No payment records found
+                        </h2>
+
+                        <p>
+                            No records match the selected
+                            payment filters.
+                        </p>
+
+                    </section>
+
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/payments.js"></script>
+
+
+</body>
+
+</html>

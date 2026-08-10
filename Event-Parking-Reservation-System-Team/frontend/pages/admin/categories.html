@@ -1,0 +1,416 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Category Management | EventPark</title>
+
+    <link
+        rel="stylesheet"
+        href="../../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../css/admin.css"
+    >
+</head>
+
+
+<body class="category-management-page">
+
+    <main class="admin-page">
+
+        <!-- =====================================================
+             PREMIUM HEADER
+             ===================================================== -->
+
+        <section class="admin-page-header category-premium-header">
+
+            <div class="admin-header-content">
+
+                <div class="admin-header-badge">
+                    ADMIN • CATEGORY CONTROL
+                </div>
+
+
+                <h1>
+                    Category Management
+                </h1>
+
+
+                <p>
+                    Organize events using clear and professional
+                    categories for a better customer experience.
+                </p>
+
+            </div>
+
+
+            <div class="admin-header-stat">
+
+                <span class="admin-header-stat-label">
+                    TOTAL CATEGORIES
+                </span>
+
+
+                <strong id="categoryTotalCount">
+                    0
+                </strong>
+
+
+                <span class="admin-header-stat-note">
+                    Active classifications
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             MESSAGE
+             ===================================================== -->
+
+        <div
+            id="categoryMessage"
+            class="alert hidden"
+        ></div>
+
+
+        <!-- =====================================================
+             ADD / EDIT CATEGORY
+             ===================================================== -->
+
+        <section class="admin-card category-form-card">
+
+            <div class="admin-card-header">
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        CATEGORY DETAILS
+                    </span>
+
+
+                    <h2 id="categoryFormTitle">
+                        Add New Category
+                    </h2>
+
+
+                    <p>
+                        Create a category that can be assigned
+                        when adding new events.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form
+                id="categoryForm"
+                novalidate
+            >
+
+                <input
+                    type="hidden"
+                    id="categoryId"
+                >
+
+
+                <!-- Category Name -->
+
+                <div class="form-group">
+
+                    <label for="categoryName">
+                        Category Name
+                    </label>
+
+
+                    <div class="input-shell">
+
+                        <input
+                            type="text"
+                            id="categoryName"
+                            placeholder="Example: Concert"
+                            maxlength="100"
+                            autocomplete="off"
+                            required
+                        >
+
+                    </div>
+
+
+                    <small
+                        id="categoryNameError"
+                        class="field-error"
+                    ></small>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="form-group">
+
+                    <div class="label-row">
+
+                        <label for="categoryDescription">
+                            Description
+                        </label>
+
+
+                        <span
+                            id="categoryDescriptionCount"
+                            class="character-count"
+                        >
+                            0 / 500
+                        </span>
+
+                    </div>
+
+
+                    <textarea
+                        id="categoryDescription"
+                        rows="6"
+                        maxlength="500"
+                        placeholder="Describe what type of events belong to this category..."
+                    ></textarea>
+
+
+                    <small
+                        id="categoryDescriptionError"
+                        class="field-error"
+                    ></small>
+
+                </div>
+
+
+                <!-- Form Actions -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        id="saveCategoryButton"
+                        class="btn btn-primary"
+                    >
+                        Add Category
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancelCategoryEditButton"
+                        class="btn btn-secondary hidden"
+                    >
+                        Cancel Edit
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <!-- =====================================================
+             CATEGORY LIST
+             ===================================================== -->
+
+        <section class="admin-card category-list-card">
+
+            <div class="admin-card-header category-list-header">
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        EVENT CLASSIFICATIONS
+                    </span>
+
+
+                    <h2>
+                        Categories
+                    </h2>
+
+
+                    <p>
+                        Manage the categories available when
+                        creating and editing events.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="refreshCategoriesButton"
+                    class="btn btn-refresh"
+                >
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <!-- Small Stats -->
+
+            <div class="category-summary">
+
+                <div class="category-summary-item">
+
+                    <span class="summary-icon">
+                        C
+                    </span>
+
+
+                    <div>
+
+                        <span class="summary-label">
+                            Total Categories
+                        </span>
+
+
+                        <strong id="categorySummaryCount">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="category-summary-text">
+
+                    <strong>
+                        Keep your event catalogue organized.
+                    </strong>
+
+                    <span>
+                        Categories are shown to customers while
+                        browsing available events.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Loading -->
+
+            <div
+                id="categoryLoading"
+                class="admin-loading hidden"
+            >
+
+                <div class="loading-dot"></div>
+
+                <span>
+                    Loading categories...
+                </span>
+
+            </div>
+
+
+            <!-- Empty State -->
+
+            <div
+                id="categoryEmpty"
+                class="admin-empty-state hidden"
+            >
+
+                <div class="empty-icon">
+                    C
+                </div>
+
+
+                <h3>
+                    No categories yet
+                </h3>
+
+
+                <p>
+                    Create your first event category using
+                    the form on the left.
+                </p>
+
+            </div>
+
+
+            <!-- Table -->
+
+            <div
+                id="categoryTableWrapper"
+                class="table-responsive"
+            >
+
+                <table class="admin-table category-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th class="category-id-column">
+                                ID
+                            </th>
+
+
+                            <th>
+                                Category
+                            </th>
+
+
+                            <th>
+                                Description
+                            </th>
+
+
+                            <th class="category-action-column">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="categoryTableBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/categories.js"></script>
+
+</body>
+
+</html>

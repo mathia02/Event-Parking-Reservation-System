@@ -1,0 +1,723 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+          content="Event and Parking Reservation System">
+
+    <title>
+        EventPark | Event & Parking Reservation
+    </title>
+
+
+    <!-- Global CSS -->
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         NAVBAR
+         ===================================================== -->
+
+    <div id="navbarContainer"></div>
+
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
+    <main>
+
+
+        <!-- =================================================
+             HERO SECTION
+             ================================================= -->
+
+        <section class="home-hero">
+
+            <div class="container home-hero-container">
+
+
+                <!-- Hero Content -->
+
+                <div class="home-hero-content">
+
+                    <span class="hero-label">
+                        EVENT & PARKING RESERVATION
+                    </span>
+
+
+                    <h1>
+                        Your event journey,
+                        <span>
+                            all in one place.
+                        </span>
+                    </h1>
+
+
+                    <p>
+                        Discover upcoming events,
+                        select your preferred seats,
+                        reserve optional parking and
+                        manage your bookings through
+                        one simple experience.
+                    </p>
+
+
+                    <div class="hero-actions">
+
+                        <a href="pages/customer/events.html"
+                           class="btn btn-primary hero-primary-button">
+                            Browse Events
+                        </a>
+
+
+                        <a href="pages/auth/login.html"
+                           class="btn btn-outline">
+                            Login
+                        </a>
+
+                    </div>
+
+
+                    <div class="hero-benefits">
+
+                        <span>
+                            ✓ Visual Seat Selection
+                        </span>
+
+                        <span>
+                            ✓ Optional Parking
+                        </span>
+
+                        <span>
+                            ✓ Simple Booking
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Hero Visual -->
+
+                <div class="home-hero-visual">
+
+                    <div class="booking-preview-card">
+
+
+                        <div class="preview-header">
+
+                            <div>
+
+                                <span class="preview-small-text">
+                                    Booking Experience
+                                </span>
+
+                                <h3>
+                                    Choose. Reserve. Enjoy.
+                                </h3>
+
+                            </div>
+
+
+                            <div class="preview-status">
+                                Live
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Seat Preview -->
+
+                        <div class="preview-section">
+
+                            <div class="preview-section-title">
+
+                                <span>
+                                    Select your seats
+                                </span>
+
+                                <span class="preview-small-text">
+                                    Stage
+                                </span>
+
+                            </div>
+
+
+                            <div class="preview-stage">
+                                STAGE
+                            </div>
+
+
+                            <div class="preview-seat-grid">
+
+                                <span class="preview-seat"></span>
+                                <span class="preview-seat selected"></span>
+                                <span class="preview-seat selected"></span>
+                                <span class="preview-seat"></span>
+
+                                <span class="preview-seat"></span>
+                                <span class="preview-seat booked"></span>
+                                <span class="preview-seat"></span>
+                                <span class="preview-seat"></span>
+
+                                <span class="preview-seat"></span>
+                                <span class="preview-seat"></span>
+                                <span class="preview-seat booked"></span>
+                                <span class="preview-seat"></span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- Parking Preview -->
+
+                        <div class="preview-section">
+
+                            <div class="preview-section-title">
+
+                                <span>
+                                    Optional Parking
+                                </span>
+
+                                <span class="preview-small-text">
+                                    Select one
+                                </span>
+
+                            </div>
+
+
+                            <div class="preview-parking-row">
+
+                                <span class="preview-parking">
+                                    P01
+                                </span>
+
+                                <span class="preview-parking selected">
+                                    P02
+                                </span>
+
+                                <span class="preview-parking booked">
+                                    P03
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="preview-summary">
+
+                            <div>
+
+                                <span>
+                                    Seats
+                                </span>
+
+                                <strong>
+                                    A2, A3
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Parking
+                                </span>
+
+                                <strong>
+                                    P02
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             SYSTEM FEATURES
+             ================================================= -->
+
+        <section class="home-section">
+
+            <div class="container">
+
+
+                <div class="section-heading">
+
+                    <span class="section-label">
+                        ONE COMPLETE EXPERIENCE
+                    </span>
+
+                    <h2>
+                        Everything you need for your event
+                    </h2>
+
+                    <p>
+                        From discovering an event to
+                        confirming your reservation,
+                        EventPark keeps the entire journey
+                        simple and clear.
+                    </p>
+
+                </div>
+
+
+
+                <div class="home-feature-grid">
+
+
+                    <article class="home-feature-card">
+
+                        <div class="feature-number">
+                            01
+                        </div>
+
+                        <h3>
+                            Discover Events
+                        </h3>
+
+                        <p>
+                            Browse upcoming events and
+                            find the right event by
+                            category, venue or date.
+                        </p>
+
+                    </article>
+
+
+
+                    <article class="home-feature-card">
+
+                        <div class="feature-number">
+                            02
+                        </div>
+
+                        <h3>
+                            Select Your Seat
+                        </h3>
+
+                        <p>
+                            Use a visual seat layout to
+                            identify available seats and
+                            choose the seats you prefer.
+                        </p>
+
+                    </article>
+
+
+
+                    <article class="home-feature-card">
+
+                        <div class="feature-number">
+                            03
+                        </div>
+
+                        <h3>
+                            Reserve Parking
+                        </h3>
+
+                        <p>
+                            Need parking? Select one
+                            available parking space.
+                            Don't need it? Simply continue.
+                        </p>
+
+                    </article>
+
+
+
+                    <article class="home-feature-card">
+
+                        <div class="feature-number">
+                            04
+                        </div>
+
+                        <h3>
+                            Manage Your Booking
+                        </h3>
+
+                        <p>
+                            View bookings, payments,
+                            reservation details and
+                            notifications from one place.
+                        </p>
+
+                    </article>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             HOW IT WORKS
+             ================================================= -->
+
+        <section class="home-section home-how-section">
+
+            <div class="container">
+
+
+                <div class="section-heading">
+
+                    <span class="section-label">
+                        SIMPLE PROCESS
+                    </span>
+
+                    <h2>
+                        Book your event in four steps
+                    </h2>
+
+                </div>
+
+
+
+                <div class="home-steps">
+
+
+                    <div class="home-step">
+
+                        <div class="step-circle">
+                            1
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Find an Event
+                            </h3>
+
+                            <p>
+                                Search and select the event
+                                you want to attend.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="home-step">
+
+                        <div class="step-circle">
+                            2
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Choose Seats
+                            </h3>
+
+                            <p>
+                                Select one or more available
+                                seats from the seat map.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="home-step">
+
+                        <div class="step-circle">
+                            3
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Add Parking
+                            </h3>
+
+                            <p>
+                                Optionally select one
+                                available parking slot.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="home-step">
+
+                        <div class="step-circle">
+                            4
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Confirm & Pay
+                            </h3>
+
+                            <p>
+                                Review your booking and
+                                complete the simulated
+                                payment.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CUSTOMER EXPERIENCE
+             ================================================= -->
+
+        <section class="home-section">
+
+            <div class="container home-experience">
+
+
+                <div class="experience-content">
+
+                    <span class="section-label">
+                        DESIGNED FOR CLARITY
+                    </span>
+
+                    <h2>
+                        Know exactly what you're booking
+                    </h2>
+
+                    <p>
+                        Available, selected and unavailable
+                        seats or parking spaces are visually
+                        separated so customers can make
+                        decisions without confusion.
+                    </p>
+
+
+                    <div class="experience-legend">
+
+                        <div>
+
+                            <span class="legend-box available"></span>
+
+                            Available
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="legend-box selected"></span>
+
+                            Selected
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="legend-box booked"></span>
+
+                            Booked / Occupied
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="experience-panel">
+
+                    <div class="experience-item">
+
+                        <span class="experience-icon">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <h4>
+                                Clear Availability
+                            </h4>
+
+                            <p>
+                                See what is available before
+                                making your selection.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="experience-item">
+
+                        <span class="experience-icon">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <h4>
+                                Booking Protection
+                            </h4>
+
+                            <p>
+                                Pending bookings can display
+                                the remaining hold time before
+                                payment.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="experience-item">
+
+                        <span class="experience-icon">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <h4>
+                                Booking Updates
+                            </h4>
+
+                            <p>
+                                Access confirmations,
+                                cancellations and other
+                                booking notifications.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             CTA
+             ================================================= -->
+
+        <section class="home-cta-section">
+
+            <div class="container">
+
+                <div class="home-cta">
+
+                    <div>
+
+                        <span class="cta-label">
+                            READY FOR YOUR NEXT EVENT?
+                        </span>
+
+                        <h2>
+                            Find an event and reserve your seat.
+                        </h2>
+
+                    </div>
+
+
+                    <a href="pages/customer/events.html"
+                       class="btn home-cta-button">
+                        Explore Events
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <div id="footerContainer"></div>
+
+
+
+    <!-- =====================================================
+         CONFIRMATION MODAL
+         ===================================================== -->
+
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="js/config.js"></script>
+
+    <script src="js/api.js"></script>
+
+    <script src="js/common.js"></script>
+
+
+</body>
+
+</html>

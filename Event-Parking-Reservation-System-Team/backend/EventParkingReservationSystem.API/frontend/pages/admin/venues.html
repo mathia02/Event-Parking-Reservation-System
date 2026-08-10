@@ -1,0 +1,555 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Venue Management | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body class="admin-page">
+
+
+    <div class="admin-shell">
+
+
+        <!-- Sidebar -->
+        <div id="adminSidebarContainer"></div>
+
+
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- =================================================
+                     HEADER
+                     ================================================= -->
+
+                <header class="admin-page-header">
+
+                    <div>
+
+                        <span class="admin-page-label">
+                            VENUE MANAGEMENT
+                        </span>
+
+                        <h1>
+                            Venues
+                        </h1>
+
+                        <p>
+                            Create and manage the venues
+                            used when scheduling events.
+                        </p>
+
+                    </div>
+
+
+                    <button type="button"
+                            id="addVenueButton"
+                            class="btn btn-primary">
+                        + Add Venue
+                    </button>
+
+                </header>
+
+
+
+                <!-- Message -->
+
+                <div id="adminVenuesMessage"
+                     class="alert hidden">
+                </div>
+
+
+
+                <!-- =================================================
+                     SUMMARY
+                     ================================================= -->
+
+                <section id="venueSummary"
+                         class="admin-venue-summary hidden">
+
+                    <article class="admin-venue-summary-card">
+
+                        <span>
+                            Total Venues
+                        </span>
+
+                        <strong id="totalVenueCount">
+                            0
+                        </strong>
+
+                    </article>
+
+
+                    <article class="admin-venue-summary-card">
+
+                        <span>
+                            Total Capacity
+                        </span>
+
+                        <strong id="totalVenueCapacity">
+                            0
+                        </strong>
+
+                    </article>
+
+
+                    <article class="admin-venue-summary-card">
+
+                        <span>
+                            Largest Venue
+                        </span>
+
+                        <strong id="largestVenueCapacity">
+                            0
+                        </strong>
+
+                    </article>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     SEARCH
+                     ================================================= -->
+
+                <section class="admin-venue-filter-card">
+
+                    <div>
+
+                        <label for="venueSearchInput">
+                            Search Venue
+                        </label>
+
+                        <input type="text"
+                               id="venueSearchInput"
+                               class="form-control"
+                               placeholder="Search by venue name or address...">
+
+                    </div>
+
+
+                    <button type="button"
+                            id="clearVenueSearchButton"
+                            class="btn btn-outline">
+                        Clear
+                    </button>
+
+                </section>
+
+
+
+                <!-- Result Header -->
+
+                <section class="admin-venue-result-header">
+
+                    <div>
+
+                        <h2>
+                            Venue List
+                        </h2>
+
+                        <p>
+                            Venues available for event scheduling.
+                        </p>
+
+                    </div>
+
+
+                    <span id="venueResultCount">
+                        Loading...
+                    </span>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     LOADING
+                     ================================================= -->
+
+                <div id="venuesLoading"
+                     class="admin-venues-loading">
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading venues...
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TABLE
+                     ================================================= -->
+
+                <section id="venuesTableContainer"
+                         class="admin-venues-table-card hidden">
+
+                    <div class="admin-table-scroll">
+
+                        <table class="admin-venues-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Venue
+                                    </th>
+
+                                    <th>
+                                        Address
+                                    </th>
+
+                                    <th>
+                                        Total Capacity
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="venuesTableBody">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     EMPTY
+                     ================================================= -->
+
+                <section id="venuesEmpty"
+                         class="admin-venues-empty hidden">
+
+                    <div class="admin-venues-empty-icon">
+                        ⌂
+                    </div>
+
+
+                    <h2>
+                        No venues found
+                    </h2>
+
+
+                    <p>
+                        Add your first venue or change
+                        the current search.
+                    </p>
+
+
+                    <button type="button"
+                            id="emptyAddVenueButton"
+                            class="btn btn-primary">
+                        Add Venue
+                    </button>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ADD / EDIT VENUE MODAL
+         ===================================================== -->
+
+    <div id="venueFormModal"
+         class="admin-form-modal">
+
+        <div class="admin-form-modal-dialog">
+
+
+            <div class="admin-form-modal-header">
+
+                <div>
+
+                    <span class="admin-page-label">
+                        VENUE
+                    </span>
+
+                    <h2 id="venueFormTitle">
+                        Add Venue
+                    </h2>
+
+                </div>
+
+
+                <button type="button"
+                        id="closeVenueFormButton"
+                        class="admin-modal-close"
+                        aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <form id="venueForm"
+                  novalidate>
+
+                <input type="hidden"
+                       id="venueId">
+
+
+
+                <!-- Name -->
+
+                <div class="form-group">
+
+                    <label for="venueName">
+                        Venue Name
+                    </label>
+
+                    <input type="text"
+                           id="venueName"
+                           class="form-control"
+                           placeholder="Example: Vavuniya Cultural Hall">
+
+                    <small id="venueNameError"
+                           class="field-error">
+                    </small>
+
+                </div>
+
+
+
+                <!-- Address -->
+
+                <div class="form-group">
+
+                    <label for="venueAddress">
+                        Address
+                    </label>
+
+                    <textarea id="venueAddress"
+                              class="form-control admin-venue-address-input"
+                              rows="3"
+                              placeholder="Enter full venue address"></textarea>
+
+                    <small id="venueAddressError"
+                           class="field-error">
+                    </small>
+
+                </div>
+
+
+
+                <!-- Capacity -->
+
+                <div class="form-group">
+
+                    <label for="venueCapacity">
+                        Total Capacity
+                    </label>
+
+                    <input type="number"
+                           id="venueCapacity"
+                           class="form-control"
+                           min="1"
+                           step="1"
+                           placeholder="Example: 500">
+
+                    <small id="venueCapacityError"
+                           class="field-error">
+                    </small>
+
+                </div>
+
+
+
+                <div class="admin-form-modal-actions">
+
+                    <button type="button"
+                            id="cancelVenueFormButton"
+                            class="btn btn-outline">
+                        Cancel
+                    </button>
+
+
+                    <button type="submit"
+                            id="saveVenueButton"
+                            class="btn btn-primary">
+                        Save Venue
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         VIEW VENUE DETAILS MODAL
+         ===================================================== -->
+
+    <div id="venueDetailsModal"
+         class="admin-form-modal">
+
+        <div class="admin-form-modal-dialog">
+
+
+            <div class="admin-form-modal-header">
+
+                <div>
+
+                    <span class="admin-page-label">
+                        VENUE DETAILS
+                    </span>
+
+                    <h2 id="venueDetailsName">
+                        Venue
+                    </h2>
+
+                </div>
+
+
+                <button type="button"
+                        id="closeVenueDetailsButton"
+                        class="admin-modal-close">
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <div class="admin-venue-details-grid">
+
+
+                <div>
+
+                    <span>
+                        Venue ID
+                    </span>
+
+                    <strong id="venueDetailsId">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div>
+
+                    <span>
+                        Total Capacity
+                    </span>
+
+                    <strong id="venueDetailsCapacity">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="admin-venue-details-address">
+
+                    <span>
+                        Address
+                    </span>
+
+                    <strong id="venueDetailsAddress">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="admin-form-modal-actions">
+
+                <button type="button"
+                        id="editVenueFromDetailsButton"
+                        class="btn btn-primary">
+                    Edit Venue
+                </button>
+
+
+                <button type="button"
+                        id="closeVenueDetailsActionButton"
+                        class="btn btn-outline">
+                    Close
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Confirmation Modal -->
+
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JS -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/venues.js"></script>
+
+
+</body>
+
+</html>

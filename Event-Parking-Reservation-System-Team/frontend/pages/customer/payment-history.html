@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Payment History | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <section class="payment-history-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        PAYMENTS
+                    </span>
+
+                    <h1>
+                        Payment History
+                    </h1>
+
+                    <p>
+                        Review your completed booking payments
+                        and download payment receipts.
+                    </p>
+
+                </div>
+
+
+                <a href="dashboard.html"
+                   class="btn btn-outline">
+                    Back to Dashboard
+                </a>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SUMMARY
+                 ================================================= -->
+
+            <section id="paymentHistorySummary"
+                     class="payment-history-summary hidden">
+
+
+                <article class="payment-history-stat">
+
+                    <span>
+                        Total Payments
+                    </span>
+
+                    <strong id="paymentHistoryCount">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="payment-history-stat">
+
+                    <span>
+                        Total Paid
+                    </span>
+
+                    <strong id="paymentHistoryTotal">
+                        LKR 0.00
+                    </strong>
+
+                </article>
+
+
+                <article class="payment-history-stat">
+
+                    <span>
+                        Latest Payment
+                    </span>
+
+                    <strong id="paymentHistoryLatestDate">
+                        -
+                    </strong>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FILTER
+                 ================================================= -->
+
+            <section class="payment-history-filter-card">
+
+                <div>
+
+                    <label for="paymentHistorySearch">
+                        Search Payments
+                    </label>
+
+                    <input type="text"
+                           id="paymentHistorySearch"
+                           class="form-control"
+                           placeholder="Booking number or payment reference...">
+
+                </div>
+
+
+                <button type="button"
+                        id="clearPaymentHistorySearch"
+                        class="btn btn-outline">
+                    Clear
+                </button>
+
+            </section>
+
+
+
+            <!-- Result Header -->
+
+            <section class="payment-history-result-header">
+
+                <h2>
+                    Transactions
+                </h2>
+
+                <span id="paymentHistoryResultCount">
+                    Loading...
+                </span>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="paymentHistoryMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="paymentHistoryLoading"
+                 class="payment-history-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading payment history...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PAYMENT LIST
+                 ================================================= -->
+
+            <section id="paymentHistoryList"
+                     class="payment-history-list hidden">
+            </section>
+
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <section id="paymentHistoryEmpty"
+                     class="payment-history-empty hidden">
+
+                <div class="payment-history-empty-icon">
+                    $
+                </div>
+
+
+                <h2>
+                    No payments found
+                </h2>
+
+
+                <p>
+                    Completed booking payments will appear
+                    here after you make your first payment.
+                </p>
+
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Browse Events
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/payment-history.js"></script>
+
+
+</body>
+
+</html>

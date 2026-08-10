@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Browse Events | EventPark
+    </title>
+
+
+    <!-- Global CSS -->
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <!-- Customer CSS -->
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <!-- Responsive CSS -->
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <!-- =====================================================
+         EVENT LISTING PAGE
+         ===================================================== -->
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <section class="events-page-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        DISCOVER EVENTS
+                    </span>
+
+                    <h1>
+                        Find your next event
+                    </h1>
+
+                    <p>
+                        Search upcoming events and find the
+                        perfect event by name, date, venue
+                        or category.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FILTER SECTION
+                 ================================================= -->
+
+            <section class="event-filter-card">
+
+
+                <form id="eventFilterForm"
+                      class="event-filter-form">
+
+
+                    <!-- Search -->
+
+                    <div class="event-filter-field event-search-field">
+
+                        <label for="eventSearch">
+                            Event Name
+                        </label>
+
+                        <input type="text"
+                               id="eventSearch"
+                               class="form-control"
+                               placeholder="Search events...">
+
+                    </div>
+
+
+
+                    <!-- Date -->
+
+                    <div class="event-filter-field">
+
+                        <label for="eventDate">
+                            Date
+                        </label>
+
+                        <input type="date"
+                               id="eventDate"
+                               class="form-control">
+
+                    </div>
+
+
+
+                    <!-- Venue -->
+
+                    <div class="event-filter-field">
+
+                        <label for="venueFilter">
+                            Venue
+                        </label>
+
+                        <select id="venueFilter"
+                                class="form-control">
+
+                            <option value="">
+                                All Venues
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Category -->
+
+                    <div class="event-filter-field">
+
+                        <label for="categoryFilter">
+                            Category
+                        </label>
+
+                        <select id="categoryFilter"
+                                class="form-control">
+
+                            <option value="">
+                                All Categories
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Buttons -->
+
+                    <div class="event-filter-actions">
+
+                        <button type="submit"
+                                class="btn btn-primary"
+                                id="searchEventsButton">
+                            Search
+                        </button>
+
+
+                        <button type="button"
+                                class="btn btn-outline"
+                                id="resetFiltersButton">
+                            Reset
+                        </button>
+
+                    </div>
+
+
+                </form>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 RESULT HEADER
+                 ================================================= -->
+
+            <section class="event-result-header">
+
+                <div>
+
+                    <h2>
+                        Upcoming Events
+                    </h2>
+
+                    <p id="eventResultText">
+                        Loading available events...
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ERROR MESSAGE
+                 ================================================= -->
+
+            <div id="eventsMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- =================================================
+                 LOADING
+                 ================================================= -->
+
+            <div id="eventsLoading"
+                 class="events-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading events...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EVENT GRID
+                 ================================================= -->
+
+            <section id="eventsGrid"
+                     class="events-grid hidden">
+            </section>
+
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <section id="eventsEmptyState"
+                     class="events-empty-state hidden">
+
+                <div class="events-empty-icon">
+                    🎟
+                </div>
+
+                <h2>
+                    No events found
+                </h2>
+
+                <p>
+                    We couldn't find events matching
+                    your current search filters.
+                </p>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        id="emptyResetButton">
+                    Clear Filters
+                </button>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/events.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,316 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Bookings | EventPark</title>
+
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+</head>
+
+
+<body class="admin-page">
+
+    <div class="admin-shell">
+
+        <!-- Sidebar -->
+        <div id="adminSidebarContainer"></div>
+
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- =========================================
+                     HEADER
+                     ========================================= -->
+
+                <header class="admin-page-header">
+
+                    <div>
+                        <span class="admin-page-label">
+                            BOOKING MANAGEMENT
+                        </span>
+
+                        <h1>Bookings</h1>
+
+                        <p>
+                            Review customer bookings by event,
+                            booking status and customer details.
+                        </p>
+                    </div>
+
+                </header>
+
+
+                <!-- Message -->
+
+                <div id="adminBookingsMessage"
+                     class="alert hidden"></div>
+
+
+                <!-- =========================================
+                     EVENT SELECTOR
+                     ========================================= -->
+
+                <section class="admin-booking-event-card">
+
+                    <div>
+                        <label for="adminBookingEventSelect">
+                            Select Event
+                        </label>
+
+                        <select id="adminBookingEventSelect"
+                                class="form-control">
+                            <option value="">
+                                Select an event
+                            </option>
+                        </select>
+                    </div>
+
+
+                    <div class="admin-booking-selected-event">
+
+                        <span>
+                            Current Event
+                        </span>
+
+                        <strong id="adminBookingSelectedEventName">
+                            -
+                        </strong>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================================
+                     CONTENT
+                     ========================================= -->
+
+                <section id="adminBookingsContent"
+                         class="hidden">
+
+
+                    <!-- Summary -->
+
+                    <section class="admin-booking-summary-grid">
+
+                        <article class="admin-booking-summary-card">
+                            <span>Total Bookings</span>
+                            <strong id="adminTotalBookingCount">0</strong>
+                        </article>
+
+
+                        <article class="admin-booking-summary-card">
+                            <span>Pending</span>
+                            <strong id="adminPendingBookingCount">0</strong>
+                        </article>
+
+
+                        <article class="admin-booking-summary-card">
+                            <span>Confirmed</span>
+                            <strong id="adminConfirmedBookingCount">0</strong>
+                        </article>
+
+
+                        <article class="admin-booking-summary-card">
+                            <span>Cancelled / Expired</span>
+                            <strong id="adminClosedBookingCount">0</strong>
+                        </article>
+
+                    </section>
+
+
+                    <!-- =====================================
+                         FILTERS
+                         ===================================== -->
+
+                    <section class="admin-booking-filter-card">
+
+                        <div>
+                            <label for="adminBookingSearch">
+                                Search
+                            </label>
+
+                            <input type="text"
+                                   id="adminBookingSearch"
+                                   class="form-control"
+                                   placeholder="Booking number, customer name or email...">
+                        </div>
+
+
+                        <div>
+                            <label for="adminBookingStatusFilter">
+                                Booking Status
+                            </label>
+
+                            <select id="adminBookingStatusFilter"
+                                    class="form-control">
+                                <option value="">
+                                    All Statuses
+                                </option>
+
+                                <option value="pending">
+                                    Pending
+                                </option>
+
+                                <option value="confirmed">
+                                    Confirmed
+                                </option>
+
+                                <option value="cancelled">
+                                    Cancelled
+                                </option>
+
+                                <option value="expired">
+                                    Expired
+                                </option>
+                            </select>
+                        </div>
+
+
+                        <button type="button"
+                                id="clearAdminBookingFilters"
+                                class="btn btn-outline">
+                            Clear
+                        </button>
+
+                    </section>
+
+
+                    <!-- Result Header -->
+
+                    <section class="admin-booking-result-header">
+
+                        <div>
+                            <h2>Booking Records</h2>
+
+                            <p>
+                                Bookings created for the selected event.
+                            </p>
+                        </div>
+
+                        <span id="adminBookingResultCount">
+                            0 bookings
+                        </span>
+
+                    </section>
+
+
+                    <!-- Loading -->
+
+                    <div id="adminBookingsLoading"
+                         class="admin-bookings-loading hidden">
+
+                        <div class="spinner"></div>
+
+                        <p>
+                            Loading bookings...
+                        </p>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         TABLE
+                         ===================================== -->
+
+                    <section id="adminBookingsTableContainer"
+                             class="admin-bookings-table-card hidden">
+
+                        <div class="admin-table-scroll">
+
+                            <table class="admin-bookings-table">
+
+                                <thead>
+                                    <tr>
+                                        <th>Booking</th>
+                                        <th>Customer</th>
+                                        <th>Seats</th>
+                                        <th>Parking</th>
+                                        <th>Total</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+
+                                <tbody id="adminBookingsTableBody">
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- Empty -->
+
+                    <section id="adminBookingsEmpty"
+                             class="admin-bookings-empty hidden">
+
+                        <div class="admin-bookings-empty-icon">
+                            🎟
+                        </div>
+
+                        <h2>No bookings found</h2>
+
+                        <p>
+                            No booking records match the current
+                            event and filters.
+                        </p>
+
+                    </section>
+
+
+                </section>
+
+
+                <!-- =========================================
+                     NO EVENT
+                     ========================================= -->
+
+                <section id="adminBookingsNoEvent"
+                         class="admin-bookings-no-event">
+
+                    <div class="admin-bookings-empty-icon">
+                        ★
+                    </div>
+
+                    <h2>Select an event</h2>
+
+                    <p>
+                        Choose an event first to view its
+                        customer bookings.
+                    </p>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <div id="confirmationModalContainer"></div>
+
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/admin/bookings.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,438 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Select Parking | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/parking-map.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <!-- =====================================================
+         PARKING SELECTION PAGE
+         ===================================================== -->
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- Back -->
+
+            <div class="parking-page-back">
+
+                <a href="#"
+                   id="backToSeatsButton">
+                    ← Back to Seat Selection
+                </a>
+
+            </div>
+
+
+
+            <!-- Header -->
+
+            <section class="parking-page-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        OPTIONAL PARKING
+                    </span>
+
+                    <h1>
+                        Reserve a parking slot
+                    </h1>
+
+                    <p id="parkingEventName">
+                        Select one available parking slot,
+                        or continue without parking.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="parkingPageMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="parkingPageLoading"
+                 class="parking-page-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading parking layout...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
+
+            <section id="parkingPageContent"
+                     class="parking-layout hidden">
+
+
+                <!-- =============================================
+                     PARKING MAP
+                     ============================================= -->
+
+                <div class="parking-map-card">
+
+
+                    <div class="parking-map-header">
+
+                        <div>
+
+                            <h2>
+                                Parking Layout
+                            </h2>
+
+                            <p>
+                                You may select a maximum
+                                of one parking slot.
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- Legend -->
+
+                        <div class="parking-legend">
+
+                            <div>
+
+                                <span class="parking-legend-box available">
+                                </span>
+
+                                Available
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="parking-legend-box selected">
+                                </span>
+
+                                Selected
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="parking-legend-box occupied">
+                                </span>
+
+                                Occupied
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Entrance -->
+
+                    <div class="parking-entry">
+
+                        <span>
+                            ↓ ENTRY
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- Parking Grid -->
+
+                    <div class="parking-map-scroll">
+
+                        <div id="parkingMap"
+                             class="parking-map">
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- No Parking Layout -->
+
+                    <div id="noParkingLayout"
+                         class="parking-empty-state hidden">
+
+                        <div class="parking-empty-icon">
+                            P
+                        </div>
+
+                        <h3>
+                            No parking layout available
+                        </h3>
+
+                        <p>
+                            Parking has not been configured
+                            for this event. You can continue
+                            without parking.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     SUMMARY
+                     ============================================= -->
+
+                <aside class="parking-summary-card">
+
+
+                    <span class="parking-summary-label">
+                        BOOKING PROGRESS
+                    </span>
+
+
+                    <h2>
+                        Parking Summary
+                    </h2>
+
+
+
+                    <!-- Event -->
+
+                    <div class="parking-summary-section">
+
+                        <span>
+                            Event
+                        </span>
+
+                        <strong id="parkingSummaryEventName">
+                            -
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Seats -->
+
+                    <div class="parking-summary-section">
+
+                        <span>
+                            Selected Seats
+                        </span>
+
+                        <div id="parkingSummarySeats"
+                             class="parking-summary-seat-list">
+                            -
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Seat Total -->
+
+                    <div class="parking-summary-row">
+
+                        <span>
+                            Seat Total
+                        </span>
+
+                        <strong id="parkingSeatTotal">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Selected Parking -->
+
+                    <div class="parking-selected-section">
+
+                        <span class="parking-selected-label">
+                            Selected Parking
+                        </span>
+
+
+                        <div id="selectedParkingDisplay"
+                             class="selected-parking-display">
+
+                            <span class="no-parking-selected">
+                                No parking selected
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Parking Fee -->
+
+                    <div class="parking-summary-row">
+
+                        <span>
+                            Parking Fee
+                        </span>
+
+                        <strong id="selectedParkingFee">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Total -->
+
+                    <div class="parking-grand-total">
+
+                        <span>
+                            Current Total
+                        </span>
+
+                        <strong id="parkingGrandTotal">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Continue With Parking -->
+
+                    <button type="button"
+                            id="continueWithParkingButton"
+                            class="btn btn-primary btn-block parking-main-button"
+                            disabled>
+                        Continue with Parking
+                    </button>
+
+
+
+                    <!-- Skip Parking -->
+
+                    <button type="button"
+                            id="continueWithoutParkingButton"
+                            class="btn btn-outline btn-block parking-skip-button">
+                        Continue Without Parking
+                    </button>
+
+
+                    <p class="parking-optional-note">
+                        Parking is optional and is not
+                        required to complete your booking.
+                    </p>
+
+
+                </aside>
+
+
+            </section>
+
+
+
+            <!-- Event Error -->
+
+            <section id="parkingEventNotFound"
+                     class="event-not-found hidden">
+
+                <div class="events-empty-icon">
+                    !
+                </div>
+
+                <h2>
+                    Booking information unavailable
+                </h2>
+
+                <p>
+                    Please select your event and seats
+                    before choosing parking.
+                </p>
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Browse Events
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/parking-selection.js"></script>
+
+
+</body>
+
+</html>

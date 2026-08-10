@@ -1,0 +1,837 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Event Management | EventPark
+    </title>
+
+
+    <!-- =====================================================
+         COMMON CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../css/responsive.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../../css/admin.css"
+    >
+
+</head>
+
+
+<body class="event-management-page">
+
+
+    <main class="admin-page">
+
+
+        <!-- =====================================================
+             PREMIUM HEADER
+             ===================================================== -->
+
+        <section class="admin-page-header event-premium-header">
+
+
+            <div class="admin-header-content">
+
+
+                <div class="admin-header-badge">
+                    ADMIN • EVENT CONTROL
+                </div>
+
+
+                <h1>
+                    Event Management
+                </h1>
+
+
+                <p>
+                    Create and manage events, schedules,
+                    venue allocation, ticket pricing and
+                    event images from one place.
+                </p>
+
+
+            </div>
+
+
+            <div class="admin-header-stat">
+
+
+                <span class="admin-header-stat-label">
+                    TOTAL EVENTS
+                </span>
+
+
+                <strong id="eventTotalCount">
+                    0
+                </strong>
+
+
+                <span class="admin-header-stat-note">
+                    Events in the system
+                </span>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             MESSAGE
+             ===================================================== -->
+
+        <div
+            id="eventMessage"
+            class="alert hidden"
+        ></div>
+
+
+
+        <!-- =====================================================
+             EVENT FORM CARD
+             ===================================================== -->
+
+        <section class="admin-card event-form-card">
+
+
+            <div class="admin-card-header">
+
+
+                <div>
+
+
+                    <span class="card-eyebrow">
+                        EVENT DETAILS
+                    </span>
+
+
+                    <h2 id="eventFormTitle">
+                        Add New Event
+                    </h2>
+
+
+                    <p>
+                        Enter the event information and
+                        choose an image to display to customers.
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <form
+                id="eventForm"
+                novalidate
+            >
+
+
+                <input
+                    type="hidden"
+                    id="eventId"
+                >
+
+
+
+                <!-- =================================================
+                     EVENT NAME
+                     ================================================= -->
+
+                <div class="form-group">
+
+
+                    <label for="eventName">
+                        Event Name
+                    </label>
+
+
+                    <input
+                        type="text"
+                        id="eventName"
+                        placeholder="Example: Music Festival 2026"
+                        maxlength="150"
+                        autocomplete="off"
+                        required
+                    >
+
+
+                    <small
+                        id="eventNameError"
+                        class="field-error"
+                    ></small>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     EVENT IMAGE URL
+                     ================================================= -->
+
+                <div class="form-group">
+
+
+                    <label for="eventImageUrl">
+                        Event Image URL
+                    </label>
+
+
+                    <input
+                        type="url"
+                        id="eventImageUrl"
+                        placeholder="https://example.com/event-image.jpg"
+                        maxlength="1000"
+                        autocomplete="off"
+                    >
+
+
+                    <small class="form-helper-text">
+                        Paste a public image URL. The image will be
+                        displayed on customer event cards and details.
+                    </small>
+
+
+                    <small
+                        id="eventImageUrlError"
+                        class="field-error"
+                    ></small>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     IMAGE PREVIEW
+                     ================================================= -->
+
+                <div class="event-image-preview-card">
+
+
+                    <div class="event-image-preview-header">
+
+
+                        <div>
+
+                            <span class="card-eyebrow">
+                                LIVE PREVIEW
+                            </span>
+
+
+                            <strong>
+                                Event Cover Image
+                            </strong>
+
+                        </div>
+
+
+                        <span
+                            id="eventImagePreviewStatus"
+                            class="preview-status"
+                        >
+                            No image
+                        </span>
+
+
+                    </div>
+
+
+
+                    <div
+                        id="eventImagePreviewContainer"
+                        class="event-image-preview-container"
+                    >
+
+
+                        <img
+                            id="eventImagePreview"
+                            class="event-image-preview hidden"
+                            src=""
+                            alt="Event preview"
+                        >
+
+
+                        <div
+                            id="eventImagePlaceholder"
+                            class="event-image-placeholder"
+                        >
+
+
+                            <div class="image-placeholder-icon">
+                                IMG
+                            </div>
+
+
+                            <strong>
+                                Event image preview
+                            </strong>
+
+
+                            <span>
+                                Paste an image URL above
+                            </span>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     VENUE + CATEGORY
+                     ================================================= -->
+
+                <div class="event-form-grid event-form-grid-two">
+
+
+                    <div class="form-group">
+
+
+                        <label for="eventVenue">
+                            Venue
+                        </label>
+
+
+                        <select
+                            id="eventVenue"
+                            required
+                        >
+
+
+                            <option value="">
+                                Select venue
+                            </option>
+
+
+                        </select>
+
+
+                        <small
+                            id="eventVenueError"
+                            class="field-error"
+                        ></small>
+
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+
+                        <label for="eventCategory">
+                            Category
+                        </label>
+
+
+                        <select
+                            id="eventCategory"
+                            required
+                        >
+
+
+                            <option value="">
+                                Select category
+                            </option>
+
+
+                        </select>
+
+
+                        <small
+                            id="eventCategoryError"
+                            class="field-error"
+                        ></small>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     DATE
+                     ================================================= -->
+
+                <div class="form-group">
+
+
+                    <label for="eventDate">
+                        Event Date
+                    </label>
+
+
+                    <input
+                        type="date"
+                        id="eventDate"
+                        required
+                    >
+
+
+                    <small
+                        id="eventDateError"
+                        class="field-error"
+                    ></small>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     START / END TIME
+                     ================================================= -->
+
+                <div class="event-form-grid event-form-grid-two">
+
+
+                    <div class="form-group">
+
+
+                        <label for="eventStartTime">
+                            Start Time
+                        </label>
+
+
+                        <input
+                            type="time"
+                            id="eventStartTime"
+                            required
+                        >
+
+
+                        <small
+                            id="eventStartTimeError"
+                            class="field-error"
+                        ></small>
+
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+
+                        <label for="eventEndTime">
+                            End Time
+                        </label>
+
+
+                        <input
+                            type="time"
+                            id="eventEndTime"
+                            required
+                        >
+
+
+                        <small
+                            id="eventEndTimeError"
+                            class="field-error"
+                        ></small>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     PRICE / CAPACITY
+                     ================================================= -->
+
+                <div class="event-form-grid event-form-grid-two">
+
+
+                    <div class="form-group">
+
+
+                        <label for="eventTicketPrice">
+                            Ticket Price
+                        </label>
+
+
+                        <div class="event-money-input">
+
+
+                            <span>
+                                Rs.
+                            </span>
+
+
+                            <input
+                                type="number"
+                                id="eventTicketPrice"
+                                placeholder="2500"
+                                min="0"
+                                step="0.01"
+                                required
+                            >
+
+
+                        </div>
+
+
+                        <small
+                            id="eventTicketPriceError"
+                            class="field-error"
+                        ></small>
+
+
+                    </div>
+
+
+
+                    <div class="form-group">
+
+
+                        <label for="eventCapacity">
+                            Event Capacity
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="eventCapacity"
+                            placeholder="300"
+                            min="1"
+                            step="1"
+                            required
+                        >
+
+
+                        <small
+                            id="eventCapacityHelper"
+                            class="form-helper-text"
+                        >
+                            Select a venue to see its maximum capacity.
+                        </small>
+
+
+                        <small
+                            id="eventCapacityError"
+                            class="field-error"
+                        ></small>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     ACTION BUTTONS
+                     ================================================= -->
+
+                <div class="form-actions event-form-actions">
+
+
+                    <button
+                        type="submit"
+                        id="saveEventButton"
+                        class="btn btn-primary"
+                    >
+                        Create Event
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancelEventEditButton"
+                        class="btn btn-secondary hidden"
+                    >
+                        Cancel Edit
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             EVENT LIST
+             ===================================================== -->
+
+        <section class="admin-card event-list-card">
+
+
+            <div class="admin-card-header event-list-header">
+
+
+                <div>
+
+
+                    <span class="card-eyebrow">
+                        EVENT CATALOGUE
+                    </span>
+
+
+                    <h2>
+                        Events
+                    </h2>
+
+
+                    <p>
+                        Review scheduled events and manage
+                        their event information.
+                    </p>
+
+
+                </div>
+
+
+
+                <button
+                    type="button"
+                    id="refreshEventsButton"
+                    class="btn btn-refresh"
+                >
+                    Refresh
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EVENT SUMMARY
+                 ================================================= -->
+
+            <div class="event-summary">
+
+
+                <div class="event-summary-box">
+
+
+                    <span class="summary-icon">
+                        E
+                    </span>
+
+
+                    <div>
+
+
+                        <span class="summary-label">
+                            Total Events
+                        </span>
+
+
+                        <strong id="eventSummaryCount">
+                            0
+                        </strong>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="event-summary-message">
+
+
+                    <strong>
+                        Your event catalogue
+                    </strong>
+
+
+                    <span>
+                        Images, venue details and ticket
+                        information are shown to customers.
+                    </span>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 LOADING
+                 ================================================= -->
+
+            <div
+                id="eventLoading"
+                class="admin-loading hidden"
+            >
+
+
+                <div class="loading-dot"></div>
+
+
+                <span>
+                    Loading events...
+                </span>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <div
+                id="eventEmpty"
+                class="admin-empty-state hidden"
+            >
+
+
+                <div class="empty-icon">
+                    E
+                </div>
+
+
+                <h3>
+                    No events found
+                </h3>
+
+
+                <p>
+                    Create your first event using
+                    the event form.
+                </p>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EVENT TABLE
+                 ================================================= -->
+
+            <div
+                id="eventTableWrapper"
+                class="table-responsive event-table-wrapper"
+            >
+
+
+                <table class="admin-table event-table">
+
+
+                    <thead>
+
+
+                        <tr>
+
+
+                            <th>
+                                Event
+                            </th>
+
+
+                            <th>
+                                Venue
+                            </th>
+
+
+                            <th>
+                                Schedule
+                            </th>
+
+
+                            <th>
+                                Price
+                            </th>
+
+
+                            <th>
+                                Capacity
+                            </th>
+
+
+                            <th>
+                                Actions
+                            </th>
+
+
+                        </tr>
+
+
+                    </thead>
+
+
+
+                    <tbody id="eventTableBody">
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/events.js"></script>
+
+
+</body>
+
+</html>

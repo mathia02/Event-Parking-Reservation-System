@@ -1,0 +1,700 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Parking Layout Builder | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../../css/parking-map.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body class="admin-page">
+
+
+    <div class="admin-shell">
+
+
+        <!-- Sidebar -->
+
+        <div id="adminSidebarContainer"></div>
+
+
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- Back -->
+
+                <div class="admin-parking-back">
+
+                    <a href="events.html">
+                        ← Back to Events
+                    </a>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     HEADER
+                     ================================================= -->
+
+                <header class="admin-page-header">
+
+                    <div>
+
+                        <span class="admin-page-label">
+                            PARKING MANAGEMENT
+                        </span>
+
+                        <h1>
+                            Parking Layout Builder
+                        </h1>
+
+                        <p>
+                            Create parking zones and slots,
+                            configure fees and manage slot
+                            availability for an event.
+                        </p>
+
+                    </div>
+
+
+                    <a href="events.html"
+                       class="btn btn-outline">
+                        Event List
+                    </a>
+
+                </header>
+
+
+
+                <!-- Message -->
+
+                <div id="adminParkingMessage"
+                     class="alert hidden">
+                </div>
+
+
+
+                <!-- =================================================
+                     EVENT SELECT
+                     ================================================= -->
+
+                <section class="admin-parking-event-card">
+
+
+                    <div>
+
+                        <label for="parkingEventSelect">
+                            Select Event
+                        </label>
+
+                        <select id="parkingEventSelect"
+                                class="form-control">
+
+                            <option value="">
+                                Select an event
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <div class="admin-parking-selected-event">
+
+                        <span>
+                            Selected Event
+                        </span>
+
+                        <strong id="parkingSelectedEventName">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- Loading -->
+
+                <div id="adminParkingLoading"
+                     class="admin-parking-loading hidden">
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading parking layout...
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     CONTENT
+                     ================================================= -->
+
+                <section id="adminParkingContent"
+                         class="hidden">
+
+
+                    <!-- =============================================
+                         SUMMARY
+                         ============================================= -->
+
+                    <section class="admin-parking-summary-grid">
+
+
+                        <article class="admin-parking-summary-card">
+
+                            <span>
+                                Total Slots
+                            </span>
+
+                            <strong id="parkingTotalSlots">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                        <article class="admin-parking-summary-card">
+
+                            <span>
+                                Available
+                            </span>
+
+                            <strong id="parkingAvailableSlots">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                        <article class="admin-parking-summary-card">
+
+                            <span>
+                                Held
+                            </span>
+
+                            <strong id="parkingHeldSlots">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                        <article class="admin-parking-summary-card">
+
+                            <span>
+                                Reserved / Occupied
+                            </span>
+
+                            <strong id="parkingReservedSlots">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         LAYOUT GENERATOR
+                         ============================================= -->
+
+                    <section id="parkingGeneratorCard"
+                             class="admin-parking-builder-card">
+
+
+                        <div class="admin-parking-card-header">
+
+                            <div>
+
+                                <h2>
+                                    Create Parking Layout
+                                </h2>
+
+                                <p>
+                                    Add zones and define the
+                                    number of parking slots and
+                                    fee for each zone.
+                                </p>
+
+                            </div>
+
+
+                            <button type="button"
+                                    id="addParkingZoneButton"
+                                    class="btn btn-outline">
+                                + Add Zone
+                            </button>
+
+                        </div>
+
+
+
+                        <div class="admin-parking-zone-headings">
+
+                            <span>
+                                Zone
+                            </span>
+
+                            <span>
+                                Number of Slots
+                            </span>
+
+                            <span>
+                                Fee per Slot
+                            </span>
+
+                            <span>
+                                Action
+                            </span>
+
+                        </div>
+
+
+
+                        <div id="parkingZonesContainer"
+                             class="admin-parking-zone-list">
+                        </div>
+
+
+
+                        <div class="admin-parking-layout-preview-summary">
+
+                            <span>
+                                Slots to Create
+                            </span>
+
+                            <strong id="parkingConfiguredSlotCount">
+                                0
+                            </strong>
+
+                        </div>
+
+
+
+                        <div class="admin-parking-generator-actions">
+
+
+                            <button type="button"
+                                    id="resetParkingZonesButton"
+                                    class="btn btn-outline">
+                                Reset
+                            </button>
+
+
+                            <button type="button"
+                                    id="generateParkingLayoutButton"
+                                    class="btn btn-primary">
+                                Generate Parking Layout
+                            </button>
+
+
+                        </div>
+
+
+
+                        <div id="existingParkingLayoutWarning"
+                             class="admin-parking-warning hidden">
+
+                            Parking slots already exist for
+                            this event. Manage individual slots
+                            using the visual parking map below.
+
+                        </div>
+
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         VISUAL MAP
+                         ============================================= -->
+
+                    <section class="admin-parking-builder-card">
+
+
+                        <div class="admin-parking-card-header">
+
+                            <div>
+
+                                <h2>
+                                    Visual Parking Map
+                                </h2>
+
+                                <p>
+                                    Click a safe slot to edit
+                                    its number, zone, fee or
+                                    availability status.
+                                </p>
+
+                            </div>
+
+
+                            <button type="button"
+                                    id="refreshParkingLayoutButton"
+                                    class="btn btn-outline">
+                                Refresh
+                            </button>
+
+                        </div>
+
+
+
+                        <!-- Legend -->
+
+                        <div class="admin-parking-legend">
+
+
+                            <span>
+
+                                <i class="admin-parking-legend-box available"></i>
+
+                                Available
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="admin-parking-legend-box held"></i>
+
+                                Held
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="admin-parking-legend-box occupied"></i>
+
+                                Occupied
+
+                            </span>
+
+
+                            <span>
+
+                                <i class="admin-parking-legend-box unavailable"></i>
+
+                                Unavailable
+
+                            </span>
+
+
+                        </div>
+
+
+
+                        <div class="admin-parking-entrance">
+
+                            PARKING ENTRANCE
+
+                        </div>
+
+
+
+                        <div id="adminParkingVisualMap"
+                             class="admin-parking-visual-map">
+                        </div>
+
+
+
+                        <div id="adminParkingEmpty"
+                             class="admin-parking-empty hidden">
+
+                            <strong>
+                                No parking layout yet
+                            </strong>
+
+                            <p>
+                                Add one or more zones and
+                                generate parking slots.
+                            </p>
+
+                        </div>
+
+
+                    </section>
+
+
+                </section>
+
+
+
+                <!-- No Event -->
+
+                <section id="adminParkingNoEvent"
+                         class="admin-parking-empty">
+
+                    <strong>
+                        Select an event
+                    </strong>
+
+                    <p>
+                        Choose an event to configure
+                        its parking layout.
+                    </p>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         EDIT PARKING SLOT MODAL
+         ===================================================== -->
+
+    <div id="editParkingSlotModal"
+         class="admin-form-modal">
+
+        <div class="admin-form-modal-dialog">
+
+
+            <div class="admin-form-modal-header">
+
+                <div>
+
+                    <span class="admin-page-label">
+                        PARKING SLOT
+                    </span>
+
+                    <h2 id="editParkingSlotTitle">
+                        Edit Parking Slot
+                    </h2>
+
+                </div>
+
+
+                <button type="button"
+                        id="closeParkingSlotModalButton"
+                        class="admin-modal-close">
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <form id="editParkingSlotForm"
+                  novalidate>
+
+
+                <input type="hidden"
+                       id="editParkingSlotId">
+
+
+
+                <div class="admin-parking-edit-grid">
+
+
+                    <!-- Slot Number -->
+
+                    <div class="form-group">
+
+                        <label for="editParkingSlotNumber">
+                            Slot Number
+                        </label>
+
+                        <input type="text"
+                               id="editParkingSlotNumber"
+                               class="form-control"
+                               placeholder="A01">
+
+                        <small id="editParkingSlotNumberError"
+                               class="field-error"></small>
+
+                    </div>
+
+
+
+                    <!-- Zone -->
+
+                    <div class="form-group">
+
+                        <label for="editParkingZone">
+                            Zone
+                        </label>
+
+                        <input type="text"
+                               id="editParkingZone"
+                               class="form-control"
+                               placeholder="A">
+
+                        <small id="editParkingZoneError"
+                               class="field-error"></small>
+
+                    </div>
+
+
+
+                    <!-- Fee -->
+
+                    <div class="form-group">
+
+                        <label for="editParkingFee">
+                            Parking Fee (LKR)
+                        </label>
+
+                        <input type="number"
+                               id="editParkingFee"
+                               class="form-control"
+                               min="0"
+                               step="0.01">
+
+                        <small id="editParkingFeeError"
+                               class="field-error"></small>
+
+                    </div>
+
+
+
+                    <!-- Status -->
+
+                    <div class="form-group">
+
+                        <label for="editParkingStatus">
+                            Status
+                        </label>
+
+                        <select id="editParkingStatus"
+                                class="form-control">
+
+                            <option value="Available">
+                                Available
+                            </option>
+
+                            <option value="Unavailable">
+                                Unavailable
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="admin-parking-current-status">
+
+                    <span>
+                        Current Server Status
+                    </span>
+
+                    <strong id="editParkingCurrentStatus">
+                        Available
+                    </strong>
+
+                </div>
+
+
+
+                <div id="protectedParkingSlotMessage"
+                     class="admin-parking-protected-message hidden">
+
+                    This parking slot is currently held
+                    or reserved and is protected from
+                    editing/deletion.
+
+                </div>
+
+
+
+                <div class="admin-form-modal-actions">
+
+
+                    <button type="button"
+                            id="deleteParkingSlotButton"
+                            class="btn btn-danger">
+                        Delete Slot
+                    </button>
+
+
+                    <button type="button"
+                            id="cancelParkingSlotModalButton"
+                            class="btn btn-outline">
+                        Close
+                    </button>
+
+
+                    <button type="submit"
+                            id="saveParkingSlotButton"
+                            class="btn btn-primary">
+                        Save Changes
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Confirmation Modal -->
+
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JS -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/parking-layout-builder.js"></script>
+
+
+</body>
+
+</html>

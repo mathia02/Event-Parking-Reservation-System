@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Notifications | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <section class="notifications-page-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        NOTIFICATIONS
+                    </span>
+
+                    <h1>
+                        Your Updates
+                    </h1>
+
+                    <p>
+                        Stay informed about your bookings,
+                        payments, cancellations, reminders
+                        and event updates.
+                    </p>
+
+                </div>
+
+
+                <button type="button"
+                        id="markAllNotificationsReadButton"
+                        class="btn btn-outline"
+                        disabled>
+                    Mark All as Read
+                </button>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 SUMMARY
+                 ================================================= -->
+
+            <section id="notificationSummary"
+                     class="notification-summary-grid hidden">
+
+
+                <article class="notification-summary-card">
+
+                    <span>
+                        All Notifications
+                    </span>
+
+                    <strong id="allNotificationCount">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="notification-summary-card">
+
+                    <span>
+                        Unread
+                    </span>
+
+                    <strong id="unreadNotificationCount">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="notification-summary-card">
+
+                    <span>
+                        Read
+                    </span>
+
+                    <strong id="readNotificationCount">
+                        0
+                    </strong>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FILTERS
+                 ================================================= -->
+
+            <section class="notification-filter-card">
+
+                <div>
+
+                    <label for="notificationFilter">
+                        Show
+                    </label>
+
+                    <select id="notificationFilter"
+                            class="form-control">
+
+                        <option value="all">
+                            All Notifications
+                        </option>
+
+                        <option value="unread">
+                            Unread Only
+                        </option>
+
+                        <option value="read">
+                            Read Only
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button type="button"
+                        id="refreshNotificationsButton"
+                        class="btn btn-outline">
+                    Refresh
+                </button>
+
+            </section>
+
+
+
+            <!-- Result Header -->
+
+            <section class="notification-result-header">
+
+                <h2>
+                    Recent Notifications
+                </h2>
+
+                <span id="notificationResultCount">
+                    Loading...
+                </span>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="notificationsMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="notificationsLoading"
+                 class="notifications-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading notifications...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 NOTIFICATION LIST
+                 ================================================= -->
+
+            <section id="notificationsList"
+                     class="notifications-list hidden">
+            </section>
+
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <section id="notificationsEmpty"
+                     class="notifications-empty hidden">
+
+                <div class="notifications-empty-icon">
+                    🔔
+                </div>
+
+
+                <h2>
+                    No notifications found
+                </h2>
+
+
+                <p id="notificationsEmptyText">
+                    You don't have any notifications yet.
+                </p>
+
+
+                <a href="dashboard.html"
+                   class="btn btn-primary">
+                    Back to Dashboard
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/notifications.js"></script>
+
+
+</body>
+
+</html>

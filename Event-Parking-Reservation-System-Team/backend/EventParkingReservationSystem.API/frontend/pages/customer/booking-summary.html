@@ -1,0 +1,490 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Booking Summary | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- Back -->
+
+            <div class="booking-summary-back">
+
+                <a href="#"
+                   id="backToParkingButton">
+                    ← Back to Parking
+                </a>
+
+            </div>
+
+
+
+            <!-- Header -->
+
+            <section class="booking-summary-header">
+
+                <span class="customer-page-label">
+                    REVIEW BOOKING
+                </span>
+
+                <h1>
+                    Confirm your booking
+                </h1>
+
+                <p>
+                    Review your event, seats and optional
+                    parking before creating the booking.
+                </p>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="bookingSummaryMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="bookingSummaryLoading"
+                 class="booking-summary-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Preparing your booking...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BOOKING SUMMARY CONTENT
+                 ================================================= -->
+
+            <section id="bookingSummaryContent"
+                     class="booking-summary-layout hidden">
+
+
+                <!-- =============================================
+                     LEFT SIDE
+                     ============================================= -->
+
+                <div class="booking-review-card">
+
+
+                    <!-- Event -->
+
+                    <section class="booking-review-section">
+
+                        <div class="booking-review-title">
+
+                            <div>
+
+                                <span class="booking-step-number">
+                                    1
+                                </span>
+
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Event
+                                </h2>
+
+                                <p>
+                                    Your selected event details.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="booking-event-details">
+
+                            <h3 id="bookingEventName">
+                                -
+                            </h3>
+
+
+                            <div class="booking-event-meta">
+
+                                <span id="bookingEventDate">
+                                    -
+                                </span>
+
+                                <span id="bookingEventTime">
+                                    -
+                                </span>
+
+                                <span id="bookingEventVenue">
+                                    -
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- Seats -->
+
+                    <section class="booking-review-section">
+
+                        <div class="booking-review-title">
+
+                            <div>
+
+                                <span class="booking-step-number">
+                                    2
+                                </span>
+
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Selected Seats
+                                </h2>
+
+                                <p>
+                                    Seats included in this booking.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div id="bookingSelectedSeats"
+                             class="booking-seat-list">
+                        </div>
+
+
+                        <div class="booking-section-total">
+
+                            <span>
+                                Seat Total
+                            </span>
+
+                            <strong id="bookingSeatTotal">
+                                LKR 0.00
+                            </strong>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- Parking -->
+
+                    <section class="booking-review-section">
+
+                        <div class="booking-review-title">
+
+                            <div>
+
+                                <span class="booking-step-number">
+                                    3
+                                </span>
+
+                            </div>
+
+                            <div>
+
+                                <h2>
+                                    Parking
+                                </h2>
+
+                                <p>
+                                    Optional parking reservation.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div id="bookingParkingSelected"
+                             class="booking-parking-info">
+
+                            <div>
+
+                                <span>
+                                    Parking Slot
+                                </span>
+
+                                <strong id="bookingParkingSlot">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+                                    Zone
+                                </span>
+
+                                <strong id="bookingParkingZone">
+                                    -
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div id="bookingNoParking"
+                             class="booking-no-parking hidden">
+
+                            <span>
+                                P
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    No parking selected
+                                </strong>
+
+                                <p>
+                                    This booking will continue
+                                    without a parking reservation.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="booking-section-total">
+
+                            <span>
+                                Parking Fee
+                            </span>
+
+                            <strong id="bookingParkingFee">
+                                LKR 0.00
+                            </strong>
+
+                        </div>
+
+                    </section>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     RIGHT SIDE TOTAL
+                     ============================================= -->
+
+                <aside class="booking-final-card">
+
+
+                    <span class="booking-final-label">
+                        FINAL SUMMARY
+                    </span>
+
+
+                    <h2>
+                        Order Total
+                    </h2>
+
+
+
+                    <div class="booking-final-row">
+
+                        <span>
+                            Seats
+                        </span>
+
+                        <strong id="finalSeatAmount">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="booking-final-row">
+
+                        <span>
+                            Parking
+                        </span>
+
+                        <strong id="finalParkingAmount">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <div class="booking-final-divider"></div>
+
+
+
+                    <div class="booking-final-total">
+
+                        <span>
+                            Total
+                        </span>
+
+                        <strong id="bookingGrandTotal">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Hold Information -->
+
+                    <div class="booking-hold-notice">
+
+                        <strong>
+                            Temporary Reservation Hold
+                        </strong>
+
+                        <p>
+                            After you confirm, your booking
+                            will start as Pending and your
+                            selected seats and parking slot
+                            will be temporarily held while
+                            you complete payment.
+                        </p>
+
+                    </div>
+
+
+
+                    <!-- Confirm -->
+
+                    <button type="button"
+                            id="confirmBookingButton"
+                            class="btn btn-primary btn-block booking-confirm-button">
+                        Confirm Booking
+                    </button>
+
+
+
+                    <p class="booking-confirm-note">
+                        Final availability is checked by
+                        the server when you confirm.
+                    </p>
+
+
+                </aside>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 MISSING SELECTION STATE
+                 ================================================= -->
+
+            <section id="bookingSelectionMissing"
+                     class="event-not-found hidden">
+
+                <div class="events-empty-icon">
+                    !
+                </div>
+
+
+                <h2>
+                    Booking information missing
+                </h2>
+
+
+                <p>
+                    Please select an event and at least
+                    one seat before creating a booking.
+                </p>
+
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Browse Events
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/booking-summary.js"></script>
+
+
+</body>
+
+</html>

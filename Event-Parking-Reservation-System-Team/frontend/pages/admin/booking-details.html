@@ -1,0 +1,501 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Booking Details | EventPark</title>
+
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/admin.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+</head>
+
+
+<body class="admin-page">
+
+    <div class="admin-shell">
+
+        <div id="adminSidebarContainer"></div>
+
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- Back -->
+
+                <div class="admin-booking-details-back">
+
+                    <a id="adminBookingBackLink"
+                       href="bookings.html">
+                        ← Back to Bookings
+                    </a>
+
+                </div>
+
+
+                <!-- Message -->
+
+                <div id="adminBookingDetailsMessage"
+                     class="alert hidden"></div>
+
+
+                <!-- Loading -->
+
+                <div id="adminBookingDetailsLoading"
+                     class="admin-booking-details-loading">
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading booking details...
+                    </p>
+
+                </div>
+
+
+                <!-- =========================================
+                     CONTENT
+                     ========================================= -->
+
+                <section id="adminBookingDetailsContent"
+                         class="hidden">
+
+
+                    <!-- Header -->
+
+                    <header class="admin-booking-details-header">
+
+                        <div>
+
+                            <span class="admin-page-label">
+                                BOOKING DETAILS
+                            </span>
+
+                            <h1 id="detailBookingNumber">
+                                Booking
+                            </h1>
+
+                            <p>
+                                Full customer reservation information.
+                            </p>
+
+                        </div>
+
+
+                        <span id="detailBookingStatus"
+                              class="admin-booking-status pending">
+                            Pending
+                        </span>
+
+                    </header>
+
+
+                    <!-- =====================================
+                         SUMMARY
+                         ===================================== -->
+
+                    <section class="admin-booking-detail-summary">
+
+                        <article>
+                            <span>Seats</span>
+                            <strong id="detailSeatCount">0</strong>
+                        </article>
+
+
+                        <article>
+                            <span>Parking</span>
+                            <strong id="detailParkingSummary">
+                                None
+                            </strong>
+                        </article>
+
+
+                        <article>
+                            <span>Payment</span>
+                            <strong id="detailPaymentSummary">
+                                -
+                            </strong>
+                        </article>
+
+
+                        <article>
+                            <span>Total</span>
+                            <strong id="detailBookingTotal">
+                                -
+                            </strong>
+                        </article>
+
+                    </section>
+
+
+                    <!-- Pending hold -->
+
+                    <section id="adminBookingHoldCard"
+                             class="admin-booking-hold-card hidden">
+
+                        <span>
+                            Reservation Hold
+                        </span>
+
+                        <strong id="adminBookingHoldCountdown">
+                            -
+                        </strong>
+
+                        <p id="adminBookingHoldText">
+                            Pending booking hold information.
+                        </p>
+
+                    </section>
+
+
+                    <!-- =====================================
+                         GRID
+                         ===================================== -->
+
+                    <div class="admin-booking-details-grid">
+
+
+                        <!-- LEFT -->
+
+                        <div class="admin-booking-details-main">
+
+
+                            <!-- Customer -->
+
+                            <section class="admin-booking-detail-card">
+
+                                <div class="admin-booking-card-header">
+
+                                    <div>
+                                        <h2>Customer</h2>
+
+                                        <p>
+                                            Customer who created this booking.
+                                        </p>
+                                    </div>
+
+
+                                    <a id="detailCustomerProfileLink"
+                                       href="#"
+                                       class="btn btn-outline hidden">
+                                        View Customer
+                                    </a>
+
+                                </div>
+
+
+                                <div class="admin-booking-info-grid">
+
+                                    <div>
+                                        <span>Customer ID</span>
+                                        <strong id="detailCustomerId">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Name</span>
+                                        <strong id="detailCustomerName">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Email</span>
+                                        <strong id="detailCustomerEmail">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Phone</span>
+                                        <strong id="detailCustomerPhone">-</strong>
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- Event -->
+
+                            <section class="admin-booking-detail-card">
+
+                                <div class="admin-booking-card-header">
+
+                                    <div>
+                                        <h2>Event</h2>
+                                        <p>Event reservation information.</p>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="admin-booking-info-grid">
+
+                                    <div>
+                                        <span>Event</span>
+                                        <strong id="detailEventName">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Date</span>
+                                        <strong id="detailEventDate">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Time</span>
+                                        <strong id="detailEventTime">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Venue</span>
+                                        <strong id="detailEventVenue">-</strong>
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- Seats -->
+
+                            <section class="admin-booking-detail-card">
+
+                                <div class="admin-booking-card-header">
+
+                                    <div>
+                                        <h2>Reserved Seats</h2>
+
+                                        <p>
+                                            Seats attached to this booking.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                                <div id="detailSeatsList"
+                                     class="admin-booking-seat-list"></div>
+
+                            </section>
+
+
+                            <!-- Parking -->
+
+                            <section class="admin-booking-detail-card">
+
+                                <div class="admin-booking-card-header">
+
+                                    <div>
+                                        <h2>Parking Reservation</h2>
+
+                                        <p>
+                                            Optional parking selected
+                                            with this booking.
+                                        </p>
+                                    </div>
+
+                                </div>
+
+
+                                <div id="detailParkingContent"
+                                     class="admin-booking-info-grid">
+
+                                    <div>
+                                        <span>Slot</span>
+                                        <strong id="detailParkingSlot">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Zone</span>
+                                        <strong id="detailParkingZone">-</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Fee at Reservation</span>
+                                        <strong id="detailParkingFee">-</strong>
+                                    </div>
+
+                                </div>
+
+
+                                <div id="detailNoParking"
+                                     class="admin-booking-no-parking hidden">
+                                    No parking slot was reserved
+                                    for this booking.
+                                </div>
+
+                            </section>
+
+
+                        </div>
+
+
+                        <!-- =================================
+                             RIGHT
+                             ================================= -->
+
+                        <aside class="admin-booking-side-card">
+
+                            <span class="admin-page-label">
+                                PAYMENT & STATUS
+                            </span>
+
+                            <h2>
+                                Booking Summary
+                            </h2>
+
+
+                            <div class="admin-booking-side-row">
+
+                                <span>Booking Number</span>
+
+                                <strong id="detailSideBookingNumber">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-booking-side-row">
+
+                                <span>Status</span>
+
+                                <strong id="detailSideBookingStatus">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-booking-side-row">
+
+                                <span>Payment Status</span>
+
+                                <strong id="detailPaymentStatus">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-booking-side-row">
+
+                                <span>Amount Due</span>
+
+                                <strong id="detailPaymentAmount">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-booking-side-row">
+
+                                <span>Payment Reference</span>
+
+                                <strong id="detailPaymentReference">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-booking-side-row">
+
+                                <span>Payment Date</span>
+
+                                <strong id="detailPaymentDate">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-booking-side-row">
+
+                                <span>Booking Created</span>
+
+                                <strong id="detailBookingCreated">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-booking-admin-note">
+
+                                <strong>
+                                    Admin booking action
+                                </strong>
+
+                                <p>
+                                    The BRD cancellation endpoint is
+                                    defined as owner-only. This admin
+                                    page therefore displays booking
+                                    information without inventing an
+                                    administrator cancellation route.
+                                </p>
+
+                            </div>
+
+
+                            <a id="detailBackToBookingsButton"
+                               href="bookings.html"
+                               class="btn btn-outline btn-block">
+                                Back to Bookings
+                            </a>
+
+                        </aside>
+
+
+                    </div>
+
+
+                </section>
+
+
+                <!-- =========================================
+                     NOT FOUND
+                     ========================================= -->
+
+                <section id="adminBookingDetailsNotFound"
+                         class="admin-bookings-empty hidden">
+
+                    <div class="admin-bookings-empty-icon">
+                        !
+                    </div>
+
+                    <h2>Booking not found</h2>
+
+                    <p>
+                        The requested booking could not be found
+                        or access was denied.
+                    </p>
+
+                    <a href="bookings.html"
+                       class="btn btn-primary">
+                        Back to Bookings
+                    </a>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <div id="confirmationModalContainer"></div>
+
+
+    <script src="../../js/config.js"></script>
+    <script src="../../js/api.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/admin/booking-details.js"></script>
+
+</body>
+</html>

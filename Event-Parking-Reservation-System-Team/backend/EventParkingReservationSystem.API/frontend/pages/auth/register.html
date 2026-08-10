@@ -1,0 +1,346 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Create Account | EventPark
+    </title>
+
+    <!-- Global CSS -->
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <!-- Authentication CSS -->
+    <link rel="stylesheet"
+          href="../../css/auth.css">
+
+    <!-- Responsive CSS -->
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+    <!-- =====================================================
+         REGISTER PAGE
+         ===================================================== -->
+
+    <main class="auth-page">
+
+        <div class="auth-container">
+
+
+            <!-- Left Information Section -->
+
+            <section class="auth-info">
+
+                <span class="auth-label">
+                    JOIN EVENTPARK
+                </span>
+
+                <h1>
+                    Your next event starts here.
+                </h1>
+
+                <p>
+                    Create your account to discover events,
+                    select your preferred seats, reserve
+                    optional parking and manage all your
+                    bookings in one place.
+                </p>
+
+
+                <div class="auth-benefits">
+
+                    <div class="auth-benefit">
+
+                        <span class="auth-benefit-icon">
+                            ✓
+                        </span>
+
+                        <div>
+                            <h3>
+                                Visual Seat Selection
+                            </h3>
+
+                            <p>
+                                Choose available seats from
+                                an easy-to-use seat map.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="auth-benefit">
+
+                        <span class="auth-benefit-icon">
+                            ✓
+                        </span>
+
+                        <div>
+                            <h3>
+                                Optional Parking
+                            </h3>
+
+                            <p>
+                                Reserve a parking slot only
+                                when you need one.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="auth-benefit">
+
+                        <span class="auth-benefit-icon">
+                            ✓
+                        </span>
+
+                        <div>
+                            <h3>
+                                Manage Everything
+                            </h3>
+
+                            <p>
+                                Access your bookings,
+                                payments and notifications.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Registration Form Section -->
+
+            <section class="auth-card">
+
+                <div class="auth-card-header">
+
+                    <h2>
+                        Create Account
+                    </h2>
+
+                    <p>
+                        Enter your details to get started.
+                    </p>
+
+                </div>
+
+
+                <!-- Success / Error Message -->
+
+                <div id="registerMessage"
+                     class="alert hidden">
+                </div>
+
+
+                <!-- Register Form -->
+
+                <form id="registerForm"
+                      novalidate>
+
+
+                    <!-- Full Name -->
+
+                    <div class="form-group">
+
+                        <label for="fullName">
+                            Full Name
+                        </label>
+
+                        <input type="text"
+                               id="fullName"
+                               class="form-control"
+                               placeholder="Enter your full name"
+                               autocomplete="name">
+
+                        <small class="field-error"
+                               id="fullNameError">
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Email -->
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input type="email"
+                               id="email"
+                               class="form-control"
+                               placeholder="example@email.com"
+                               autocomplete="email">
+
+                        <small class="field-error"
+                               id="emailError">
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Phone -->
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            Phone Number
+                        </label>
+
+                        <input type="tel"
+                               id="phone"
+                               class="form-control"
+                               placeholder="0771234567"
+                               autocomplete="tel">
+
+                        <small class="field-error"
+                               id="phoneError">
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Password -->
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="password-field">
+
+                            <input type="password"
+                                   id="password"
+                                   class="form-control"
+                                   placeholder="Create a password"
+                                   autocomplete="new-password">
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    id="passwordToggle">
+                                Show
+                            </button>
+
+                        </div>
+
+                        <small class="field-error"
+                               id="passwordError">
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Confirm Password -->
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <div class="password-field">
+
+                            <input type="password"
+                                   id="confirmPassword"
+                                   class="form-control"
+                                   placeholder="Re-enter your password"
+                                   autocomplete="new-password">
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    id="confirmPasswordToggle">
+                                Show
+                            </button>
+
+                        </div>
+
+                        <small class="field-error"
+                               id="confirmPasswordError">
+                        </small>
+
+                    </div>
+
+
+
+                    <!-- Submit -->
+
+                    <button type="submit"
+                            class="btn btn-primary btn-block auth-submit-button"
+                            id="registerButton">
+                        Create Account
+                    </button>
+
+                </form>
+
+
+
+                <div class="auth-divider">
+
+                    <span>
+                        Already have an account?
+                    </span>
+
+                </div>
+
+
+                <a href="login.html"
+                   class="btn btn-outline btn-block">
+                    Login
+                </a>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/auth/register.js"></script>
+
+
+</body>
+</html>

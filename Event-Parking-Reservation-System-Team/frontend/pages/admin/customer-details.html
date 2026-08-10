@@ -1,0 +1,581 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Customer Details | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body class="admin-page">
+
+
+    <div class="admin-shell">
+
+
+        <!-- Sidebar -->
+        <div id="adminSidebarContainer"></div>
+
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- Back -->
+
+                <div class="admin-customer-details-back">
+
+                    <a href="customers.html">
+                        ← Back to Customers
+                    </a>
+
+                </div>
+
+
+
+                <!-- Message -->
+
+                <div id="adminCustomerDetailsMessage"
+                     class="alert hidden">
+                </div>
+
+
+
+                <!-- Loading -->
+
+                <div id="adminCustomerDetailsLoading"
+                     class="admin-customer-details-loading">
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading customer details...
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     CONTENT
+                     ================================================= -->
+
+                <section id="adminCustomerDetailsContent"
+                         class="hidden">
+
+
+                    <!-- =================================================
+                         HEADER
+                         ================================================= -->
+
+                    <header class="admin-customer-details-header">
+
+
+                        <div class="admin-customer-details-person">
+
+
+                            <div id="adminCustomerDetailsAvatar"
+                                 class="admin-customer-details-avatar">
+                                C
+                            </div>
+
+
+                            <div>
+
+                                <span class="admin-page-label">
+                                    CUSTOMER PROFILE
+                                </span>
+
+                                <h1 id="adminCustomerDetailsName">
+                                    Customer
+                                </h1>
+
+                                <p id="adminCustomerDetailsEmail">
+                                    -
+                                </p>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                        <div class="admin-customer-details-header-actions">
+
+
+                            <span id="adminCustomerDetailsStatus"
+                                  class="admin-customer-status active">
+                                Active
+                            </span>
+
+
+                            <button type="button"
+                                    id="adminCustomerDeactivateButton"
+                                    class="btn btn-danger hidden">
+                                Deactivate Customer
+                            </button>
+
+
+                            <button type="button"
+                                    id="adminCustomerReactivateButton"
+                                    class="btn btn-primary hidden">
+                                Reactivate Customer
+                            </button>
+
+
+                        </div>
+
+
+                    </header>
+
+
+
+                    <!-- =================================================
+                         BOOKING SUMMARY
+                         ================================================= -->
+
+                    <section class="admin-customer-details-stats">
+
+
+                        <article class="admin-customer-detail-stat">
+
+                            <span>
+                                Total Bookings
+                            </span>
+
+                            <strong id="customerDetailTotalBookings">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                        <article class="admin-customer-detail-stat">
+
+                            <span>
+                                Pending
+                            </span>
+
+                            <strong id="customerDetailPendingBookings">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                        <article class="admin-customer-detail-stat">
+
+                            <span>
+                                Confirmed
+                            </span>
+
+                            <strong id="customerDetailConfirmedBookings">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                        <article class="admin-customer-detail-stat">
+
+                            <span>
+                                Cancelled / Expired
+                            </span>
+
+                            <strong id="customerDetailClosedBookings">
+                                0
+                            </strong>
+
+                        </article>
+
+
+                    </section>
+
+
+
+                    <!-- =================================================
+                         MAIN GRID
+                         ================================================= -->
+
+                    <div class="admin-customer-details-grid">
+
+
+                        <!-- =============================================
+                             LEFT
+                             ============================================= -->
+
+                        <div>
+
+
+                            <!-- Personal Information -->
+
+                            <section class="admin-customer-info-card">
+
+
+                                <div class="admin-customer-card-heading">
+
+                                    <div>
+
+                                        <h2>
+                                            Customer Information
+                                        </h2>
+
+                                        <p>
+                                            Registered customer account
+                                            information.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="admin-customer-info-grid">
+
+
+                                    <div>
+
+                                        <span>
+                                            Customer ID
+                                        </span>
+
+                                        <strong id="detailCustomerId">
+                                            -
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Full Name
+                                        </span>
+
+                                        <strong id="detailCustomerName">
+                                            -
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Email Address
+                                        </span>
+
+                                        <strong id="detailCustomerEmail">
+                                            -
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Phone Number
+                                        </span>
+
+                                        <strong id="detailCustomerPhone">
+                                            -
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Account Status
+                                        </span>
+
+                                        <strong id="detailCustomerAccountStatus">
+                                            -
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Email Verification
+                                        </span>
+
+                                        <strong id="detailCustomerVerification">
+                                            -
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Registered Date
+                                        </span>
+
+                                        <strong id="detailCustomerCreatedDate">
+                                            -
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <span>
+                                            Role
+                                        </span>
+
+                                        <strong>
+                                            Customer
+                                        </strong>
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </section>
+
+
+
+                            <!-- Recent / Embedded Bookings -->
+
+                            <section class="admin-customer-info-card">
+
+
+                                <div class="admin-customer-card-heading">
+
+                                    <div>
+
+                                        <h2>
+                                            Booking Summary
+                                        </h2>
+
+                                        <p>
+                                            Booking information returned
+                                            with this customer profile.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <div id="adminCustomerBookingsContainer"
+                                     class="admin-customer-bookings-list">
+                                </div>
+
+
+
+                                <div id="adminCustomerBookingsUnavailable"
+                                     class="admin-customer-bookings-unavailable hidden">
+
+                                    Booking summary details were not
+                                    returned by the customer profile API.
+
+                                </div>
+
+
+                            </section>
+
+
+                        </div>
+
+
+
+                        <!-- =============================================
+                             RIGHT
+                             ============================================= -->
+
+                        <aside class="admin-customer-account-card">
+
+
+                            <span class="admin-page-label">
+                                ACCOUNT MANAGEMENT
+                            </span>
+
+
+                            <h2>
+                                Customer Account
+                            </h2>
+
+
+                            <div class="admin-customer-account-row">
+
+                                <span>
+                                    Customer
+                                </span>
+
+                                <strong id="detailActionCustomerName">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-customer-account-row">
+
+                                <span>
+                                    Account
+                                </span>
+
+                                <strong id="detailActionAccountStatus">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                            <div class="admin-customer-account-row">
+
+                                <span>
+                                    Verification
+                                </span>
+
+                                <strong id="detailActionVerification">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="admin-customer-account-warning">
+
+                                <strong>
+                                    Deactivation Rule
+                                </strong>
+
+                                <p>
+                                    A customer with active future
+                                    bookings cannot be deactivated
+                                    until those bookings are handled.
+                                </p>
+
+                            </div>
+
+
+
+                            <button type="button"
+                                    id="detailAccountDeactivateButton"
+                                    class="btn btn-danger btn-block hidden">
+                                Deactivate Customer
+                            </button>
+
+
+                            <button type="button"
+                                    id="detailAccountReactivateButton"
+                                    class="btn btn-primary btn-block hidden">
+                                Reactivate Customer
+                            </button>
+
+
+                            <a href="customers.html"
+                               class="btn btn-outline btn-block">
+                                Customer List
+                            </a>
+
+
+                        </aside>
+
+
+                    </div>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                     NOT FOUND
+                     ================================================= -->
+
+                <section id="adminCustomerDetailsNotFound"
+                         class="admin-customers-empty hidden">
+
+                    <div class="admin-customers-empty-icon">
+                        !
+                    </div>
+
+
+                    <h2>
+                        Customer not found
+                    </h2>
+
+
+                    <p>
+                        The requested customer does not exist
+                        or you do not have permission to view
+                        this account.
+                    </p>
+
+
+                    <a href="customers.html"
+                       class="btn btn-primary">
+                        Back to Customers
+                    </a>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/customer-details.js"></script>
+
+
+</body>
+
+</html>

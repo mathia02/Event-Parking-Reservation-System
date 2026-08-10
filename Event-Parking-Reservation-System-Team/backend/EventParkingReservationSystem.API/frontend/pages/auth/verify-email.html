@@ -1,0 +1,270 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Verify Email | EventPark
+    </title>
+
+
+    <!-- Global CSS -->
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <!-- Authentication CSS -->
+    <link rel="stylesheet"
+          href="../../css/auth.css">
+
+    <!-- Responsive CSS -->
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <!-- =====================================================
+         VERIFY EMAIL PAGE
+         ===================================================== -->
+
+    <main class="auth-page verification-page">
+
+        <div class="verification-container">
+
+
+            <!-- Verification Card -->
+
+            <section class="verification-card">
+
+
+                <!-- Loading State -->
+
+                <div id="verificationLoading"
+                     class="verification-state">
+
+                    <div class="verification-icon loading-icon">
+
+                        <div class="spinner"></div>
+
+                    </div>
+
+
+                    <h1>
+                        Verifying your email
+                    </h1>
+
+                    <p>
+                        Please wait while we verify your
+                        email address.
+                    </p>
+
+                </div>
+
+
+
+                <!-- Success State -->
+
+                <div id="verificationSuccess"
+                     class="verification-state hidden">
+
+                    <div class="verification-icon success-icon">
+                        ✓
+                    </div>
+
+
+                    <span class="verification-label success-text">
+                        EMAIL VERIFIED
+                    </span>
+
+
+                    <h1>
+                        Your email is verified!
+                    </h1>
+
+
+                    <p>
+                        Your EventPark account is now ready.
+                        You can login and start browsing
+                        events.
+                    </p>
+
+
+                    <a href="login.html"
+                       class="btn btn-primary verification-main-button">
+                        Go to Login
+                    </a>
+
+                </div>
+
+
+
+                <!-- Error State -->
+
+                <div id="verificationError"
+                     class="verification-state hidden">
+
+                    <div class="verification-icon error-icon">
+                        !
+                    </div>
+
+
+                    <span class="verification-label error-text">
+                        VERIFICATION FAILED
+                    </span>
+
+
+                    <h1>
+                        We couldn't verify this link
+                    </h1>
+
+
+                    <p id="verificationErrorMessage">
+                        This verification link may be invalid
+                        or expired.
+                    </p>
+
+
+                    <div class="verification-actions">
+
+                        <button type="button"
+                                class="btn btn-primary verification-main-button"
+                                id="showResendButton">
+                            Resend Verification Email
+                        </button>
+
+
+                        <a href="login.html"
+                           class="btn btn-outline verification-main-button">
+                            Back to Login
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     RESEND VERIFICATION FORM
+                     ================================================= -->
+
+                <div id="resendVerificationSection"
+                     class="verification-state hidden">
+
+                    <div class="verification-icon mail-icon">
+                        ✉
+                    </div>
+
+
+                    <span class="verification-label">
+                        RESEND VERIFICATION
+                    </span>
+
+
+                    <h1>
+                        Get a new verification link
+                    </h1>
+
+
+                    <p>
+                        Enter the email address you used when
+                        creating your EventPark account.
+                    </p>
+
+
+
+                    <div id="resendMessage"
+                         class="alert hidden">
+                    </div>
+
+
+
+                    <form id="resendVerificationForm"
+                          class="verification-form"
+                          novalidate>
+
+
+                        <div class="form-group">
+
+                            <label for="resendEmail">
+                                Email Address
+                            </label>
+
+                            <input type="email"
+                                   id="resendEmail"
+                                   class="form-control"
+                                   placeholder="example@email.com"
+                                   autocomplete="email">
+
+                            <small class="field-error"
+                                   id="resendEmailError">
+                            </small>
+
+                        </div>
+
+
+
+                        <button type="submit"
+                                class="btn btn-primary btn-block"
+                                id="resendButton">
+                            Send Verification Email
+                        </button>
+
+                    </form>
+
+
+
+                    <button type="button"
+                            class="verification-back-button"
+                            id="backToVerificationError">
+                        ← Back
+                    </button>
+
+                </div>
+
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/auth/verify-email.js"></script>
+
+
+</body>
+
+</html>

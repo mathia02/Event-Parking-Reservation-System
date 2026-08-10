@@ -1,0 +1,447 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Admin Dashboard | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body class="admin-page">
+
+
+    <div class="admin-shell">
+
+
+        <!-- =================================================
+             ADMIN SIDEBAR
+             ================================================= -->
+
+        <div id="adminSidebarContainer"></div>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+             ================================================= -->
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- Header -->
+
+                <header class="admin-page-header">
+
+                    <div>
+
+                        <span class="admin-page-label">
+                            ADMINISTRATION
+                        </span>
+
+                        <h1>
+                            Dashboard
+                        </h1>
+
+                        <p>
+                            Monitor system-wide events,
+                            bookings, seating, parking,
+                            revenue and customers.
+                        </p>
+
+                    </div>
+
+
+
+                    <div class="admin-header-user">
+
+                        <div class="admin-header-avatar">
+                            A
+                        </div>
+
+                        <div>
+
+                            <strong id="adminHeaderName">
+                                Administrator
+                            </strong>
+
+                            <span>
+                                System Administrator
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </header>
+
+
+
+                <!-- Message -->
+
+                <div id="adminDashboardMessage"
+                     class="alert hidden">
+                </div>
+
+
+
+                <!-- Loading -->
+
+                <div id="adminDashboardLoading"
+                     class="admin-dashboard-loading">
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading dashboard statistics...
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     DASHBOARD CONTENT
+                     ================================================= -->
+
+                <section id="adminDashboardContent"
+                         class="hidden">
+
+
+                    <!-- =============================================
+                         STATISTICS
+                         ============================================= -->
+
+                    <section class="admin-stat-grid">
+
+
+                        <!-- Events -->
+
+                        <article class="admin-stat-card">
+
+                            <div class="admin-stat-icon events">
+                                ★
+                            </div>
+
+                            <div class="admin-stat-content">
+
+                                <span>
+                                    Total Events
+                                </span>
+
+                                <strong id="adminTotalEvents">
+                                    0
+                                </strong>
+
+                                <small>
+                                    Events in the system
+                                </small>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- Bookings -->
+
+                        <article class="admin-stat-card">
+
+                            <div class="admin-stat-icon bookings">
+                                🎟
+                            </div>
+
+                            <div class="admin-stat-content">
+
+                                <span>
+                                    Total Bookings
+                                </span>
+
+                                <strong id="adminTotalBookings">
+                                    0
+                                </strong>
+
+                                <small>
+                                    All booking records
+                                </small>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- Available Seats -->
+
+                        <article class="admin-stat-card">
+
+                            <div class="admin-stat-icon seats">
+                                ▦
+                            </div>
+
+                            <div class="admin-stat-content">
+
+                                <span>
+                                    Available Seats
+                                </span>
+
+                                <strong id="adminAvailableSeats">
+                                    0
+                                </strong>
+
+                                <small>
+                                    Available system-wide
+                                </small>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- Parking -->
+
+                        <article class="admin-stat-card">
+
+                            <div class="admin-stat-icon parking">
+                                P
+                            </div>
+
+                            <div class="admin-stat-content">
+
+                                <span>
+                                    Occupied Parking
+                                </span>
+
+                                <strong id="adminOccupiedParking">
+                                    0
+                                </strong>
+
+                                <small>
+                                    Reserved / occupied slots
+                                </small>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- Revenue -->
+
+                        <article class="admin-stat-card">
+
+                            <div class="admin-stat-icon revenue">
+                                $
+                            </div>
+
+                            <div class="admin-stat-content">
+
+                                <span>
+                                    Total Revenue
+                                </span>
+
+                                <strong id="adminTotalRevenue">
+                                    LKR 0.00
+                                </strong>
+
+                                <small>
+                                    Completed payments
+                                </small>
+
+                            </div>
+
+                        </article>
+
+
+
+                        <!-- Customers -->
+
+                        <article class="admin-stat-card">
+
+                            <div class="admin-stat-icon customers">
+                                ♙
+                            </div>
+
+                            <div class="admin-stat-content">
+
+                                <span>
+                                    Total Customers
+                                </span>
+
+                                <strong id="adminTotalCustomers">
+                                    0
+                                </strong>
+
+                                <small>
+                                    Registered customers
+                                </small>
+
+                            </div>
+
+                        </article>
+
+
+                    </section>
+
+
+
+                    <!-- =============================================
+                         QUICK MANAGEMENT
+                         ============================================= -->
+
+                    <section class="admin-dashboard-section">
+
+                        <div class="admin-section-header">
+
+                            <h2>
+                                Quick Management
+                            </h2>
+
+                            <p>
+                                Open frequently used
+                                administration modules.
+                            </p>
+
+                        </div>
+
+
+
+                        <div class="admin-quick-grid">
+
+
+                            <a href="events.html"
+                               class="admin-quick-card">
+
+                                <div class="admin-quick-card-icon">
+                                    ★
+                                </div>
+
+                                <h3>
+                                    Manage Events
+                                </h3>
+
+                                <p>
+                                    Create, edit and manage
+                                    event information.
+                                </p>
+
+                            </a>
+
+
+
+                            <a href="customers.html"
+                               class="admin-quick-card">
+
+                                <div class="admin-quick-card-icon">
+                                    ♙
+                                </div>
+
+                                <h3>
+                                    Manage Customers
+                                </h3>
+
+                                <p>
+                                    Search, view and manage
+                                    customer accounts.
+                                </p>
+
+                            </a>
+
+
+
+                            <a href="bookings.html"
+                               class="admin-quick-card">
+
+                                <div class="admin-quick-card-icon">
+                                    🎟
+                                </div>
+
+                                <h3>
+                                    View Bookings
+                                </h3>
+
+                                <p>
+                                    Review bookings across
+                                    all events.
+                                </p>
+
+                            </a>
+
+
+
+                            <a href="payments.html"
+                               class="admin-quick-card">
+
+                                <div class="admin-quick-card-icon">
+                                    $
+                                </div>
+
+                                <h3>
+                                    View Payments
+                                </h3>
+
+                                <p>
+                                    Review completed
+                                    payment information.
+                                </p>
+
+                            </a>
+
+
+                        </div>
+
+                    </section>
+
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- Confirmation Modal -->
+
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/dashboard.js"></script>
+
+
+</body>
+
+</html>

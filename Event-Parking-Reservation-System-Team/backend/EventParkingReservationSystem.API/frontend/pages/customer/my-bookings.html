@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        My Bookings | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 HEADER
+                 ================================================= -->
+
+            <section class="my-bookings-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        MY BOOKINGS
+                    </span>
+
+                    <h1>
+                        Your reservations
+                    </h1>
+
+                    <p>
+                        View your pending, confirmed,
+                        cancelled and expired bookings.
+                    </p>
+
+                </div>
+
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Browse Events
+                </a>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FILTERS
+                 ================================================= -->
+
+            <section class="my-bookings-filter-card">
+
+                <div class="my-bookings-search">
+
+                    <label for="bookingSearch">
+                        Search
+                    </label>
+
+                    <input type="text"
+                           id="bookingSearch"
+                           class="form-control"
+                           placeholder="Booking number or event name...">
+
+                </div>
+
+
+                <div class="my-bookings-status-filter">
+
+                    <label for="bookingStatusFilter">
+                        Status
+                    </label>
+
+                    <select id="bookingStatusFilter"
+                            class="form-control">
+
+                        <option value="">
+                            All Statuses
+                        </option>
+
+                        <option value="pending">
+                            Pending
+                        </option>
+
+                        <option value="confirmed">
+                            Confirmed
+                        </option>
+
+                        <option value="cancelled">
+                            Cancelled
+                        </option>
+
+                        <option value="expired">
+                            Expired
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button type="button"
+                        id="clearBookingFiltersButton"
+                        class="btn btn-outline">
+                    Clear
+                </button>
+
+            </section>
+
+
+
+            <!-- Result Info -->
+
+            <section class="my-bookings-result-header">
+
+                <h2>
+                    Booking History
+                </h2>
+
+                <span id="bookingResultCount">
+                    Loading...
+                </span>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="myBookingsMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="myBookingsLoading"
+                 class="my-bookings-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading your bookings...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BOOKING LIST
+                 ================================================= -->
+
+            <section id="myBookingsList"
+                     class="my-bookings-list hidden">
+            </section>
+
+
+
+            <!-- =================================================
+                 EMPTY STATE
+                 ================================================= -->
+
+            <section id="myBookingsEmpty"
+                     class="my-bookings-empty hidden">
+
+                <div class="my-bookings-empty-icon">
+                    🎟
+                </div>
+
+                <h2>
+                    No bookings found
+                </h2>
+
+                <p>
+                    You don't have any bookings matching
+                    the selected filters.
+                </p>
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Browse Events
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/my-bookings.js"></script>
+
+
+</body>
+
+</html>

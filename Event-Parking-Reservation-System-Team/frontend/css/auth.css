@@ -1,0 +1,785 @@
+﻿/* =========================================================
+   AUTHENTICATION PAGES
+   Register / Login / Forgot Password / Reset Password
+   ========================================================= */
+
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.auth-page {
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    padding: 70px 0;
+    background: radial-gradient( circle at 10% 20%, rgba(37, 99, 235, 0.10), transparent 30% ), linear-gradient( 135deg, #f8fbff, #ffffff );
+}
+
+
+.auth-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 470px;
+    gap: 80px;
+    align-items: center;
+}
+
+
+/* =========================================================
+   LEFT INFORMATION
+   ========================================================= */
+
+.auth-info {
+    max-width: 540px;
+}
+
+
+.auth-label {
+    display: inline-block;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+
+.auth-info h1 {
+    margin-bottom: 20px;
+    color: var(--secondary-color);
+    font-size: 48px;
+    line-height: 1.12;
+    letter-spacing: -1px;
+}
+
+
+.auth-info > p {
+    margin-bottom: 35px;
+    color: var(--text-secondary);
+    font-size: 17px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   BENEFITS
+   ========================================================= */
+
+.auth-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+
+.auth-benefit {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    gap: 15px;
+}
+
+
+.auth-benefit-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background-color: var(--success-light);
+    color: var(--success-color);
+    font-weight: 700;
+}
+
+
+.auth-benefit h3 {
+    margin-bottom: 3px;
+    color: var(--secondary-color);
+    font-size: 15px;
+}
+
+
+.auth-benefit p {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   AUTH CARD
+   ========================================================= */
+
+.auth-card {
+    width: 100%;
+    padding: 35px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 20px 55px rgba(15, 23, 42, 0.10);
+}
+
+
+.auth-card-header {
+    margin-bottom: 28px;
+}
+
+
+    .auth-card-header h2 {
+        margin-bottom: 6px;
+        color: var(--secondary-color);
+        font-size: 28px;
+    }
+
+
+    .auth-card-header p {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   PASSWORD
+   ========================================================= */
+
+.password-field {
+    position: relative;
+}
+
+
+    .password-field .form-control {
+        padding-right: 65px;
+    }
+
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   ERRORS
+   ========================================================= */
+
+.field-error {
+    display: block;
+    min-height: 18px;
+    margin-top: 4px;
+    color: var(--danger-color);
+    font-size: 12px;
+}
+
+
+.form-control.input-error {
+    border-color: var(--danger-color);
+}
+
+
+.form-control.input-success {
+    border-color: var(--success-color);
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+   ========================================================= */
+
+.auth-submit-button {
+    min-height: 46px;
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.auth-divider {
+    position: relative;
+    margin: 25px 0;
+    text-align: center;
+}
+
+
+    .auth-divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background-color: var(--border-color);
+    }
+
+
+    .auth-divider span {
+        position: relative;
+        padding: 0 12px;
+        background-color: var(--white);
+        color: var(--text-secondary);
+        font-size: 12px;
+    }
+
+
+/* =========================================================
+   AUTH RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .auth-container {
+        grid-template-columns: 1fr;
+        gap: 45px;
+        max-width: 600px;
+    }
+
+
+    .auth-info {
+        max-width: 100%;
+        text-align: center;
+    }
+
+
+        .auth-info h1 {
+            font-size: 40px;
+        }
+
+
+    .auth-benefits {
+        max-width: 450px;
+        margin: 0 auto;
+        text-align: left;
+    }
+}
+
+
+@media (max-width: 576px) {
+
+    .auth-page {
+        padding: 40px 0;
+    }
+
+
+    .auth-container {
+        width: 92%;
+        gap: 30px;
+    }
+
+
+    .auth-info h1 {
+        font-size: 33px;
+    }
+
+
+    .auth-info > p {
+        font-size: 15px;
+    }
+
+
+    .auth-info {
+        display: none;
+    }
+
+
+    .auth-card {
+        padding: 25px 20px;
+        border-radius: 16px;
+    }
+
+
+    .auth-card-header h2 {
+        font-size: 24px;
+    }
+}
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
+
+
+.login-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 7px;
+}
+
+
+    .login-label-row label {
+        margin-bottom: 0;
+    }
+
+
+.forgot-password-link {
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+    .forgot-password-link:hover {
+        text-decoration: underline;
+    }
+
+
+/* Remember Me */
+
+.remember-row {
+    display: flex;
+    align-items: center;
+    margin-top: -4px;
+    margin-bottom: 20px;
+}
+
+
+.remember-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+
+    .remember-label input {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--primary-color);
+    }
+
+
+/* Email Verification Warning */
+
+.verification-warning {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    background-color: #fffbeb;
+}
+
+
+    .verification-warning strong {
+        display: block;
+        margin-bottom: 4px;
+        color: #92400e;
+        font-size: 14px;
+    }
+
+
+    .verification-warning p {
+        margin-bottom: 8px;
+        color: #a16207;
+        font-size: 13px;
+    }
+
+
+.verification-link-button {
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+    .verification-link-button:hover {
+        text-decoration: underline;
+    }
+
+
+/* Mobile */
+
+@media (max-width: 576px) {
+
+    .login-label-row {
+        align-items: flex-start;
+    }
+}
+/* =========================================================
+   EMAIL VERIFICATION PAGE
+   ========================================================= */
+
+.verification-page {
+    min-height: calc(100vh - 72px);
+}
+
+
+.verification-container {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+
+.verification-card {
+    padding: 45px 40px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.10);
+}
+
+
+.verification-state {
+    text-align: center;
+}
+
+
+.verification-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+
+.loading-icon {
+    background-color: var(--primary-light);
+}
+
+
+.success-icon {
+    background-color: var(--success-light);
+    color: var(--success-color);
+}
+
+
+.error-icon {
+    background-color: var(--danger-light);
+    color: var(--danger-color);
+}
+
+
+.mail-icon {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+}
+
+
+.verification-label {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+}
+
+
+.success-text {
+    color: var(--success-color);
+}
+
+
+.error-text {
+    color: var(--danger-color);
+}
+
+
+.verification-state h1 {
+    margin-bottom: 12px;
+    color: var(--secondary-color);
+    font-size: 30px;
+}
+
+
+.verification-state > p {
+    max-width: 450px;
+    margin: 0 auto 25px;
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+
+.verification-main-button {
+    min-width: 190px;
+}
+
+
+.verification-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+
+/* Resend Form */
+
+.verification-form {
+    max-width: 420px;
+    margin: 25px auto 0;
+    text-align: left;
+}
+
+
+.verification-back-button {
+    margin-top: 20px;
+    border: none;
+    background: transparent;
+    color: var(--primary-color);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+    .verification-back-button:hover {
+        text-decoration: underline;
+    }
+
+
+/* Mobile */
+
+@media (max-width: 576px) {
+
+    .verification-container {
+        width: 92%;
+    }
+
+
+    .verification-card {
+        padding: 35px 20px;
+        border-radius: 16px;
+    }
+
+
+    .verification-state h1 {
+        font-size: 25px;
+    }
+
+
+    .verification-actions {
+        flex-direction: column;
+    }
+
+
+    .verification-main-button {
+        width: 100%;
+    }
+}
+/* =========================================================
+   FORGOT PASSWORD PAGE
+   ========================================================= */
+
+.password-recovery-page {
+    min-height: calc(100vh - 72px);
+}
+
+
+.password-recovery-container {
+    width: 90%;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+
+.password-recovery-card {
+    padding: 42px 38px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.10);
+    text-align: center;
+}
+
+
+.password-recovery-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    font-size: 30px;
+}
+
+
+.password-recovery-card h1 {
+    margin-bottom: 12px;
+    color: var(--secondary-color);
+    font-size: 30px;
+}
+
+
+.password-recovery-description {
+    margin-bottom: 26px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+.password-recovery-card form {
+    text-align: left;
+}
+
+
+.password-recovery-footer {
+    margin-top: 24px;
+    text-align: center;
+}
+
+
+.back-login-link {
+    color: var(--primary-color);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+    .back-login-link:hover {
+        text-decoration: underline;
+    }
+
+
+@media (max-width: 576px) {
+
+    .password-recovery-container {
+        width: 92%;
+    }
+
+
+    .password-recovery-card {
+        padding: 32px 20px;
+        border-radius: 16px;
+    }
+
+
+        .password-recovery-card h1 {
+            font-size: 25px;
+        }
+}
+/* =========================================================
+   RESET PASSWORD PAGE
+   ========================================================= */
+
+.reset-password-page {
+    min-height: calc(100vh - 72px);
+}
+
+
+.reset-password-container {
+    width: 90%;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+
+.reset-password-card {
+    padding: 42px 38px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 22px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.10);
+}
+
+
+    .reset-password-card h1 {
+        margin-bottom: 12px;
+        color: var(--secondary-color);
+        font-size: 30px;
+        text-align: center;
+    }
+
+
+    .reset-password-card > div > .auth-label {
+        display: block;
+        text-align: center;
+    }
+
+
+.reset-password-description {
+    margin-bottom: 26px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESET RESULT STATES
+   ========================================================= */
+
+.reset-password-state {
+    text-align: center;
+}
+
+
+    .reset-password-state > p {
+        max-width: 430px;
+        margin: 0 auto 25px;
+        color: var(--text-secondary);
+        font-size: 14px;
+        line-height: 1.7;
+    }
+
+
+.reset-main-button {
+    min-width: 190px;
+}
+
+
+.reset-token-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    .reset-password-container {
+        width: 92%;
+    }
+
+
+    .reset-password-card {
+        padding: 32px 20px;
+        border-radius: 16px;
+    }
+
+
+        .reset-password-card h1 {
+            font-size: 25px;
+        }
+
+
+    .reset-token-actions {
+        flex-direction: column;
+    }
+
+
+    .reset-main-button {
+        width: 100%;
+    }
+}

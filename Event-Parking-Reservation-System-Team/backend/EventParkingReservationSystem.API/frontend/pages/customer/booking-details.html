@@ -1,0 +1,563 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Booking Details | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- Back -->
+
+            <div class="booking-details-back">
+
+                <a href="my-bookings.html">
+                    ← Back to My Bookings
+                </a>
+
+            </div>
+
+
+
+            <!-- Message -->
+
+            <div id="bookingDetailsMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="bookingDetailsLoading"
+                 class="booking-details-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading booking details...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 CONTENT
+                 ================================================= -->
+
+            <section id="bookingDetailsContent"
+                     class="booking-details-content hidden">
+
+
+                <!-- Header -->
+
+                <section class="booking-details-header">
+
+                    <div>
+
+                        <span class="customer-page-label">
+                            BOOKING DETAILS
+                        </span>
+
+
+                        <h1 id="detailsBookingNumber">
+                            Booking
+                        </h1>
+
+
+                        <p>
+                            Review your event reservation,
+                            seats, parking and payment.
+                        </p>
+
+                    </div>
+
+
+                    <span id="detailsBookingStatus"
+                          class="badge badge-warning">
+                        Pending
+                    </span>
+
+                </section>
+
+
+
+                <!-- Hold Status -->
+
+                <section id="detailsHoldCard"
+                         class="details-hold-card hidden">
+
+                    <div class="details-hold-icon">
+                        ◷
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            Payment Hold Active
+                        </strong>
+
+                        <p id="detailsHoldText">
+                            Checking remaining time...
+                        </p>
+
+                    </div>
+
+
+                    <span id="detailsHoldCountdown"
+                          class="details-hold-countdown">
+                        --:--
+                    </span>
+
+                </section>
+
+
+
+                <!-- Main Grid -->
+
+                <div class="booking-details-grid">
+
+
+                    <!-- Left -->
+
+                    <div class="booking-details-main-card">
+
+
+                        <!-- Event -->
+
+                        <section class="booking-details-section">
+
+                            <div class="booking-details-section-title">
+
+                                <h2>
+                                    Event Information
+                                </h2>
+
+                            </div>
+
+
+                            <div class="booking-details-info-grid">
+
+
+                                <div>
+
+                                    <span>
+                                        Event
+                                    </span>
+
+                                    <strong id="detailsEventName">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Date
+                                    </span>
+
+                                    <strong id="detailsEventDate">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Time
+                                    </span>
+
+                                    <strong id="detailsEventTime">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Venue
+                                    </span>
+
+                                    <strong id="detailsVenue">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                            </div>
+
+                        </section>
+
+
+
+                        <!-- Seats -->
+
+                        <section class="booking-details-section">
+
+                            <div class="booking-details-section-title">
+
+                                <h2>
+                                    Reserved Seats
+                                </h2>
+
+                                <span id="detailsSeatCount">
+                                    0 seats
+                                </span>
+
+                            </div>
+
+
+                            <div id="detailsSeatsContainer"
+                                 class="booking-details-seat-list">
+                            </div>
+
+                        </section>
+
+
+
+                        <!-- Parking -->
+
+                        <section class="booking-details-section">
+
+                            <div class="booking-details-section-title">
+
+                                <h2>
+                                    Parking Reservation
+                                </h2>
+
+                            </div>
+
+
+                            <div id="detailsParkingSelected"
+                                 class="booking-details-parking hidden">
+
+                                <div>
+
+                                    <span>
+                                        Slot Number
+                                    </span>
+
+                                    <strong id="detailsParkingSlot">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Zone
+                                    </span>
+
+                                    <strong id="detailsParkingZone">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Parking Fee
+                                    </span>
+
+                                    <strong id="detailsParkingFee">
+                                        -
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <div id="detailsNoParking"
+                                 class="booking-details-no-parking hidden">
+                                No parking was reserved for this booking.
+                            </div>
+
+                        </section>
+
+
+
+                        <!-- Payment -->
+
+                        <section class="booking-details-section">
+
+                            <div class="booking-details-section-title">
+
+                                <h2>
+                                    Payment Information
+                                </h2>
+
+                            </div>
+
+
+                            <div class="booking-details-info-grid">
+
+
+                                <div>
+
+                                    <span>
+                                        Payment Status
+                                    </span>
+
+                                    <strong id="detailsPaymentStatus">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Total Amount
+                                    </span>
+
+                                    <strong id="detailsTotalAmount">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Payment Reference
+                                    </span>
+
+                                    <strong id="detailsPaymentReference">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        Payment Date
+                                    </span>
+
+                                    <strong id="detailsPaymentDate">
+                                        -
+                                    </strong>
+
+                                </div>
+
+
+                            </div>
+
+                        </section>
+
+
+                    </div>
+
+
+
+                    <!-- Right Actions -->
+
+                    <aside class="booking-details-action-card">
+
+
+                        <span class="booking-details-action-label">
+                            BOOKING ACTIONS
+                        </span>
+
+
+                        <h2>
+                            Manage Booking
+                        </h2>
+
+
+                        <div class="booking-details-summary-row">
+
+                            <span>
+                                Booking Number
+                            </span>
+
+                            <strong id="actionBookingNumber">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="booking-details-summary-row">
+
+                            <span>
+                                Status
+                            </span>
+
+                            <strong id="actionBookingStatus">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="booking-details-summary-row">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <strong id="actionBookingTotal">
+                                -
+                            </strong>
+
+                        </div>
+
+
+
+                        <!-- Continue Payment -->
+
+                        <a href="#"
+                           id="detailsContinuePayment"
+                           class="btn btn-primary btn-block hidden">
+                            Continue Payment
+                        </a>
+
+
+
+                        <!-- Receipt -->
+
+                        <button type="button"
+                                id="detailsReceiptButton"
+                                class="btn btn-outline btn-block hidden">
+                            Download Receipt
+                        </button>
+
+
+
+                        <!-- Cancel -->
+
+                        <button type="button"
+                                id="detailsCancelButton"
+                                class="btn btn-danger btn-block hidden">
+                            Cancel Booking
+                        </button>
+
+
+
+                        <a href="events.html"
+                           class="btn btn-outline btn-block booking-details-event-button">
+                            Browse Events
+                        </a>
+
+
+                        <p class="booking-details-action-note">
+                            Booking and availability changes
+                            are always validated by the server.
+                        </p>
+
+
+                    </aside>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- Not Found -->
+
+            <section id="bookingDetailsNotFound"
+                     class="event-not-found hidden">
+
+                <div class="events-empty-icon">
+                    !
+                </div>
+
+
+                <h2>
+                    Booking not found
+                </h2>
+
+
+                <p>
+                    This booking may not exist or you
+                    may not have access to it.
+                </p>
+
+
+                <a href="my-bookings.html"
+                   class="btn btn-primary">
+                    View My Bookings
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/booking-details.js"></script>
+
+
+</body>
+
+</html>

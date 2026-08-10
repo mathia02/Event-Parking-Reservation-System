@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Customer Management | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body class="admin-page">
+
+
+    <div class="admin-shell">
+
+
+        <!-- Sidebar -->
+        <div id="adminSidebarContainer"></div>
+
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- Page Header -->
+
+                <header class="admin-page-header">
+
+                    <div>
+
+                        <span class="admin-page-label">
+                            CUSTOMER MANAGEMENT
+                        </span>
+
+                        <h1>
+                            Customers
+                        </h1>
+
+                        <p>
+                            Search customer accounts, review
+                            account status and manage customer
+                            access.
+                        </p>
+
+                    </div>
+
+
+                    <div class="admin-header-user">
+
+                        <div class="admin-header-avatar">
+                            A
+                        </div>
+
+                        <div>
+
+                            <strong id="adminHeaderName">
+                                Administrator
+                            </strong>
+
+                            <span>
+                                System Administrator
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </header>
+
+
+
+                <!-- Message -->
+
+                <div id="adminCustomersMessage"
+                     class="alert hidden">
+                </div>
+
+
+
+                <!-- =================================================
+                     SUMMARY
+                     ================================================= -->
+
+                <section id="adminCustomerSummary"
+                         class="admin-customer-summary hidden">
+
+
+                    <article class="admin-customer-summary-card">
+
+                        <span>
+                            Total Customers
+                        </span>
+
+                        <strong id="adminCustomerTotalCount">
+                            0
+                        </strong>
+
+                    </article>
+
+
+                    <article class="admin-customer-summary-card">
+
+                        <span>
+                            Active Customers
+                        </span>
+
+                        <strong id="adminCustomerActiveCount">
+                            0
+                        </strong>
+
+                    </article>
+
+
+                    <article class="admin-customer-summary-card">
+
+                        <span>
+                            Inactive Customers
+                        </span>
+
+                        <strong id="adminCustomerInactiveCount">
+                            0
+                        </strong>
+
+                    </article>
+
+
+                </section>
+
+
+
+                <!-- =================================================
+                     SEARCH / FILTER
+                     ================================================= -->
+
+                <section class="admin-customer-filter-card">
+
+
+                    <form id="adminCustomerSearchForm"
+                          class="admin-customer-search-form">
+
+                        <div class="admin-customer-search-field">
+
+                            <label for="adminCustomerSearch">
+                                Search Customer
+                            </label>
+
+                            <input type="text"
+                                   id="adminCustomerSearch"
+                                   class="form-control"
+                                   placeholder="Search by name or email...">
+
+                        </div>
+
+
+                        <div>
+
+                            <label for="adminCustomerStatusFilter">
+                                Account Status
+                            </label>
+
+                            <select id="adminCustomerStatusFilter"
+                                    class="form-control">
+
+                                <option value="">
+                                    All Customers
+                                </option>
+
+                                <option value="active">
+                                    Active
+                                </option>
+
+                                <option value="inactive">
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Search
+                        </button>
+
+
+                        <button type="button"
+                                id="clearAdminCustomerFilters"
+                                class="btn btn-outline">
+                            Clear
+                        </button>
+
+                    </form>
+
+
+                </section>
+
+
+
+                <!-- Result Header -->
+
+                <section class="admin-customer-result-header">
+
+                    <div>
+
+                        <h2>
+                            Customer Accounts
+                        </h2>
+
+                        <p>
+                            Manage registered customer accounts.
+                        </p>
+
+                    </div>
+
+
+                    <span id="adminCustomerResultCount">
+                        Loading...
+                    </span>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     LOADING
+                     ================================================= -->
+
+                <div id="adminCustomersLoading"
+                     class="admin-customers-loading">
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading customers...
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     TABLE
+                     ================================================= -->
+
+                <section id="adminCustomersTableContainer"
+                         class="admin-customers-table-card hidden">
+
+                    <div class="admin-table-scroll">
+
+                        <table class="admin-customers-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Customer
+                                    </th>
+
+                                    <th>
+                                        Email
+                                    </th>
+
+                                    <th>
+                                        Phone
+                                    </th>
+
+                                    <th>
+                                        Email Status
+                                    </th>
+
+                                    <th>
+                                        Account Status
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="adminCustomersTableBody">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     EMPTY
+                     ================================================= -->
+
+                <section id="adminCustomersEmpty"
+                         class="admin-customers-empty hidden">
+
+                    <div class="admin-customers-empty-icon">
+                        ♙
+                    </div>
+
+                    <h2>
+                        No customers found
+                    </h2>
+
+                    <p>
+                        No customer accounts match the
+                        current search and status filter.
+                    </p>
+
+                    <button type="button"
+                            id="adminCustomersEmptyClearButton"
+                            class="btn btn-primary">
+                        Clear Filters
+                    </button>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- Confirmation Modal -->
+
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/customers.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Category Management | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/admin.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body class="admin-page">
+
+
+    <div class="admin-shell">
+
+
+        <!-- Admin Sidebar -->
+
+        <div id="adminSidebarContainer"></div>
+
+
+
+        <!-- =================================================
+             MAIN CONTENT
+             ================================================= -->
+
+        <main class="admin-main">
+
+            <div class="admin-content-container">
+
+
+                <!-- =================================================
+                     HEADER
+                     ================================================= -->
+
+                <header class="admin-page-header">
+
+                    <div>
+
+                        <span class="admin-page-label">
+                            CATEGORY MANAGEMENT
+                        </span>
+
+                        <h1>
+                            Event Categories
+                        </h1>
+
+                        <p>
+                            Manage the categories used to
+                            organize and filter events.
+                        </p>
+
+                    </div>
+
+
+                    <button type="button"
+                            id="addCategoryButton"
+                            class="btn btn-primary">
+                        + Add Category
+                    </button>
+
+                </header>
+
+
+
+                <!-- Message -->
+
+                <div id="adminCategoriesMessage"
+                     class="alert hidden">
+                </div>
+
+
+
+                <!-- =================================================
+                     SUMMARY
+                     ================================================= -->
+
+                <section id="categorySummary"
+                         class="admin-category-summary hidden">
+
+                    <article class="admin-category-summary-card">
+
+                        <span>
+                            Total Categories
+                        </span>
+
+                        <strong id="totalCategoryCount">
+                            0
+                        </strong>
+
+                    </article>
+
+
+                    <article class="admin-category-summary-card">
+
+                        <span>
+                            Used for
+                        </span>
+
+                        <strong>
+                            Event Classification
+                        </strong>
+
+                    </article>
+
+
+                    <article class="admin-category-summary-card">
+
+                        <span>
+                            Customer Filter
+                        </span>
+
+                        <strong>
+                            Enabled
+                        </strong>
+
+                    </article>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     SEARCH
+                     ================================================= -->
+
+                <section class="admin-category-filter-card">
+
+                    <div>
+
+                        <label for="categorySearchInput">
+                            Search Category
+                        </label>
+
+                        <input type="text"
+                               id="categorySearchInput"
+                               class="form-control"
+                               placeholder="Search category name...">
+
+                    </div>
+
+
+                    <button type="button"
+                            id="clearCategorySearchButton"
+                            class="btn btn-outline">
+                        Clear
+                    </button>
+
+                </section>
+
+
+
+                <!-- Result Header -->
+
+                <section class="admin-category-result-header">
+
+                    <div>
+
+                        <h2>
+                            Category List
+                        </h2>
+
+                        <p>
+                            Categories available for events.
+                        </p>
+
+                    </div>
+
+
+                    <span id="categoryResultCount">
+                        Loading...
+                    </span>
+
+                </section>
+
+
+
+                <!-- =================================================
+                     LOADING
+                     ================================================= -->
+
+                <div id="categoriesLoading"
+                     class="admin-categories-loading">
+
+                    <div class="spinner"></div>
+
+                    <p>
+                        Loading categories...
+                    </p>
+
+                </div>
+
+
+
+                <!-- =================================================
+                     CATEGORY GRID
+                     ================================================= -->
+
+                <section id="categoriesGrid"
+                         class="admin-category-grid hidden">
+                </section>
+
+
+
+                <!-- =================================================
+                     EMPTY
+                     ================================================= -->
+
+                <section id="categoriesEmpty"
+                         class="admin-categories-empty hidden">
+
+                    <div class="admin-categories-empty-icon">
+                        #
+                    </div>
+
+
+                    <h2>
+                        No categories found
+                    </h2>
+
+
+                    <p>
+                        Add a category or clear your
+                        current search.
+                    </p>
+
+
+                    <button type="button"
+                            id="emptyAddCategoryButton"
+                            class="btn btn-primary">
+                        Add Category
+                    </button>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ADD / EDIT CATEGORY MODAL
+         ===================================================== -->
+
+    <div id="categoryFormModal"
+         class="admin-form-modal">
+
+        <div class="admin-form-modal-dialog">
+
+
+            <div class="admin-form-modal-header">
+
+                <div>
+
+                    <span class="admin-page-label">
+                        EVENT CATEGORY
+                    </span>
+
+                    <h2 id="categoryFormTitle">
+                        Add Category
+                    </h2>
+
+                </div>
+
+
+                <button type="button"
+                        id="closeCategoryFormButton"
+                        class="admin-modal-close"
+                        aria-label="Close">
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <form id="categoryForm"
+                  novalidate>
+
+
+                <input type="hidden"
+                       id="categoryId">
+
+
+
+                <div class="form-group">
+
+                    <label for="categoryName">
+                        Category Name
+                    </label>
+
+                    <input type="text"
+                           id="categoryName"
+                           class="form-control"
+                           placeholder="Example: Concert"
+                           maxlength="100">
+
+                    <small id="categoryNameError"
+                           class="field-error">
+                    </small>
+
+                </div>
+
+
+
+                <div class="admin-category-form-note">
+
+                    <strong>
+                        Examples
+                    </strong>
+
+                    <p>
+                        Concert, Sports, Conference,
+                        Workshop.
+                    </p>
+
+                </div>
+
+
+
+                <div class="admin-form-modal-actions">
+
+
+                    <button type="button"
+                            id="cancelCategoryFormButton"
+                            class="btn btn-outline">
+                        Cancel
+                    </button>
+
+
+                    <button type="submit"
+                            id="saveCategoryButton"
+                            class="btn btn-primary">
+                        Save Category
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Confirmation Modal -->
+
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/admin/categories.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,409 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Event Details | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <!-- =====================================================
+         EVENT DETAILS PAGE
+         ===================================================== -->
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- Back Link -->
+
+            <div class="event-details-back">
+
+                <a href="events.html">
+                    ← Back to Events
+                </a>
+
+            </div>
+
+
+
+            <!-- Error Message -->
+
+            <div id="eventDetailsMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="eventDetailsLoading"
+                 class="event-details-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading event details...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EVENT DETAILS CONTENT
+                 ================================================= -->
+
+            <section id="eventDetailsContent"
+                     class="event-details-content hidden">
+
+
+                <!-- Event Hero -->
+
+                <div class="event-details-hero">
+
+
+                    <div class="event-details-main-info">
+
+
+                        <span id="eventCategory"
+                              class="event-details-category">
+                            Event
+                        </span>
+
+
+                        <h1 id="eventName">
+                            Event Name
+                        </h1>
+
+
+                        <p id="eventVenue">
+                            Venue
+                        </p>
+
+
+                    </div>
+
+
+
+                    <div class="event-details-date-card">
+
+                        <span id="eventMonth"
+                              class="event-details-month">
+                            ---
+                        </span>
+
+                        <strong id="eventDay"
+                                class="event-details-day">
+                            --
+                        </strong>
+
+                        <span id="eventYear"
+                              class="event-details-year">
+                            ----
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =================================================
+                     DETAILS GRID
+                     ================================================= -->
+
+                <div class="event-information-grid">
+
+
+                    <!-- Event Information -->
+
+                    <section class="event-information-card">
+
+                        <div class="event-information-header">
+
+                            <h2>
+                                Event Information
+                            </h2>
+
+                            <p>
+                                Everything you need to know
+                                before selecting your seats.
+                            </p>
+
+                        </div>
+
+
+
+                        <div class="event-detail-row">
+
+                            <div class="event-detail-row-icon">
+                                ◷
+                            </div>
+
+                            <div>
+
+                                <span class="event-detail-label">
+                                    Date
+                                </span>
+
+                                <strong id="eventFullDate">
+                                    -
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="event-detail-row">
+
+                            <div class="event-detail-row-icon">
+                                ⏱
+                            </div>
+
+                            <div>
+
+                                <span class="event-detail-label">
+                                    Time
+                                </span>
+
+                                <strong id="eventFullTime">
+                                    -
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="event-detail-row">
+
+                            <div class="event-detail-row-icon">
+                                ⌖
+                            </div>
+
+                            <div>
+
+                                <span class="event-detail-label">
+                                    Venue
+                                </span>
+
+                                <strong id="eventVenueName">
+                                    -
+                                </strong>
+
+                                <p id="eventVenueAddress"
+                                   class="event-detail-secondary">
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="event-detail-row">
+
+                            <div class="event-detail-row-icon">
+                                #
+                            </div>
+
+                            <div>
+
+                                <span class="event-detail-label">
+                                    Category
+                                </span>
+
+                                <strong id="eventCategoryName">
+                                    -
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="event-detail-row">
+
+                            <div class="event-detail-row-icon">
+                                ♙
+                            </div>
+
+                            <div>
+
+                                <span class="event-detail-label">
+                                    Event Capacity
+                                </span>
+
+                                <strong id="eventCapacity">
+                                    -
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                    </section>
+
+
+
+                    <!-- Booking Summary -->
+
+                    <aside class="event-booking-card">
+
+
+                        <span class="event-booking-label">
+                            TICKET PRICE
+                        </span>
+
+
+                        <div id="eventTicketPrice"
+                             class="event-booking-price">
+                            LKR 0.00
+                        </div>
+
+
+                        <p>
+                            Select one or more available
+                            seats from the visual seat map.
+                            You can optionally choose one
+                            parking slot during booking.
+                        </p>
+
+
+
+                        <div class="event-booking-notes">
+
+                            <div>
+                                <span>✓</span>
+                                Visual seat selection
+                            </div>
+
+                            <div>
+                                <span>✓</span>
+                                Optional parking
+                            </div>
+
+                            <div>
+                                <span>✓</span>
+                                Clear booking summary
+                            </div>
+
+                        </div>
+
+
+
+                        <button type="button"
+                                id="selectSeatsButton"
+                                class="btn btn-primary btn-block event-select-seat-button">
+                            Select Seats
+                        </button>
+
+
+
+                        <a href="events.html"
+                           class="btn btn-outline btn-block event-back-button">
+                            Browse Other Events
+                        </a>
+
+
+                    </aside>
+
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EVENT NOT FOUND
+                 ================================================= -->
+
+            <section id="eventNotFound"
+                     class="event-not-found hidden">
+
+                <div class="events-empty-icon">
+                    !
+                </div>
+
+                <h2>
+                    Event not found
+                </h2>
+
+                <p>
+                    The event you're looking for may
+                    no longer be available.
+                </p>
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Browse Events
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/event-details.js"></script>
+
+
+</body>
+
+</html>

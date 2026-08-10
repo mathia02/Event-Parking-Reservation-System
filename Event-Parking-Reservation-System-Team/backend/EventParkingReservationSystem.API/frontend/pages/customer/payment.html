@@ -1,0 +1,480 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Complete Payment | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 HEADER
+                 ================================================= -->
+
+            <section class="payment-page-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        PENDING BOOKING
+                    </span>
+
+                    <h1>
+                        Complete your payment
+                    </h1>
+
+                    <p>
+                        Your seats and optional parking slot
+                        are temporarily held while you
+                        complete payment.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="paymentPageMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="paymentPageLoading"
+                 class="payment-page-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading booking information...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PAYMENT CONTENT
+                 ================================================= -->
+
+            <section id="paymentPageContent"
+                     class="payment-page-layout hidden">
+
+
+                <!-- =============================================
+                     LEFT
+                     ============================================= -->
+
+                <div class="payment-details-card">
+
+
+                    <!-- Hold Timer -->
+
+                    <section id="bookingHoldCard"
+                             class="booking-hold-card">
+
+                        <div class="booking-hold-icon">
+                            ◷
+                        </div>
+
+
+                        <div class="booking-hold-content">
+
+                            <span class="booking-hold-label">
+                                RESERVATION HOLD
+                            </span>
+
+                            <h2>
+                                Complete payment before time expires
+                            </h2>
+
+                            <p>
+                                Your selected seats and parking
+                                are temporarily unavailable to
+                                other customers.
+                            </p>
+
+                        </div>
+
+
+                        <div class="booking-countdown">
+
+                            <span id="holdCountdown">
+                                --:--
+                            </span>
+
+                            <small>
+                                remaining
+                            </small>
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- Booking -->
+
+                    <section class="payment-information-section">
+
+                        <div class="payment-section-heading">
+
+                            <div>
+
+                                <h2>
+                                    Booking Details
+                                </h2>
+
+                                <p>
+                                    Review your pending reservation.
+                                </p>
+
+                            </div>
+
+
+                            <span id="paymentBookingStatus"
+                                  class="badge badge-warning">
+                                Pending
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="payment-booking-grid">
+
+
+                            <div class="payment-booking-item">
+
+                                <span>
+                                    Booking Number
+                                </span>
+
+                                <strong id="paymentBookingNumber">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="payment-booking-item">
+
+                                <span>
+                                    Event
+                                </span>
+
+                                <strong id="paymentEventName">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="payment-booking-item">
+
+                                <span>
+                                    Event Date
+                                </span>
+
+                                <strong id="paymentEventDate">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+
+                            <div class="payment-booking-item">
+
+                                <span>
+                                    Venue
+                                </span>
+
+                                <strong id="paymentVenue">
+                                    -
+                                </strong>
+
+                            </div>
+
+
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- Seats -->
+
+                    <section class="payment-information-section">
+
+                        <div class="payment-section-heading">
+
+                            <div>
+
+                                <h2>
+                                    Reserved Seats
+                                </h2>
+
+                                <p>
+                                    Seats held under this booking.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div id="paymentSeatsContainer"
+                             class="payment-seat-list">
+                        </div>
+
+                    </section>
+
+
+
+                    <!-- Parking -->
+
+                    <section class="payment-information-section">
+
+                        <div class="payment-section-heading">
+
+                            <div>
+
+                                <h2>
+                                    Parking
+                                </h2>
+
+                                <p>
+                                    Optional parking reservation.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div id="paymentParkingContainer"
+                             class="payment-parking-box">
+                        </div>
+
+                    </section>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     RIGHT
+                     ============================================= -->
+
+                <aside class="payment-action-card">
+
+                    <span class="payment-action-label">
+                        PAYMENT
+                    </span>
+
+                    <h2>
+                        Complete Booking
+                    </h2>
+
+                    <p>
+                        This is a simulated payment.
+                        No real card or payment gateway is required.
+                    </p>
+
+
+                    <div class="payment-total-placeholder">
+
+                        <span>
+                            Amount Due
+                        </span>
+
+                        <strong id="paymentAmountDue">
+                            Loading...
+                        </strong>
+
+                    </div>
+
+
+                    <div id="paymentStatusInfo"
+                         class="payment-status-info">
+
+                        <span>
+                            Payment Status
+                        </span>
+
+                        <strong id="paymentStatusText">
+                            Checking...
+                        </strong>
+
+                    </div>
+
+
+                    <button type="button"
+                            id="completePaymentButton"
+                            class="btn btn-primary btn-block"
+                            disabled>
+                        Complete Payment
+                    </button>
+
+
+                    <p id="paymentButtonNote"
+                       class="payment-button-note">
+                        Please wait while payment information is checked.
+                    </p>
+
+
+                    <a href="my-bookings.html"
+                       class="btn btn-outline btn-block payment-view-bookings">
+                        View My Bookings
+                    </a>
+
+                </aside>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EXPIRED STATE
+                 ================================================= -->
+
+            <section id="paymentExpiredState"
+                     class="payment-expired-state hidden">
+
+                <div class="payment-expired-icon">
+                    !
+                </div>
+
+
+                <span class="customer-page-label">
+                    BOOKING EXPIRED
+                </span>
+
+
+                <h2>
+                    Your reservation hold has expired
+                </h2>
+
+
+                <p>
+                    Payment was not completed before the
+                    hold period ended. The selected seats
+                    and parking slot have been released.
+                </p>
+
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Create a New Booking
+                </a>
+
+
+                <a href="my-bookings.html"
+                   class="btn btn-outline">
+                    View My Bookings
+                </a>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 INVALID BOOKING
+                 ================================================= -->
+
+            <section id="paymentBookingNotFound"
+                     class="event-not-found hidden">
+
+                <div class="events-empty-icon">
+                    !
+                </div>
+
+
+                <h2>
+                    Booking not found
+                </h2>
+
+
+                <p>
+                    We couldn't find the booking required
+                    for this payment.
+                </p>
+
+
+                <a href="my-bookings.html"
+                   class="btn btn-primary">
+                    View My Bookings
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/payment.js"></script>
+
+
+</body>
+
+</html>

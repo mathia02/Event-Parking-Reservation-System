@@ -1,0 +1,1158 @@
+﻿/* =========================================================
+   EventPark
+   Customer Parking Selection
+   ========================================================= */
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.parking-page-back {
+    margin-bottom: 20px;
+}
+
+
+    .parking-page-back a {
+        color: var(--primary-color);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+        .parking-page-back a:hover {
+            text-decoration: underline;
+        }
+
+
+.parking-page-header {
+    margin-bottom: 28px;
+}
+
+
+    .parking-page-header h1 {
+        margin-bottom: 7px;
+        color: var(--secondary-color);
+        font-size: 35px;
+    }
+
+
+    .parking-page-header p {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.parking-page-loading {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+}
+
+
+    .parking-page-loading p {
+        color: var(--text-secondary);
+        font-size: 14px;
+    }
+
+
+/* =========================================================
+   MAIN LAYOUT
+   ========================================================= */
+
+.parking-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 22px;
+    align-items: start;
+}
+
+
+/* =========================================================
+   MAP CARD
+   ========================================================= */
+
+.parking-map-card {
+    min-width: 0;
+    padding: 28px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.parking-map-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+
+    .parking-map-header h2 {
+        margin-bottom: 4px;
+        color: var(--secondary-color);
+        font-size: 21px;
+    }
+
+
+    .parking-map-header p {
+        color: var(--text-secondary);
+        font-size: 12px;
+    }
+
+
+/* =========================================================
+   LEGEND
+   ========================================================= */
+
+.parking-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+
+    .parking-legend > div {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-secondary);
+        font-size: 11px;
+    }
+
+
+.parking-legend-box {
+    width: 20px;
+    height: 18px;
+    display: inline-block;
+    border-radius: 4px;
+}
+
+
+    .parking-legend-box.available {
+        border: 1px solid #86efac;
+        background-color: #f0fdf4;
+    }
+
+
+    .parking-legend-box.selected {
+        border: 1px solid var(--primary-color);
+        background-color: var(--primary-color);
+    }
+
+
+    .parking-legend-box.occupied {
+        border: 1px solid #fecaca;
+        background-color: #fee2e2;
+    }
+
+
+/* =========================================================
+   ENTRY
+   ========================================================= */
+
+.parking-entry {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+
+    .parking-entry span {
+        display: inline-block;
+        padding: 7px 24px;
+        border-radius: 50px;
+        background-color: var(--secondary-color);
+        color: var(--white);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+
+
+/* =========================================================
+   MAP
+   ========================================================= */
+
+.parking-map-scroll {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+
+.parking-map {
+    min-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 10px 15px 30px;
+}
+
+
+/* Zone */
+
+.parking-zone {
+    padding: 18px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 15px;
+    background-color: #fafcff;
+}
+
+
+.parking-zone-title {
+    margin-bottom: 15px;
+    color: var(--secondary-color);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+.parking-zone-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(85px, 1fr));
+    gap: 12px;
+}
+
+
+/* =========================================================
+   PARKING SLOT
+   ========================================================= */
+
+.parking-slot {
+    position: relative;
+    min-height: 72px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+    user-select: none;
+}
+
+
+.parking-slot-number {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+.parking-slot-fee {
+    margin-top: 4px;
+    font-size: 9px;
+}
+
+
+/* Available */
+
+.parking-slot.available {
+    border: 1px solid #86efac;
+    background-color: #f0fdf4;
+    color: #15803d;
+}
+
+
+    .parking-slot.available:hover {
+        transform: translateY(-3px);
+        border-color: var(--primary-color);
+    }
+
+
+/* Selected */
+
+.parking-slot.selected {
+    border: 1px solid var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 14px rgba(37, 99, 235, 0.22);
+}
+
+
+/* Occupied */
+
+.parking-slot.occupied {
+    border: 1px solid #fecaca;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.parking-empty-state {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+
+.parking-empty-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+
+.parking-empty-state h3 {
+    margin-bottom: 5px;
+    color: var(--secondary-color);
+}
+
+
+.parking-empty-state p {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.parking-summary-card {
+    position: sticky;
+    top: 95px;
+    padding: 25px;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+.parking-summary-label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+}
+
+
+.parking-summary-card h2 {
+    margin-bottom: 22px;
+    color: var(--secondary-color);
+    font-size: 21px;
+}
+
+
+/* =========================================================
+   SUMMARY SECTIONS
+   ========================================================= */
+
+.parking-summary-section {
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+    .parking-summary-section > span {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--text-secondary);
+        font-size: 11px;
+    }
+
+
+    .parking-summary-section strong {
+        color: var(--secondary-color);
+        font-size: 14px;
+    }
+
+
+/* Seat Chips */
+
+.parking-summary-seat-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+
+.parking-seat-chip {
+    padding: 5px 8px;
+    border-radius: 6px;
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   SUMMARY ROW
+   ========================================================= */
+
+.parking-summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 11px 0;
+}
+
+
+    .parking-summary-row span {
+        color: var(--text-secondary);
+        font-size: 12px;
+    }
+
+
+    .parking-summary-row strong {
+        color: var(--secondary-color);
+        font-size: 13px;
+    }
+
+
+/* =========================================================
+   SELECTED PARKING
+   ========================================================= */
+
+.parking-selected-section {
+    padding: 16px 0;
+    margin-top: 5px;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+.parking-selected-label {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+
+.selected-parking-display {
+    min-height: 32px;
+}
+
+
+.selected-parking-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 11px;
+    border-radius: 8px;
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.no-parking-selected {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   GRAND TOTAL
+   ========================================================= */
+
+.parking-grand-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 0;
+}
+
+
+    .parking-grand-total span {
+        color: var(--secondary-color);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+
+    .parking-grand-total strong {
+        color: var(--primary-color);
+        font-size: 22px;
+    }
+
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.parking-main-button,
+.parking-skip-button {
+    min-height: 47px;
+}
+
+
+.parking-skip-button {
+    margin-top: 9px;
+}
+
+
+.parking-optional-note {
+    margin-top: 11px;
+    color: var(--text-secondary);
+    font-size: 10px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+    .parking-layout {
+        grid-template-columns: 1fr;
+    }
+
+
+    .parking-summary-card {
+        position: static;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .parking-map-header {
+        flex-direction: column;
+    }
+
+
+    .parking-page-header h1 {
+        font-size: 28px;
+    }
+
+
+    .parking-zone-grid {
+        grid-template-columns: repeat(3, minmax(80px, 1fr));
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .parking-map-card,
+    .parking-summary-card {
+        padding: 18px;
+    }
+
+
+    .parking-map {
+        min-width: 430px;
+    }
+
+
+    .parking-zone-grid {
+        grid-template-columns: repeat(3, minmax(75px, 1fr));
+    }
+
+
+    .parking-slot {
+        min-height: 62px;
+    }
+}
+/* =========================================================
+   ADMIN PARKING LAYOUT BUILDER
+   ========================================================= */
+
+
+.admin-parking-back {
+    margin-bottom: 18px;
+}
+
+
+    .admin-parking-back a {
+        color: var(--primary-color);
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+
+/* =========================================================
+   EVENT SELECT
+   ========================================================= */
+
+.admin-parking-event-card {
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 1fr;
+    gap: 18px;
+    align-items: end;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+    .admin-parking-event-card label {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text-primary);
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+
+.admin-parking-selected-event {
+    padding: 12px;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+
+    .admin-parking-selected-event span {
+        display: block;
+        margin-bottom: 3px;
+        color: var(--text-secondary);
+        font-size: 8px;
+    }
+
+
+    .admin-parking-selected-event strong {
+        color: var(--secondary-color);
+        font-size: 11px;
+    }
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.admin-parking-loading {
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+
+    .admin-parking-loading p {
+        color: var(--text-secondary);
+        font-size: 11px;
+    }
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.admin-parking-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+
+.admin-parking-summary-card {
+    padding: 18px;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 13px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+    .admin-parking-summary-card span {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-secondary);
+        font-size: 9px;
+    }
+
+
+    .admin-parking-summary-card strong {
+        color: var(--secondary-color);
+        font-size: 22px;
+    }
+
+
+/* =========================================================
+   BUILDER CARD
+   ========================================================= */
+
+.admin-parking-builder-card {
+    margin-bottom: 20px;
+    padding: 22px;
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
+}
+
+
+.admin-parking-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+
+    .admin-parking-card-header h2 {
+        margin-bottom: 4px;
+        color: var(--secondary-color);
+        font-size: 18px;
+    }
+
+
+    .admin-parking-card-header p {
+        color: var(--text-secondary);
+        font-size: 9px;
+    }
+
+
+/* =========================================================
+   ZONE CONFIGURATION
+   ========================================================= */
+
+.admin-parking-zone-headings,
+.admin-parking-zone-row {
+    display: grid;
+    grid-template-columns: minmax(90px, 1fr) minmax(130px, 1fr) minmax(130px, 1fr) 100px;
+    gap: 10px;
+    align-items: center;
+}
+
+
+.admin-parking-zone-headings {
+    margin-bottom: 7px;
+    padding: 0 10px;
+    color: var(--text-secondary);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+
+.admin-parking-zone-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+.admin-parking-zone-row {
+    padding: 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: #fafcff;
+}
+
+
+    .admin-parking-zone-row
+    .form-control {
+        min-height: 41px;
+    }
+
+
+/* =========================================================
+   CONFIG SUMMARY
+   ========================================================= */
+
+.admin-parking-layout-preview-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 16px;
+    padding: 13px;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+
+    .admin-parking-layout-preview-summary span {
+        color: var(--text-secondary);
+        font-size: 9px;
+    }
+
+
+    .admin-parking-layout-preview-summary strong {
+        color: var(--secondary-color);
+        font-size: 17px;
+    }
+
+
+/* =========================================================
+   GENERATOR ACTIONS
+   ========================================================= */
+
+.admin-parking-generator-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 16px;
+}
+
+
+.admin-parking-warning {
+    margin-top: 14px;
+    padding: 12px;
+    border: 1px solid #fde68a;
+    border-radius: 9px;
+    background: #fffbeb;
+    color: #92400e;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   LEGEND
+   ========================================================= */
+
+.admin-parking-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 17px;
+    margin-bottom: 20px;
+}
+
+
+    .admin-parking-legend span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--text-secondary);
+        font-size: 9px;
+    }
+
+
+.admin-parking-legend-box {
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    border-radius: 4px;
+}
+
+
+    .admin-parking-legend-box.available {
+        background: var(--success-light);
+        border: 1px solid var(--success-color);
+    }
+
+
+    .admin-parking-legend-box.held {
+        background: var(--warning-light);
+        border: 1px solid var(--warning-color);
+    }
+
+
+    .admin-parking-legend-box.occupied {
+        background: var(--danger-light);
+        border: 1px solid var(--danger-color);
+    }
+
+
+    .admin-parking-legend-box.unavailable {
+        background: #e2e8f0;
+        border: 1px solid #94a3b8;
+    }
+
+
+/* =========================================================
+   ENTRANCE
+   ========================================================= */
+
+.admin-parking-entrance {
+    max-width: 600px;
+    margin: 0 auto 28px;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    background: #e2e8f0;
+    color: #475569;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   VISUAL MAP
+   ========================================================= */
+
+.admin-parking-visual-map {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+}
+
+
+.admin-parking-zone-block {
+    min-width: max-content;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: #fafcff;
+}
+
+
+.admin-parking-zone-title {
+    margin-bottom: 12px;
+    color: var(--secondary-color);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.admin-parking-zone-slots {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+}
+
+
+.admin-parking-slot-button {
+    width: 65px;
+    min-height: 58px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+
+    .admin-parking-slot-button strong {
+        font-size: 9px;
+    }
+
+
+    .admin-parking-slot-button small {
+        font-size: 7px;
+    }
+
+
+    /* Available */
+
+    .admin-parking-slot-button.available {
+        border: 1px solid var(--success-color);
+        background: var(--success-light);
+        color: #166534;
+    }
+
+
+        .admin-parking-slot-button.available:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+
+    /* Held */
+
+    .admin-parking-slot-button.held {
+        border: 1px solid var(--warning-color);
+        background: var(--warning-light);
+        color: #92400e;
+    }
+
+
+    /* Occupied */
+
+    .admin-parking-slot-button.occupied,
+    .admin-parking-slot-button.reserved {
+        border: 1px solid var(--danger-color);
+        background: var(--danger-light);
+        color: #991b1b;
+    }
+
+
+    /* Unavailable */
+
+    .admin-parking-slot-button.unavailable {
+        border: 1px solid #94a3b8;
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+
+    .admin-parking-slot-button.protected {
+        cursor: not-allowed;
+        opacity: 0.82;
+    }
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.admin-parking-empty {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+}
+
+
+    .admin-parking-empty strong {
+        margin-bottom: 5px;
+        color: var(--secondary-color);
+        font-size: 16px;
+    }
+
+
+    .admin-parking-empty p {
+        color: var(--text-secondary);
+        font-size: 10px;
+    }
+
+
+/* =========================================================
+   EDIT MODAL
+   ========================================================= */
+
+.admin-parking-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 13px;
+}
+
+
+.admin-parking-current-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 9px;
+    background: #f8fafc;
+}
+
+
+    .admin-parking-current-status span {
+        color: var(--text-secondary);
+        font-size: 9px;
+    }
+
+
+    .admin-parking-current-status strong {
+        color: var(--secondary-color);
+        font-size: 10px;
+    }
+
+
+.admin-parking-protected-message {
+    margin-top: 14px;
+    padding: 12px;
+    border: 1px solid #fecaca;
+    border-radius: 9px;
+    background: #fef2f2;
+    color: #991b1b;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .admin-parking-summary-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+    .admin-parking-event-card {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .admin-parking-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .admin-parking-card-header {
+        flex-direction: column;
+    }
+
+
+        .admin-parking-card-header .btn {
+            width: 100%;
+        }
+
+
+    .admin-parking-zone-headings {
+        display: none;
+    }
+
+
+    .admin-parking-zone-row {
+        grid-template-columns: 1fr;
+    }
+
+
+    .admin-parking-generator-actions {
+        flex-direction: column;
+    }
+
+
+        .admin-parking-generator-actions
+        .btn {
+            width: 100%;
+        }
+
+
+    .admin-parking-edit-grid {
+        grid-template-columns: 1fr;
+    }
+}

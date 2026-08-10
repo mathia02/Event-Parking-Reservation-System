@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        My Profile | EventPark
+    </title>
+
+
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- =================================================
+                 PAGE HEADER
+                 ================================================= -->
+
+            <section class="profile-page-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        MY ACCOUNT
+                    </span>
+
+                    <h1>
+                        My Profile
+                    </h1>
+
+                    <p>
+                        View and update your personal
+                        account information.
+                    </p>
+
+                </div>
+
+
+                <a href="dashboard.html"
+                   class="btn btn-outline">
+                    Back to Dashboard
+                </a>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="profileMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="profileLoading"
+                 class="profile-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading your profile...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PROFILE CONTENT
+                 ================================================= -->
+
+            <section id="profileContent"
+                     class="profile-layout hidden">
+
+
+                <!-- =============================================
+                     PROFILE SUMMARY
+                     ============================================= -->
+
+                <aside class="profile-summary-card">
+
+
+                    <div class="profile-avatar">
+
+                        <span id="profileAvatarInitial">
+                            C
+                        </span>
+
+                    </div>
+
+
+                    <h2 id="profileDisplayName">
+                        Customer
+                    </h2>
+
+
+                    <p id="profileDisplayEmail">
+                        customer@example.com
+                    </p>
+
+
+                    <div class="profile-role-badge">
+                        Customer
+                    </div>
+
+
+
+                    <div class="profile-summary-divider"></div>
+
+
+
+                    <div class="profile-summary-info">
+
+
+                        <div>
+
+                            <span>
+                                Customer ID
+                            </span>
+
+                            <strong id="profileCustomerId">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Account Status
+                            </span>
+
+                            <strong id="profileAccountStatus"
+                                    class="profile-active-status">
+                                Active
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                Email Verification
+                            </span>
+
+                            <strong id="profileEmailVerification">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                    </div>
+
+
+                </aside>
+
+
+
+                <!-- =============================================
+                     PROFILE FORM
+                     ============================================= -->
+
+                <section class="profile-form-card">
+
+
+                    <div class="profile-form-header">
+
+                        <div>
+
+                            <h2>
+                                Personal Information
+                            </h2>
+
+                            <p>
+                                Keep your profile details
+                                accurate and up to date.
+                            </p>
+
+                        </div>
+
+
+                        <button type="button"
+                                id="editProfileButton"
+                                class="btn btn-outline">
+                            Edit Profile
+                        </button>
+
+                    </div>
+
+
+
+                    <form id="profileForm"
+                          novalidate>
+
+
+                        <!-- Full Name -->
+
+                        <div class="form-group">
+
+                            <label for="profileName">
+                                Full Name
+                            </label>
+
+                            <input type="text"
+                                   id="profileName"
+                                   class="form-control"
+                                   placeholder="Enter your full name"
+                                   disabled>
+
+                            <small id="profileNameError"
+                                   class="field-error">
+                            </small>
+
+                        </div>
+
+
+
+                        <!-- Email -->
+
+                        <div class="form-group">
+
+                            <label for="profileEmail">
+                                Email Address
+                            </label>
+
+                            <input type="email"
+                                   id="profileEmail"
+                                   class="form-control"
+                                   placeholder="Enter your email address"
+                                   disabled>
+
+                            <small id="profileEmailError"
+                                   class="field-error">
+                            </small>
+
+                        </div>
+
+
+
+                        <!-- Phone -->
+
+                        <div class="form-group">
+
+                            <label for="profilePhone">
+                                Phone Number
+                            </label>
+
+                            <input type="tel"
+                                   id="profilePhone"
+                                   class="form-control"
+                                   placeholder="+94 77 123 4567"
+                                   disabled>
+
+                            <small id="profilePhoneError"
+                                   class="field-error">
+                            </small>
+
+                        </div>
+
+
+
+                        <!-- Actions -->
+
+                        <div id="profileFormActions"
+                             class="profile-form-actions hidden">
+
+                            <button type="button"
+                                    id="cancelProfileEditButton"
+                                    class="btn btn-outline">
+                                Cancel
+                            </button>
+
+
+                            <button type="submit"
+                                    id="saveProfileButton"
+                                    class="btn btn-primary">
+                                Save Changes
+                            </button>
+
+                        </div>
+
+
+                    </form>
+
+
+
+                    <div class="profile-security-note">
+
+                        <strong>
+                            Account Security
+                        </strong>
+
+                        <p>
+                            Your password is never displayed
+                            on this page. Password changes
+                            should use the secure password
+                            reset flow.
+                        </p>
+
+                    </div>
+
+
+                </section>
+
+
+            </section>
+
+
+
+            <!-- Profile Not Found -->
+
+            <section id="profileNotFound"
+                     class="event-not-found hidden">
+
+                <div class="events-empty-icon">
+                    !
+                </div>
+
+                <h2>
+                    Profile unavailable
+                </h2>
+
+                <p>
+                    We couldn't load your customer
+                    profile. Please sign in again.
+                </p>
+
+                <a href="../auth/login.html"
+                   class="btn btn-primary">
+                    Go to Login
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/profile.js"></script>
+
+
+</body>
+
+</html>

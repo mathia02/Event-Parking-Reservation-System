@@ -1,0 +1,404 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Select Seats | EventPark
+    </title>
+
+
+    <!-- Global CSS -->
+    <link rel="stylesheet"
+          href="../../css/style.css">
+
+    <!-- Customer CSS -->
+    <link rel="stylesheet"
+          href="../../css/customer.css">
+
+    <!-- Seat Map CSS -->
+    <link rel="stylesheet"
+          href="../../css/seat-map.css">
+
+    <!-- Responsive CSS -->
+    <link rel="stylesheet"
+          href="../../css/responsive.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Navbar -->
+    <div id="navbarContainer"></div>
+
+
+
+    <!-- =====================================================
+         SEAT SELECTION PAGE
+         ===================================================== -->
+
+    <main class="customer-main">
+
+        <div class="container">
+
+
+            <!-- Back -->
+
+            <div class="seat-page-back">
+
+                <a href="#"
+                   id="backToEventButton">
+                    ← Back to Event
+                </a>
+
+            </div>
+
+
+
+            <!-- Header -->
+
+            <section class="seat-page-header">
+
+                <div>
+
+                    <span class="customer-page-label">
+                        SEAT RESERVATION
+                    </span>
+
+                    <h1>
+                        Select your seats
+                    </h1>
+
+                    <p id="seatEventName">
+                        Choose one or more available seats.
+                    </p>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Message -->
+
+            <div id="seatPageMessage"
+                 class="alert hidden">
+            </div>
+
+
+
+            <!-- Loading -->
+
+            <div id="seatPageLoading"
+                 class="seat-page-loading">
+
+                <div class="spinner"></div>
+
+                <p>
+                    Loading seat map...
+                </p>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 MAIN CONTENT
+                 ================================================= -->
+
+            <section id="seatPageContent"
+                     class="seat-layout hidden">
+
+
+                <!-- =============================================
+                     SEAT MAP
+                     ============================================= -->
+
+                <div class="seat-map-card">
+
+
+                    <!-- Seat Legend -->
+
+                    <div class="seat-map-header">
+
+                        <div>
+
+                            <h2>
+                                Seat Map
+                            </h2>
+
+                            <p>
+                                Click an available seat to
+                                select or deselect it.
+                            </p>
+
+                        </div>
+
+
+                        <div class="seat-legend">
+
+                            <div>
+
+                                <span class="legend-seat available"></span>
+
+                                Available
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="legend-seat selected"></span>
+
+                                Selected
+
+                            </div>
+
+
+                            <div>
+
+                                <span class="legend-seat booked"></span>
+
+                                Booked
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Stage -->
+
+                    <div class="seat-stage">
+
+                        <span>
+                            STAGE
+                        </span>
+
+                    </div>
+
+
+
+                    <!-- Seat Map Scroll -->
+
+                    <div class="seat-map-scroll">
+
+                        <div id="seatMap"
+                             class="seat-map">
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- No Seat Map -->
+
+                    <div id="noSeatMap"
+                         class="seat-empty-state hidden">
+
+                        <div class="seat-empty-icon">
+                            🎟
+                        </div>
+
+                        <h3>
+                            Seat map unavailable
+                        </h3>
+
+                        <p>
+                            The administrator has not
+                            created a seat map for this
+                            event yet.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =============================================
+                     SELECTION SUMMARY
+                     ============================================= -->
+
+                <aside class="seat-summary-card">
+
+
+                    <span class="seat-summary-label">
+                        YOUR SELECTION
+                    </span>
+
+
+                    <h2>
+                        Booking Summary
+                    </h2>
+
+
+
+                    <!-- Event -->
+
+                    <div class="seat-summary-event">
+
+                        <span>
+                            Event
+                        </span>
+
+                        <strong id="summaryEventName">
+                            -
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Ticket Price -->
+
+                    <div class="seat-summary-row">
+
+                        <span>
+                            Ticket Price
+                        </span>
+
+                        <strong id="summaryTicketPrice">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Selected Seats -->
+
+                    <div class="seat-selected-section">
+
+                        <div class="seat-selected-header">
+
+                            <span>
+                                Selected Seats
+                            </span>
+
+                            <strong id="selectedSeatCount">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div id="selectedSeatsContainer"
+                             class="selected-seat-list">
+
+                            <span class="no-selected-seat-text">
+                                No seats selected
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- Total -->
+
+                    <div class="seat-total-row">
+
+                        <span>
+                            Seat Total
+                        </span>
+
+                        <strong id="seatTotalPrice">
+                            LKR 0.00
+                        </strong>
+
+                    </div>
+
+
+
+                    <!-- Continue -->
+
+                    <button type="button"
+                            class="btn btn-primary btn-block seat-continue-button"
+                            id="continueToParkingButton"
+                            disabled>
+                        Continue to Parking
+                    </button>
+
+
+                    <p class="seat-parking-note">
+                        Parking is optional. You can skip
+                        parking on the next step.
+                    </p>
+
+
+                </aside>
+
+
+            </section>
+
+
+
+            <!-- =================================================
+                 EVENT NOT FOUND
+                 ================================================= -->
+
+            <section id="seatEventNotFound"
+                     class="event-not-found hidden">
+
+                <div class="events-empty-icon">
+                    !
+                </div>
+
+                <h2>
+                    Event not found
+                </h2>
+
+                <p>
+                    We couldn't identify the event for
+                    this seat reservation.
+                </p>
+
+                <a href="events.html"
+                   class="btn btn-primary">
+                    Browse Events
+                </a>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+
+    <!-- Footer -->
+    <div id="footerContainer"></div>
+
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModalContainer"></div>
+
+
+
+    <!-- JavaScript -->
+
+    <script src="../../js/config.js"></script>
+
+    <script src="../../js/api.js"></script>
+
+    <script src="../../js/common.js"></script>
+
+    <script src="../../js/customer/seat-selection.js"></script>
+
+
+</body>
+
+</html>
