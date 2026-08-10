@@ -1,8 +1,1009 @@
 ﻿/* =========================================================
    EVENTPARK
-   PREMIUM ADMIN INTERFACE
+   PREMIUM ADMIN EVENT MANAGEMENT
    ========================================================= */
 
+
+/* =========================================================
+   EVENT PAGE
+   ========================================================= */
+
+.event-management-page .admin-page {
+    align-items: start;
+}
+
+
+/* =========================================================
+   EVENT HEADER
+   ========================================================= */
+
+.event-management-page .event-premium-header {
+    min-height: 165px;
+
+    background:
+        radial-gradient(
+            circle at 82% 20%,
+            rgba(56, 189, 248, 0.28),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 65% 110%,
+            rgba(99, 102, 241, 0.22),
+            transparent 32%
+        ),
+        linear-gradient(
+            125deg,
+            #07142e 0%,
+            #10285f 50%,
+            #2459dc 100%
+        );
+}
+
+
+/* =========================================================
+   EVENT FORM / LIST WIDTH
+   ========================================================= */
+
+.event-management-page
+.admin-page
+>
+.event-form-card {
+    grid-column: span 5;
+}
+
+
+.event-management-page
+.admin-page
+>
+.event-list-card {
+    grid-column: span 7;
+}
+
+
+/* =========================================================
+   EVENT FORM CARD
+   ========================================================= */
+
+.event-form-card {
+    border-top:
+        1px solid rgba(37, 99, 235, 0.10);
+}
+
+
+.event-form-card::before {
+    background:
+        linear-gradient(
+            180deg,
+            #2563eb,
+            #4f46e5,
+            #0ea5e9
+        ) !important;
+}
+
+
+/* =========================================================
+   EVENT FORM GRID
+   ========================================================= */
+
+.event-form-grid {
+    display: grid;
+
+    gap: 16px;
+}
+
+
+.event-form-grid-two {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+
+/* =========================================================
+   FORM HELP TEXT
+   ========================================================= */
+
+.form-helper-text {
+    display: block;
+
+    margin-top: 7px;
+
+    font-size: 10px;
+
+    line-height: 1.55;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   SELECT
+   ========================================================= */
+
+.event-management-page select {
+    min-height: 46px;
+
+    cursor: pointer;
+
+    appearance: none;
+
+    background-image:
+        linear-gradient(
+            45deg,
+            transparent 50%,
+            #64748b 50%
+        ),
+        linear-gradient(
+            135deg,
+            #64748b 50%,
+            transparent 50%
+        );
+
+    background-position:
+        calc(100% - 18px) 20px,
+        calc(100% - 13px) 20px;
+
+    background-size:
+        5px 5px,
+        5px 5px;
+
+    background-repeat:
+        no-repeat;
+
+    padding-right: 38px;
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW CARD
+   ========================================================= */
+
+.event-image-preview-card {
+    margin:
+        6px 0 24px;
+
+    overflow: hidden;
+
+    border-radius: 15px;
+
+    border:
+        1px solid #dbe5f1;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8fbff,
+            #f5f8fd
+        );
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255, 255, 255, 0.9);
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW HEADER
+   ========================================================= */
+
+.event-image-preview-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding:
+        14px 16px;
+
+    border-bottom:
+        1px solid #e4ebf3;
+}
+
+
+.event-image-preview-header strong {
+    display: block;
+
+    font-size: 12px;
+
+    color: #172033;
+}
+
+
+/* =========================================================
+   PREVIEW STATUS
+   ========================================================= */
+
+.preview-status {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 25px;
+
+    padding:
+        4px 9px;
+
+    border-radius: 999px;
+
+    font-size: 9px;
+
+    font-weight: 750;
+
+    color: #64748b;
+
+    background: #e9eef5;
+}
+
+
+.preview-status-success {
+    color: #166534;
+
+    background: #dcfce7;
+}
+
+
+.preview-status-error {
+    color: #b91c1c;
+
+    background: #fee2e2;
+}
+
+
+.preview-status-loading {
+    color: #1d4ed8;
+
+    background: #dbeafe;
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW CONTAINER
+   ========================================================= */
+
+.event-image-preview-container {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio:
+        16 / 7;
+
+    min-height: 210px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eef4fb,
+            #e8eef8
+        );
+}
+
+
+/* =========================================================
+   PREVIEW IMAGE
+   ========================================================= */
+
+.event-image-preview {
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.35s ease;
+}
+
+
+.event-image-preview-container:hover
+.event-image-preview {
+    transform:
+        scale(1.025);
+}
+
+
+/* =========================================================
+   IMAGE PLACEHOLDER
+   ========================================================= */
+
+.event-image-placeholder {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    text-align: center;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(37, 99, 235, 0.08),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #f5f8fc,
+            #edf3f9
+        );
+}
+
+
+.image-placeholder-icon {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 54px;
+    height: 54px;
+
+    margin-bottom: 4px;
+
+    border-radius: 15px;
+
+    font-size: 11px;
+
+    font-weight: 850;
+
+    letter-spacing: 0.7px;
+
+    color: #2563eb;
+
+    background: #e8f0ff;
+
+    border:
+        1px solid #cfe0ff;
+
+    box-shadow:
+        0 8px 22px
+        rgba(37, 99, 235, 0.10);
+}
+
+
+.event-image-placeholder strong {
+    font-size: 12px;
+
+    color: #334155;
+}
+
+
+.event-image-placeholder span {
+    font-size: 10px;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   MONEY INPUT
+   ========================================================= */
+
+.event-money-input {
+    display: flex;
+
+    align-items: stretch;
+
+    overflow: hidden;
+
+    border-radius: 11px;
+
+    border:
+        1px solid #dbe3ee;
+
+    background: #f8fafc;
+
+    transition:
+        border-color 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+}
+
+
+.event-money-input:focus-within {
+    border-color: #2563eb;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(37, 99, 235, 0.09);
+}
+
+
+.event-money-input > span {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 50px;
+
+    padding: 0 10px;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    color: #1d4ed8;
+
+    background: #eef4ff;
+
+    border-right:
+        1px solid #dbe3ee;
+}
+
+
+.event-money-input input {
+    border: none !important;
+
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+
+    background:
+        transparent !important;
+}
+
+
+/* =========================================================
+   EVENT FORM ACTIONS
+   ========================================================= */
+
+.event-form-actions {
+    padding-top: 4px;
+}
+
+
+#saveEventButton {
+    min-width: 145px;
+}
+
+
+/* =========================================================
+   EVENT LIST CARD
+   ========================================================= */
+
+.event-list-card {
+    overflow: hidden;
+}
+
+
+.event-list-card::before {
+    background:
+        linear-gradient(
+            90deg,
+            #0ea5e9,
+            #2563eb,
+            #4f46e5
+        ) !important;
+}
+
+
+/* =========================================================
+   EVENT SUMMARY
+   ========================================================= */
+
+.event-summary {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 18px;
+
+    margin-bottom: 20px;
+
+    padding:
+        14px 16px;
+
+    border-radius: 14px;
+
+    border:
+        1px solid #dce7f4;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f7faff,
+            #f4f8ff
+        );
+}
+
+
+.event-summary-box {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.event-summary-box strong {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 19px;
+
+    color: #0f172a;
+}
+
+
+.event-summary-message {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+
+    max-width: 320px;
+
+    text-align: right;
+}
+
+
+.event-summary-message strong {
+    font-size: 11px;
+
+    color: #334155;
+}
+
+
+.event-summary-message span {
+    font-size: 9px;
+
+    line-height: 1.5;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   EVENT TABLE
+   ========================================================= */
+
+.event-table-wrapper {
+    border-radius: 15px;
+}
+
+
+.event-table {
+    min-width: 980px;
+}
+
+
+/* =========================================================
+   EVENT MAIN CELL
+   ========================================================= */
+
+.event-table-main {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 210px;
+}
+
+
+/* =========================================================
+   EVENT THUMBNAIL
+   ========================================================= */
+
+.event-table-image-wrap {
+    width: 72px;
+    height: 54px;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    border-radius: 10px;
+
+    background: #eef2f7;
+
+    border:
+        1px solid #dfe7f1;
+
+    box-shadow:
+        0 5px 12px
+        rgba(15, 23, 42, 0.06);
+}
+
+
+.event-table-image {
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition:
+        transform 0.25s ease;
+}
+
+
+.event-table-image-wrap:hover
+.event-table-image {
+    transform:
+        scale(1.08);
+}
+
+
+/* =========================================================
+   EVENT IMAGE FALLBACK
+   ========================================================= */
+
+.event-table-image-fallback {
+    width: 100%;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 18px;
+
+    font-weight: 850;
+
+    color: #2563eb;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eff6ff,
+            #e0e7ff
+        );
+}
+
+
+/* =========================================================
+   EVENT INFO
+   ========================================================= */
+
+.event-table-info {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 6px;
+}
+
+
+.event-table-info strong {
+    max-width: 190px;
+
+    font-size: 12px;
+
+    font-weight: 800;
+
+    line-height: 1.4;
+
+    color: #0f172a;
+}
+
+
+/* =========================================================
+   EVENT CATEGORY CHIP
+   ========================================================= */
+
+.event-category-chip {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 22px;
+
+    padding:
+        3px 8px;
+
+    border-radius: 999px;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 0.25px;
+
+    color: #4338ca;
+
+    background: #eef2ff;
+
+    border:
+        1px solid #e0e7ff;
+}
+
+
+/* =========================================================
+   VENUE CELL
+   ========================================================= */
+
+.event-venue-cell {
+    min-width: 150px;
+}
+
+
+.event-venue-cell strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+
+    font-weight: 750;
+
+    color: #334155;
+}
+
+
+.event-venue-cell span {
+    font-size: 9px;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================================
+   EVENT SCHEDULE
+   ========================================================= */
+
+.event-schedule-cell {
+    min-width: 140px;
+}
+
+
+.event-schedule-cell strong {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 11px;
+
+    font-weight: 750;
+
+    color: #334155;
+}
+
+
+.event-schedule-cell span {
+    white-space: nowrap;
+
+    font-size: 9px;
+
+    color: #64748b;
+}
+
+
+/* =========================================================
+   PRICE BADGE
+   ========================================================= */
+
+.event-price-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 80px;
+
+    padding:
+        6px 9px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+
+    color: #166534;
+
+    background: #f0fdf4;
+
+    border:
+        1px solid #dcfce7;
+}
+
+
+/* =========================================================
+   CAPACITY BADGE
+   ========================================================= */
+
+.event-capacity-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 52px;
+
+    padding:
+        6px 9px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    color: #1d4ed8;
+
+    background: #eff6ff;
+
+    border:
+        1px solid #dbeafe;
+}
+
+
+/* =========================================================
+   EVENT TABLE ROW
+   ========================================================= */
+
+.event-table tbody tr {
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+
+.event-table tbody tr:hover {
+    background:
+        linear-gradient(
+            90deg,
+            #f8fbff,
+            #ffffff
+        );
+}
+
+
+/* =========================================================
+   EVENT ACTIONS
+   ========================================================= */
+
+.event-table .table-actions {
+    min-width: 145px;
+}
+
+
+/* =========================================================
+   EVENT DATE INPUT
+   ========================================================= */
+
+.event-management-page input[type="date"],
+.event-management-page input[type="time"] {
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   RESPONSIVE 1250
+   ========================================================= */
+
+@media (max-width: 1250px) {
+
+    .event-management-page
+    .admin-page
+    >
+    .event-form-card {
+        grid-column: span 5;
+    }
+
+
+    .event-management-page
+    .admin-page
+    >
+    .event-list-card {
+        grid-column: span 7;
+    }
+
+
+    .event-summary-message {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 1050
+   ========================================================= */
+
+@media (max-width: 1050px) {
+
+    .event-management-page
+    .admin-page
+    >
+    .event-form-card,
+    .event-management-page
+    .admin-page
+    >
+    .event-list-card {
+        grid-column: 1 / -1;
+    }
+
+
+    .event-image-preview-container {
+        aspect-ratio:
+            16 / 6;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 700
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .event-form-grid-two {
+        grid-template-columns: 1fr;
+    }
+
+
+    .event-summary {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    .event-image-preview-container {
+        min-height: 180px;
+
+        aspect-ratio:
+            16 / 8;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE 500
+   ========================================================= */
+
+@media (max-width: 500px) {
+
+    .event-image-preview-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+
+    #saveEventButton {
+        width: 100%;
+    }
+}
 
 /* =========================================================
    GLOBAL ADMIN PAGE

@@ -159,7 +159,19 @@ builder.Services.AddScoped<
     ICategoryService,
     CategoryService
 >();
+// ------------------------------------------------------
+// SEAT
+// ------------------------------------------------------
 
+builder.Services.AddScoped<
+    ISeatRepository,
+    SeatRepository
+>();
+
+builder.Services.AddScoped<
+    ISeatService,
+    SeatService
+>();
 
 
 

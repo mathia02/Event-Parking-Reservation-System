@@ -5,551 +5,804 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
-        Seat Map Builder | EventPark
+        Seat Management | EventPark
     </title>
 
 
-    <link rel="stylesheet"
-          href="../../css/style.css">
+    <!-- =====================================================
+         COMMON CSS
+         ===================================================== -->
 
-    <link rel="stylesheet"
-          href="../../css/admin.css">
+    <link
+        rel="stylesheet"
+        href="../../css/style.css"
+    >
 
-    <link rel="stylesheet"
-          href="../../css/seat-map.css">
+    <link
+        rel="stylesheet"
+        href="../../css/responsive.css"
+    >
 
-    <link rel="stylesheet"
-          href="../../css/responsive.css">
+    <link
+        rel="stylesheet"
+        href="../../css/admin.css"
+    >
 
+    <link
+        rel="stylesheet"
+        href="../../css/seat-map.css"
+    >
+    <link
+    rel="stylesheet"
+    href="../../css/seat-map-admin.css"
+>
 </head>
 
 
-<body class="admin-page">
+<body class="seat-management-page">
 
 
-    <div class="admin-shell">
+    <main class="admin-page">
 
 
-        <!-- Sidebar -->
+        <!-- =====================================================
+             PREMIUM HEADER
+             ===================================================== -->
 
-        <div id="adminSidebarContainer"></div>
-
-
-
-        <main class="admin-main">
-
-            <div class="admin-content-container">
+        <section class="admin-page-header seat-premium-header">
 
 
-                <!-- Back -->
+            <div class="admin-header-content">
 
-                <div class="admin-seat-back">
 
-                    <a href="events.html">
-                        ← Back to Events
-                    </a>
+                <div class="admin-header-badge">
+                    ADMIN • SEAT CONTROL
+                </div>
+
+
+                <h1>
+                    Seat Management
+                </h1>
+
+
+                <p>
+                    Generate event seat layouts, manage row pricing
+                    and control seat availability from one visual map.
+                </p>
+
+
+            </div>
+
+
+            <div class="seat-header-stats">
+
+
+                <div class="admin-header-stat">
+
+                    <span class="admin-header-stat-label">
+                        EVENT CAPACITY
+                    </span>
+
+
+                    <strong id="seatEventCapacity">
+                        0
+                    </strong>
+
+
+                    <span class="admin-header-stat-note">
+                        Maximum seats
+                    </span>
 
                 </div>
 
 
+                <div class="admin-header-stat">
 
-                <!-- Header -->
+                    <span class="admin-header-stat-label">
+                        GENERATED
+                    </span>
 
-                <header class="admin-page-header">
+
+                    <strong id="seatGeneratedCount">
+                        0
+                    </strong>
+
+
+                    <span class="admin-header-stat-note">
+                        Seats created
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             MESSAGE
+             ===================================================== -->
+
+        <div
+            id="seatMessage"
+            class="alert hidden"
+        ></div>
+
+
+
+        <!-- =====================================================
+             EVENT SELECTION + CONTROLS
+             ===================================================== -->
+
+        <section class="admin-card seat-control-card">
+
+
+            <div class="admin-card-header">
+
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        EVENT SELECTION
+                    </span>
+
+
+                    <h2>
+                        Seat Layout Setup
+                    </h2>
+
+
+                    <p>
+                        Select an event before generating or
+                        managing its seat map.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EVENT SELECT
+                 ================================================= -->
+
+            <div class="form-group">
+
+
+                <label for="seatEventSelect">
+                    Event
+                </label>
+
+
+                <select id="seatEventSelect">
+
+                    <option value="">
+                        Select an event
+                    </option>
+
+                </select>
+
+
+                <small
+                    id="seatEventError"
+                    class="field-error"
+                ></small>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SELECTED EVENT INFO
+                 ================================================= -->
+
+            <div
+                id="selectedEventInfo"
+                class="seat-selected-event hidden"
+            >
+
+
+                <div class="seat-selected-event-main">
+
+
+                    <span class="seat-event-icon">
+                        E
+                    </span>
+
 
                     <div>
 
-                        <span class="admin-page-label">
-                            SEAT MANAGEMENT
+                        <span class="seat-mini-label">
+                            SELECTED EVENT
                         </span>
 
-                        <h1>
-                            Seat Map Builder
-                        </h1>
 
-                        <p>
-                            Generate and manage the seat map
-                            for a selected event.
-                        </p>
+                        <strong id="selectedEventName">
+                            -
+                        </strong>
+
+
+                        <span id="selectedEventMeta">
+                            -
+                        </span>
 
                     </div>
 
 
-                    <a href="events.html"
-                       class="btn btn-outline">
-                        Event List
-                    </a>
-
-                </header>
+                </div>
 
 
+                <div class="seat-selected-capacity">
 
-                <!-- Message -->
 
-                <div id="adminSeatMapMessage"
-                     class="alert hidden">
+                    <span>
+                        Capacity
+                    </span>
+
+
+                    <strong id="selectedEventCapacity">
+                        0
+                    </strong>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 GENERATE SECTION
+                 ================================================= -->
+
+            <div
+                id="seatGenerateSection"
+                class="seat-control-section"
+            >
+
+
+                <div class="seat-control-section-header">
+
+
+                    <div>
+
+                        <span class="card-eyebrow">
+                            GENERATE LAYOUT
+                        </span>
+
+
+                        <h3>
+                            Create Event Seats
+                        </h3>
+
+                    </div>
+
+
+                    <span
+                        id="seatGenerationStatus"
+                        class="seat-generation-status"
+                    >
+                        Not generated
+                    </span>
+
+
                 </div>
 
 
 
-                <!-- =================================================
-                     EVENT SELECTOR
-                     ================================================= -->
+                <div class="seat-generate-grid">
 
-                <section class="admin-seat-event-card">
 
-                    <div>
+                    <div class="form-group">
 
-                        <label for="seatMapEventSelect">
-                            Select Event
+
+                        <label for="seatRows">
+                            Number of Rows
                         </label>
 
-                        <select id="seatMapEventSelect"
-                                class="form-control">
 
-                            <option value="">
-                                Select an event
-                            </option>
+                        <input
+                            type="number"
+                            id="seatRows"
+                            min="1"
+                            max="100"
+                            placeholder="Example: 10"
+                        >
 
-                        </select>
+
+                        <small
+                            id="seatRowsError"
+                            class="field-error"
+                        ></small>
+
 
                     </div>
 
 
-                    <div class="admin-seat-event-info">
+
+                    <div class="form-group">
+
+
+                        <label for="seatPerRow">
+                            Seats Per Row
+                        </label>
+
+
+                        <input
+                            type="number"
+                            id="seatPerRow"
+                            min="1"
+                            max="100"
+                            placeholder="Example: 30"
+                        >
+
+
+                        <small
+                            id="seatPerRowError"
+                            class="field-error"
+                        ></small>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- Calculated Layout -->
+
+                <div class="seat-layout-calculation">
+
+
+                    <div>
+
 
                         <span>
-                            Selected Event
+                            Layout Total
                         </span>
 
-                        <strong id="seatMapSelectedEventName">
-                            -
+
+                        <strong id="seatLayoutTotal">
+                            0
+                        </strong>
+
+
+                    </div>
+
+
+                    <span class="seat-layout-symbol">
+                        /
+                    </span>
+
+
+                    <div>
+
+
+                        <span>
+                            Required Capacity
+                        </span>
+
+
+                        <strong id="seatRequiredCapacity">
+                            0
+                        </strong>
+
+
+                    </div>
+
+
+                </div>
+
+
+
+                <small
+                    id="seatLayoutHelper"
+                    class="form-helper-text"
+                >
+                    Rows × Seats Per Row must exactly match
+                    the selected event capacity.
+                </small>
+
+
+
+                <div class="form-actions">
+
+
+                    <button
+                        type="button"
+                        id="generateSeatsButton"
+                        class="btn btn-primary"
+                    >
+                        Generate Seat Layout
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             SEAT MAP CARD
+             ===================================================== -->
+
+        <section class="admin-card seat-map-card">
+
+
+            <div class="admin-card-header seat-map-header">
+
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        VISUAL LAYOUT
+                    </span>
+
+
+                    <h2>
+                        Seat Map
+                    </h2>
+
+
+                    <p>
+                        View the current seat status and
+                        manage seat availability.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    id="refreshSeatsButton"
+                    class="btn btn-refresh"
+                >
+                    Refresh
+                </button>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SEAT SUMMARY
+                 ================================================= -->
+
+            <div class="seat-summary-grid">
+
+
+                <div class="seat-summary-card seat-summary-available">
+
+
+                    <span class="seat-summary-dot"></span>
+
+
+                    <div>
+
+                        <span>
+                            Available
+                        </span>
+
+
+                        <strong id="availableSeatCount">
+                            0
                         </strong>
 
                     </div>
 
-                </section>
-
-
-
-                <!-- Loading -->
-
-                <div id="seatMapLoading"
-                     class="admin-seat-map-loading hidden">
-
-                    <div class="spinner"></div>
-
-                    <p>
-                        Loading seat map...
-                    </p>
 
                 </div>
 
 
 
-                <!-- =================================================
-                     EVENT CONTENT
-                     ================================================= -->
+                <div class="seat-summary-card seat-summary-held">
 
-                <section id="seatMapContent"
-                         class="hidden">
 
+                    <span class="seat-summary-dot"></span>
 
-                    <!-- Summary -->
 
-                    <section class="admin-seat-summary-grid">
+                    <div>
 
+                        <span>
+                            Held
+                        </span>
 
-                        <article class="admin-seat-summary-card">
 
-                            <span>
-                                Event Capacity
-                            </span>
+                        <strong id="heldSeatCount">
+                            0
+                        </strong>
 
-                            <strong id="seatMapEventCapacity">
-                                0
-                            </strong>
+                    </div>
 
-                        </article>
 
+                </div>
 
-                        <article class="admin-seat-summary-card">
 
-                            <span>
-                                Seats Created
-                            </span>
 
-                            <strong id="seatMapCreatedCount">
-                                0
-                            </strong>
+                <div class="seat-summary-card seat-summary-booked">
 
-                        </article>
 
+                    <span class="seat-summary-dot"></span>
 
-                        <article class="admin-seat-summary-card">
 
-                            <span>
-                                Available
-                            </span>
+                    <div>
 
-                            <strong id="seatMapAvailableCount">
-                                0
-                            </strong>
+                        <span>
+                            Booked
+                        </span>
 
-                        </article>
 
+                        <strong id="bookedSeatCount">
+                            0
+                        </strong>
 
-                        <article class="admin-seat-summary-card">
+                    </div>
 
-                            <span>
-                                Booked / Protected
-                            </span>
 
-                            <strong id="seatMapBookedCount">
-                                0
-                            </strong>
+                </div>
 
-                        </article>
 
 
-                    </section>
+                <div class="seat-summary-card seat-summary-unavailable">
 
 
+                    <span class="seat-summary-dot"></span>
 
-                    <!-- =================================================
-                         GENERATOR
-                         ================================================= -->
 
-                    <section id="seatMapGeneratorCard"
-                             class="admin-seat-builder-card">
+                    <div>
 
-                        <div class="admin-seat-card-header">
+                        <span>
+                            Unavailable
+                        </span>
 
-                            <div>
 
-                                <h2>
-                                    Generate Seat Map
-                                </h2>
+                        <strong id="unavailableSeatCount">
+                            0
+                        </strong>
 
-                                <p>
-                                    Define each row and the
-                                    number of seats in that row.
-                                </p>
+                    </div>
 
-                            </div>
 
-
-                            <button type="button"
-                                    id="addSeatRowButton"
-                                    class="btn btn-outline">
-                                + Add Row
-                            </button>
-
-                        </div>
-
-
-
-                        <div class="admin-seat-capacity-rule">
-
-                            <span>
-                                Required Event Capacity
-                            </span>
-
-                            <strong id="seatRequiredCapacity">
-                                0
-                            </strong>
-
-                            <span>
-                                Configured Seats
-                            </span>
-
-                            <strong id="seatConfiguredCount">
-                                0
-                            </strong>
-
-                            <span id="seatCapacityMatchStatus"
-                                  class="admin-seat-capacity-status">
-                                Configure rows
-                            </span>
-
-                        </div>
-
-
-
-                        <div class="admin-seat-row-headings">
-
-                            <span>
-                                Row
-                            </span>
-
-                            <span>
-                                Seats / Columns
-                            </span>
-
-                            <span>
-                                Price per Seat
-                            </span>
-
-                            <span>
-                                Action
-                            </span>
-
-                        </div>
-
-
-
-                        <div id="seatRowsContainer"
-                             class="admin-seat-rows">
-                        </div>
-
-
-
-                        <div class="admin-seat-generator-actions">
-
-
-                            <button type="button"
-                                    id="suggestSeatRowsButton"
-                                    class="btn btn-outline">
-                                Auto Arrange Rows
-                            </button>
-
-
-                            <button type="button"
-                                    id="generateSeatMapButton"
-                                    class="btn btn-primary">
-                                Generate Seat Map
-                            </button>
-
-
-                        </div>
-
-
-                        <div id="existingSeatMapWarning"
-                             class="admin-seat-existing-warning hidden">
-
-                            A seat map already exists for this
-                            event. Use the visual map below to
-                            manage individual unbooked seats.
-
-                        </div>
-
-
-                    </section>
-
-
-
-                    <!-- =================================================
-                         VISUAL MAP
-                         ================================================= -->
-
-                    <section class="admin-seat-builder-card">
-
-                        <div class="admin-seat-card-header">
-
-                            <div>
-
-                                <h2>
-                                    Visual Seat Map
-                                </h2>
-
-                                <p>
-                                    Click an available seat to
-                                    view or edit its details.
-                                </p>
-
-                            </div>
-
-
-                            <button type="button"
-                                    id="refreshSeatMapButton"
-                                    class="btn btn-outline">
-                                Refresh
-                            </button>
-
-                        </div>
-
-
-
-                        <!-- Legend -->
-
-                        <div class="admin-seat-legend">
-
-
-                            <span>
-
-                                <i class="admin-seat-legend-box available"></i>
-
-                                Available
-
-                            </span>
-
-
-                            <span>
-
-                                <i class="admin-seat-legend-box held"></i>
-
-                                Held
-
-                            </span>
-
-
-                            <span>
-
-                                <i class="admin-seat-legend-box booked"></i>
-
-                                Booked
-
-                            </span>
-
-
-                        </div>
-
-
-
-                        <!-- Stage -->
-
-                        <div class="admin-seat-stage">
-
-                            STAGE / EVENT AREA
-
-                        </div>
-
-
-
-                        <!-- Map -->
-
-                        <div id="adminSeatVisualMap"
-                             class="admin-seat-visual-map">
-                        </div>
-
-
-
-                        <!-- Empty -->
-
-                        <div id="adminSeatMapEmpty"
-                             class="admin-seat-map-empty hidden">
-
-                            <strong>
-                                No seat map generated
-                            </strong>
-
-                            <p>
-                                Configure the rows above and
-                                generate the seat map.
-                            </p>
-
-                        </div>
-
-
-                    </section>
-
-
-                </section>
-
-
-
-                <!-- No event -->
-
-                <section id="seatMapNoEvent"
-                         class="admin-seat-map-empty">
-
-                    <strong>
-                        Select an event
-                    </strong>
-
-                    <p>
-                        Choose an event to view or configure
-                        its seat map.
-                    </p>
-
-                </section>
+                </div>
 
 
             </div>
 
-        </main>
 
 
-    </div>
+            <!-- =================================================
+                 LEGEND
+                 ================================================= -->
+
+            <div class="seat-map-legend">
+
+
+                <div class="seat-legend-item">
+
+                    <span class="seat-legend-box available"></span>
+
+                    Available
+
+                </div>
+
+
+                <div class="seat-legend-item">
+
+                    <span class="seat-legend-box held"></span>
+
+                    Held
+
+                </div>
+
+
+                <div class="seat-legend-item">
+
+                    <span class="seat-legend-box booked"></span>
+
+                    Booked
+
+                </div>
+
+
+                <div class="seat-legend-item">
+
+                    <span class="seat-legend-box unavailable"></span>
+
+                    Unavailable
+
+                </div>
+
+
+            </div>
 
 
 
-    <!-- =====================================================
-         EDIT SEAT MODAL
-         ===================================================== -->
+            <!-- =================================================
+                 LOADING
+                 ================================================= -->
 
-    <div id="editSeatModal"
-         class="admin-form-modal">
+            <div
+                id="seatLoading"
+                class="admin-loading hidden"
+            >
 
-        <div class="admin-form-modal-dialog">
+
+                <div class="loading-dot"></div>
 
 
-            <div class="admin-form-modal-header">
+                <span>
+                    Loading seat map...
+                </span>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 EMPTY
+                 ================================================= -->
+
+            <div
+                id="seatEmptyState"
+                class="admin-empty-state"
+            >
+
+
+                <div class="empty-icon">
+                    S
+                </div>
+
+
+                <h3>
+                    Select an event
+                </h3>
+
+
+                <p>
+                    Choose an event to load or generate
+                    its seat layout.
+                </p>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 ACTUAL SEAT MAP
+                 ================================================= -->
+
+            <div
+                id="seatMapContent"
+                class="seat-map-content hidden"
+            >
+
+
+                <!-- Screen / Stage -->
+
+                <div class="seat-stage">
+
+
+                    <span>
+                        EVENT STAGE
+                    </span>
+
+
+                    <div class="seat-stage-line"></div>
+
+
+                    <small>
+                        All seats face this direction
+                    </small>
+
+
+                </div>
+
+
+
+                <!-- Generated Rows -->
+
+                <div
+                    id="seatRowsContainer"
+                    class="seat-rows-container"
+                >
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =====================================================
+             ROW PRICE MANAGEMENT
+             ===================================================== -->
+
+        <section class="admin-card seat-row-price-card">
+
+
+            <div class="admin-card-header">
+
 
                 <div>
 
-                    <span class="admin-page-label">
-                        SEAT DETAILS
+                    <span class="card-eyebrow">
+                        PRICING
                     </span>
 
-                    <h2 id="editSeatModalTitle">
-                        Edit Seat
+
+                    <h2>
+                        Row Price Override
                     </h2>
+
+
+                    <p>
+                        Apply a custom ticket price to
+                        every seat within a row.
+                    </p>
 
                 </div>
 
-
-                <button type="button"
-                        id="closeEditSeatButton"
-                        class="admin-modal-close">
-                    ×
-                </button>
 
             </div>
 
 
 
-            <form id="editSeatForm"
-                  novalidate>
-
-                <input type="hidden"
-                       id="editSeatId">
-
+            <form
+                id="rowPriceForm"
+                novalidate
+            >
 
 
-                <div class="admin-seat-edit-grid">
+                <div class="seat-row-price-grid">
 
 
                     <div class="form-group">
 
-                        <label for="editSeatNumber">
-                            Seat Number
-                        </label>
 
-                        <input type="text"
-                               id="editSeatNumber"
-                               class="form-control">
-
-                        <small id="editSeatNumberError"
-                               class="field-error"></small>
-
-                    </div>
-
-
-
-                    <div class="form-group">
-
-                        <label for="editSeatRow">
+                        <label for="rowPriceLabel">
                             Row
                         </label>
 
-                        <input type="text"
-                               id="editSeatRow"
-                               class="form-control">
+
+                        <select id="rowPriceLabel">
+
+                            <option value="">
+                                Select row
+                            </option>
+
+                        </select>
+
+
+                        <small
+                            id="rowPriceLabelError"
+                            class="field-error"
+                        ></small>
+
 
                     </div>
 
@@ -557,33 +810,80 @@
 
                     <div class="form-group">
 
-                        <label for="editSeatColumn">
-                            Column Number
+
+                        <label for="rowPriceOverride">
+                            Price Override
                         </label>
 
-                        <input type="number"
-                               id="editSeatColumn"
-                               class="form-control"
-                               min="1">
+
+                        <div class="seat-price-input">
+
+
+                            <span>
+                                Rs.
+                            </span>
+
+
+                            <input
+                                type="number"
+                                id="rowPriceOverride"
+                                min="0"
+                                step="0.01"
+                                placeholder="3500"
+                            >
+
+
+                        </div>
+
+
+                        <small class="form-helper-text">
+                            Leave empty to use the event's default ticket price.
+                        </small>
+
+
+                        <small
+                            id="rowPriceOverrideError"
+                            class="field-error"
+                        ></small>
+
 
                     </div>
 
 
+                </div>
 
-                    <div class="form-group">
 
-                        <label for="editSeatPrice">
-                            Seat Price (LKR)
-                        </label>
 
-                        <input type="number"
-                               id="editSeatPrice"
-                               class="form-control"
-                               min="0"
-                               step="0.01">
+                <div
+                    id="rowPriceCurrentInfo"
+                    class="row-price-info hidden"
+                >
 
-                        <small id="editSeatPriceError"
-                               class="field-error"></small>
+
+                    <div>
+
+                        <span>
+                            Event Base Price
+                        </span>
+
+
+                        <strong id="rowEventBasePrice">
+                            Rs. 0
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Current Row Price
+                        </span>
+
+
+                        <strong id="rowCurrentPrice">
+                            Rs. 0
+                        </strong>
 
                     </div>
 
@@ -592,52 +892,24 @@
 
 
 
-                <div class="admin-seat-status-info">
-
-                    <span>
-                        Current Status
-                    </span>
-
-                    <strong id="editSeatStatus">
-                        Available
-                    </strong>
-
-                </div>
+                <div class="form-actions">
 
 
-
-                <div id="protectedSeatMessage"
-                     class="admin-seat-protected-message hidden">
-
-                    This seat is protected by an active
-                    booking/hold. It cannot be renumbered
-                    or deleted from this screen.
-
-                </div>
-
-
-
-                <div class="admin-form-modal-actions">
-
-
-                    <button type="button"
-                            id="deleteSeatButton"
-                            class="btn btn-danger">
-                        Delete Seat
+                    <button
+                        type="submit"
+                        id="updateRowPriceButton"
+                        class="btn btn-primary"
+                    >
+                        Update Row Price
                     </button>
 
 
-                    <button type="button"
-                            id="cancelEditSeatButton"
-                            class="btn btn-outline">
-                        Close
-                    </button>
-
-
-                    <button type="submit"
-                            id="saveSeatButton"
-                            class="btn btn-primary">
-                        Save Changes
+                    <button
+                        type="button"
+                        id="resetRowPriceButton"
+                        class="btn btn-secondary"
+                    >
+                        Use Event Price
                     </button>
 
 
@@ -647,19 +919,216 @@
             </form>
 
 
-        </div>
-
-    </div>
+        </section>
 
 
 
-    <!-- Confirmation -->
+        <!-- =====================================================
+             SELECTED SEAT MANAGEMENT
+             ===================================================== -->
 
-    <div id="confirmationModalContainer"></div>
+        <section class="admin-card selected-seat-card">
+
+
+            <div class="admin-card-header">
+
+
+                <div>
+
+                    <span class="card-eyebrow">
+                        INDIVIDUAL SEAT
+                    </span>
+
+
+                    <h2>
+                        Seat Status
+                    </h2>
+
+
+                    <p>
+                        Select a seat from the map to
+                        inspect or update its status.
+                    </p>
+
+                </div>
+
+
+            </div>
 
 
 
-    <!-- JS -->
+            <div
+                id="noSeatSelected"
+                class="selected-seat-empty"
+            >
+
+
+                <div class="selected-seat-empty-icon">
+                    S
+                </div>
+
+
+                <strong>
+                    No seat selected
+                </strong>
+
+
+                <span>
+                    Click any seat in the visual map.
+                </span>
+
+
+            </div>
+
+
+
+            <div
+                id="selectedSeatPanel"
+                class="selected-seat-panel hidden"
+            >
+
+
+                <div class="selected-seat-title">
+
+
+                    <div>
+
+
+                        <span>
+                            SELECTED SEAT
+                        </span>
+
+
+                        <strong id="selectedSeatNumber">
+                            A1
+                        </strong>
+
+
+                    </div>
+
+
+                    <span
+                        id="selectedSeatStatusBadge"
+                        class="seat-status-badge available"
+                    >
+                        Available
+                    </span>
+
+
+                </div>
+
+
+
+                <div class="selected-seat-details">
+
+
+                    <div>
+
+                        <span>
+                            Row
+                        </span>
+
+
+                        <strong id="selectedSeatRow">
+                            A
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Column
+                        </span>
+
+
+                        <strong id="selectedSeatColumn">
+                            1
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Effective Price
+                        </span>
+
+
+                        <strong id="selectedSeatPrice">
+                            Rs. 0
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <div class="form-group">
+
+
+                    <label for="selectedSeatStatus">
+                        Change Status
+                    </label>
+
+
+                    <select id="selectedSeatStatus">
+
+                        <option value="Available">
+                            Available
+                        </option>
+
+                        <option value="Held">
+                            Held
+                        </option>
+
+                        <option value="Booked">
+                            Booked
+                        </option>
+
+                        <option value="Unavailable">
+                            Unavailable
+                        </option>
+
+                    </select>
+
+
+                </div>
+
+
+
+                <div class="form-actions">
+
+
+                    <button
+                        type="button"
+                        id="updateSeatStatusButton"
+                        class="btn btn-primary"
+                    >
+                        Update Seat Status
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
 
     <script src="../../js/config.js"></script>
 
@@ -667,7 +1136,7 @@
 
     <script src="../../js/common.js"></script>
 
-    <script src="../../js/admin/seat-map-builder.js"></script>
+  <script src="../../js/admin/seat-map-builder.js"></script>
 
 
 </body>

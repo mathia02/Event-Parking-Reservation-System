@@ -1,239 +1,86 @@
 ﻿/* =========================================================
-   Event & Parking Reservation System
-   Admin Seat Map Builder
+   EventPark
+   Premium Admin Seat Map Builder
    ========================================================= */
 
 
-let seatMapEvents = [];
+/* =========================================================
+   STATE
+   ========================================================= */
 
-let selectedSeatMapEventId = null;
+let seatEvents = [];
 
-let selectedSeatMapEvent = null;
+let currentSeats = [];
 
-let adminSeatMapSeats = [];
+let selectedEventId = null;
 
-let selectedAdminSeat = null;
+let selectedEvent = null;
 
-let seatMapGenerateInProgress = false;
-
-let seatActionInProgress = false;
+let selectedSeat = null;
 
 
 /* =========================================================
-   START
+   PAGE LOAD
    ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    async function () {
 
-        initializeAdminSeatMapBuilder();
+        initializeSeatPageEvents();
+
+        initializeLayoutCalculation();
+
+        await loadSeatEvents();
     }
 );
 
 
 /* =========================================================
-   INITIALIZE
+   INITIALIZE PAGE EVENTS
    ========================================================= */
 
-async function initializeAdminSeatMapBuilder() {
-
-    if (!validateSeatMapAdminAccess()) {
-        return;
-    }
-
-
-    await loadSeatMapAdminSidebar();
-
-
-    initializeSeatMapControls();
-
-
-    await loadSeatMapEvents();
-}
-
-
-/* =========================================================
-   ACCESS
-   ========================================================= */
-
-function validateSeatMapAdminAccess() {
-
-    const token =
-        localStorage.getItem(
-            APP_CONFIG.STORAGE_KEYS.TOKEN
-        );
-
-
-    const role =
-        String(
-            localStorage.getItem(
-                APP_CONFIG.STORAGE_KEYS.ROLE
-            ) || ""
-        )
-            .trim()
-            .toLowerCase();
-
-
-    if (!token) {
-
-        window.location.href =
-            "../auth/login.html";
-
-        return false;
-    }
-
-
-    if (
-        role !== "admin" &&
-        role !== "administrator"
-    ) {
-
-        window.location.href =
-            "../auth/login.html";
-
-        return false;
-    }
-
-
-    return true;
-}
-
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-
-async function loadSeatMapAdminSidebar() {
-
-    await loadComponent(
-        "adminSidebarContainer",
-        "components/admin-sidebar.html"
-    );
-
-
-    document
-        .querySelectorAll(
-            "[data-admin-page]"
-        )
-        .forEach(
-            function (link) {
-
-                link.classList.remove(
-                    "active"
-                );
-
-
-                if (
-                    link.dataset.adminPage ===
-                    "seat-map"
-                ) {
-
-                    link.classList.add(
-                        "active"
-                    );
-                }
-            }
-        );
-
-
-    const logout =
-        document.getElementById(
-            "adminSidebarLogoutButton"
-        );
-
-
-    if (logout) {
-
-        logout.addEventListener(
-            "click",
-            function () {
-
-                localStorage.removeItem(
-                    APP_CONFIG.STORAGE_KEYS.TOKEN
-                );
-
-                localStorage.removeItem(
-                    APP_CONFIG.STORAGE_KEYS.USER
-                );
-
-                localStorage.removeItem(
-                    APP_CONFIG.STORAGE_KEYS.ROLE
-                );
-
-                localStorage.removeItem(
-                    APP_CONFIG.STORAGE_KEYS.CUSTOMER_ID
-                );
-
-
-                sessionStorage.clear();
-
-
-                window.location.href =
-                    "../auth/login.html";
-            }
-        );
-    }
-}
-
-
-/* =========================================================
-   CONTROLS
-   ========================================================= */
-
-function initializeSeatMapControls() {
+function initializeSeatPageEvents() {
 
     const eventSelect =
         document.getElementById(
-            "seatMapEventSelect"
-        );
-
-
-    const addRowButton =
-        document.getElementById(
-            "addSeatRowButton"
-        );
-
-
-    const suggestButton =
-        document.getElementById(
-            "suggestSeatRowsButton"
+            "seatEventSelect"
         );
 
 
     const generateButton =
         document.getElementById(
-            "generateSeatMapButton"
+            "generateSeatsButton"
         );
 
 
     const refreshButton =
         document.getElementById(
-            "refreshSeatMapButton"
+            "refreshSeatsButton"
         );
 
 
-    const closeEditButton =
+    const rowPriceForm =
         document.getElementById(
-            "closeEditSeatButton"
+            "rowPriceForm"
         );
 
 
-    const cancelEditButton =
+    const resetRowPriceButton =
         document.getElementById(
-            "cancelEditSeatButton"
+            "resetRowPriceButton"
         );
 
 
-    const editForm =
+    const rowPriceSelect =
         document.getElementById(
-            "editSeatForm"
+            "rowPriceLabel"
         );
 
 
-    const deleteButton =
+    const updateSeatStatusButton =
         document.getElementById(
-            "deleteSeatButton"
+            "updateSeatStatusButton"
         );
 
 
@@ -241,39 +88,7 @@ function initializeSeatMapControls() {
 
         eventSelect.addEventListener(
             "change",
-            async function () {
-
-                await selectSeatMapEvent(
-                    this.value
-                );
-            }
-        );
-    }
-
-
-    if (addRowButton) {
-
-        addRowButton.addEventListener(
-            "click",
-            function () {
-
-                addSeatConfigurationRow(
-                    1,
-                    getSelectedEventTicketPrice()
-                );
-
-
-                updateSeatConfigurationTotal();
-            }
-        );
-    }
-
-
-    if (suggestButton) {
-
-        suggestButton.addEventListener(
-            "click",
-            createSuggestedSeatRows
+            handleSeatEventChange
         );
     }
 
@@ -282,7 +97,7 @@ function initializeSeatMapControls() {
 
         generateButton.addEventListener(
             "click",
-            generateAdminSeatMap
+            generateSeatLayout
         );
     }
 
@@ -293,94 +108,107 @@ function initializeSeatMapControls() {
             "click",
             async function () {
 
-                if (
-                    selectedSeatMapEventId
-                ) {
+                if (!selectedEventId) {
 
-                    await loadSelectedEventAndSeatMap();
+                    showSeatMessage(
+                        "Please select an event first.",
+                        "error"
+                    );
+
+
+                    return;
                 }
+
+
+                await loadSeatsForSelectedEvent();
             }
         );
     }
 
 
-    if (closeEditButton) {
+    if (rowPriceForm) {
 
-        closeEditButton.addEventListener(
-            "click",
-            closeSeatEditModal
-        );
-    }
-
-
-    if (cancelEditButton) {
-
-        cancelEditButton.addEventListener(
-            "click",
-            closeSeatEditModal
-        );
-    }
-
-
-    if (editForm) {
-
-        editForm.addEventListener(
+        rowPriceForm.addEventListener(
             "submit",
-            updateAdminSeat
+            updateRowPrice
         );
     }
 
 
-    if (deleteButton) {
+    if (resetRowPriceButton) {
 
-        deleteButton.addEventListener(
+        resetRowPriceButton.addEventListener(
             "click",
-            confirmDeleteAdminSeat
+            resetRowPrice
         );
     }
 
 
-    initializeSeatEditModalBackground();
+    if (rowPriceSelect) {
+
+        rowPriceSelect.addEventListener(
+            "change",
+            updateSelectedRowPriceInfo
+        );
+    }
+
+
+    if (updateSeatStatusButton) {
+
+        updateSeatStatusButton.addEventListener(
+            "click",
+            saveSelectedSeatStatus
+        );
+    }
 }
 
 
 /* =========================================================
-   MODAL BACKGROUND
+   INITIALIZE ROW × SEAT CALCULATION
    ========================================================= */
 
-function initializeSeatEditModalBackground() {
+function initializeLayoutCalculation() {
 
-    const modal =
+    const rowInput =
         document.getElementById(
-            "editSeatModal"
+            "seatRows"
         );
 
 
-    if (!modal) {
-        return;
+    const perRowInput =
+        document.getElementById(
+            "seatPerRow"
+        );
+
+
+    if (rowInput) {
+
+        rowInput.addEventListener(
+            "input",
+            updateSeatLayoutCalculation
+        );
     }
 
 
-    modal.addEventListener(
-        "click",
-        function (event) {
+    if (perRowInput) {
 
-            if (
-                event.target === modal
-            ) {
+        perRowInput.addEventListener(
+            "input",
+            updateSeatLayoutCalculation
+        );
+    }
 
-                closeSeatEditModal();
-            }
-        }
-    );
+
+    updateSeatLayoutCalculation();
 }
 
 
 /* =========================================================
    LOAD EVENTS
+   GET /api/Events
    ========================================================= */
 
-async function loadSeatMapEvents() {
+async function loadSeatEvents() {
 
     try {
 
@@ -390,53 +218,25 @@ async function loadSeatMapEvents() {
             );
 
 
-        seatMapEvents =
-            normalizeSeatMapArray(
-                response,
-                "events"
-            );
+        seatEvents =
+            Array.isArray(response)
+                ? response
+                : response?.data || [];
 
 
-        populateSeatMapEventSelect();
+        populateSeatEventDropdown();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Load Seat Events Error:",
+            error
+        );
 
 
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
-
-
-        const urlEventId =
-            params.get(
-                "eventId"
-            );
-
-
-        if (urlEventId) {
-
-            const select =
-                document.getElementById(
-                    "seatMapEventSelect"
-                );
-
-
-            if (select) {
-
-                select.value =
-                    urlEventId;
-            }
-
-
-            await selectSeatMapEvent(
-                urlEventId
-            );
-        }
-
-
-    } catch (error) {
-
-        showSeatMapMessage(
-            error.message ||
+        showSeatMessage(
+            error?.message ||
             "Unable to load events.",
             "error"
         );
@@ -445,28 +245,33 @@ async function loadSeatMapEvents() {
 
 
 /* =========================================================
-   POPULATE EVENTS
+   POPULATE EVENT SELECT
    ========================================================= */
 
-function populateSeatMapEventSelect() {
+function populateSeatEventDropdown() {
 
     const select =
         document.getElementById(
-            "seatMapEventSelect"
+            "seatEventSelect"
         );
 
 
     if (!select) {
+
         return;
     }
 
 
     select.innerHTML =
-        `<option value="">Select an event</option>`;
+        `
+        <option value="">
+            Select an event
+        </option>
+        `;
 
 
-    seatMapEvents.forEach(
-        function (event) {
+    seatEvents.forEach(
+        function (eventItem) {
 
             const option =
                 document.createElement(
@@ -475,15 +280,11 @@ function populateSeatMapEventSelect() {
 
 
             option.value =
-                getSeatMapEventId(
-                    event
-                );
+                eventItem.id;
 
 
             option.textContent =
-                getSeatMapEventName(
-                    event
-                );
+                `${eventItem.name} — Capacity ${eventItem.capacity}`;
 
 
             select.appendChild(
@@ -495,1019 +296,619 @@ function populateSeatMapEventSelect() {
 
 
 /* =========================================================
-   SELECT EVENT
+   EVENT CHANGE
    ========================================================= */
 
-async function selectSeatMapEvent(
-    eventId
+async function handleSeatEventChange(
+    event
 ) {
 
-    clearSeatMapMessage();
+    clearSeatMessage();
+
+    clearSeatErrors();
+
+
+    const eventId =
+        Number(
+            event.target.value
+        );
 
 
     if (!eventId) {
 
-        selectedSeatMapEventId =
-            null;
-
-
-        selectedSeatMapEvent =
-            null;
-
-
-        adminSeatMapSeats =
-            [];
-
-
-        showSeatMapNoEvent();
-
+        resetSeatPage();
 
         return;
     }
 
 
-    selectedSeatMapEventId =
+    selectedEventId =
         eventId;
 
 
-    const url =
-        new URL(
-            window.location.href
-        );
+    selectedEvent =
+        seatEvents.find(
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(eventId);
+            }
+        ) || null;
 
 
-    url.searchParams.set(
-        "eventId",
-        eventId
-    );
+    selectedSeat =
+        null;
 
 
-    window.history.replaceState(
-        {},
-        "",
-        url
-    );
+    updateSelectedEventInformation();
 
+    updateSeatLayoutCalculation();
 
-    await loadSelectedEventAndSeatMap();
+    await loadSeatsForSelectedEvent();
 }
 
 
 /* =========================================================
-   LOAD EVENT + SEATS
+   SELECTED EVENT INFO
    ========================================================= */
 
-async function loadSelectedEventAndSeatMap() {
+function updateSelectedEventInformation() {
 
-    showSeatMapLoading();
-
-
-    try {
-
-        const results =
-            await Promise.all([
-
-                apiGet(
-                    `/events/${encodeURIComponent(
-                        selectedSeatMapEventId
-                    )}`
-                ),
-
-                apiGet(
-                    `/events/${encodeURIComponent(
-                        selectedSeatMapEventId
-                    )}/seats`
-                )
-
-            ]);
-
-
-        selectedSeatMapEvent =
-            results[0]?.data ||
-            results[0]?.event ||
-            results[0];
-
-
-        adminSeatMapSeats =
-            normalizeSeatMapArray(
-                results[1],
-                "seats"
-            );
-
-
-        renderSeatMapEventInformation();
-
-        renderSeatMapSummary();
-
-        renderAdminSeatVisualMap();
-
-        configureSeatMapGenerator();
-
-
-        hideSeatMapLoading();
-
-        showSeatMapContent();
-
-
-    } catch (error) {
-
-        console.error(
-            "Seat Map Load Error:",
-            error
+    const container =
+        document.getElementById(
+            "selectedEventInfo"
         );
 
 
-        hideSeatMapLoading();
+    const nameElement =
+        document.getElementById(
+            "selectedEventName"
+        );
 
 
-        /*
-         * Some backends may return 404
-         * when a seat map has not yet
-         * been generated.
-         */
-
-        if (
-            error.status === 404 &&
-            selectedSeatMapEventId
-        ) {
-
-            try {
-
-                const eventResponse =
-                    await apiGet(
-                        `/events/${encodeURIComponent(
-                            selectedSeatMapEventId
-                        )}`
-                    );
+    const metaElement =
+        document.getElementById(
+            "selectedEventMeta"
+        );
 
 
-                selectedSeatMapEvent =
-                    eventResponse?.data ||
-                    eventResponse?.event ||
-                    eventResponse;
+    const selectedCapacity =
+        document.getElementById(
+            "selectedEventCapacity"
+        );
 
 
-                adminSeatMapSeats =
-                    [];
+    const headerCapacity =
+        document.getElementById(
+            "seatEventCapacity"
+        );
 
 
-                renderSeatMapEventInformation();
-
-                renderSeatMapSummary();
-
-                renderAdminSeatVisualMap();
-
-                configureSeatMapGenerator();
+    const requiredCapacity =
+        document.getElementById(
+            "seatRequiredCapacity"
+        );
 
 
-                showSeatMapContent();
+    if (!selectedEvent) {
 
+        if (container) {
 
-                return;
-
-            } catch (eventError) {
-
-                console.error(
-                    eventError
-                );
-            }
+            container.classList.add(
+                "hidden"
+            );
         }
 
 
-        showSeatMapMessage(
-            error.message ||
-            "Unable to load the seat map.",
-            "error"
-        );
-    }
-}
-
-
-/* =========================================================
-   NORMALIZE ARRAY
-   ========================================================= */
-
-function normalizeSeatMapArray(
-    response,
-    collectionName
-) {
-
-    if (
-        Array.isArray(response)
-    ) {
-
-        return response;
-    }
-
-
-    if (
-        Array.isArray(
-            response?.data
-        )
-    ) {
-
-        return response.data;
-    }
-
-
-    if (
-        Array.isArray(
-            response?.items
-        )
-    ) {
-
-        return response.items;
-    }
-
-
-    if (
-        Array.isArray(
-            response?.[collectionName]
-        )
-    ) {
-
-        return response[
-            collectionName
-        ];
-    }
-
-
-    /*
-     * Some seat-map APIs return:
-     *
-     * {
-     *   seats: [...]
-     * }
-     */
-
-    if (
-        collectionName === "seats" &&
-        Array.isArray(
-            response?.seatMap?.seats
-        )
-    ) {
-
-        return response.seatMap.seats;
-    }
-
-
-    return [];
-}
-
-
-/* =========================================================
-   EVENT INFO
-   ========================================================= */
-
-function renderSeatMapEventInformation() {
-
-    setSeatMapText(
-        "seatMapSelectedEventName",
-        getSeatMapEventName(
-            selectedSeatMapEvent
-        )
-    );
-
-
-    const capacity =
-        getSeatMapEventCapacity(
-            selectedSeatMapEvent
-        );
-
-
-    setSeatMapText(
-        "seatMapEventCapacity",
-        capacity
-    );
-
-
-    setSeatMapText(
-        "seatRequiredCapacity",
-        capacity
-    );
-}
-
-
-/* =========================================================
-   SUMMARY
-   ========================================================= */
-
-function renderSeatMapSummary() {
-
-    const available =
-        adminSeatMapSeats.filter(
-            function (seat) {
-
-                return (
-                    getAdminSeatStatus(
-                        seat
-                    ) ===
-                    "available"
-                );
-            }
-        ).length;
-
-
-    const protectedCount =
-        adminSeatMapSeats.length -
-        available;
-
-
-    setSeatMapText(
-        "seatMapCreatedCount",
-        adminSeatMapSeats.length
-    );
-
-
-    setSeatMapText(
-        "seatMapAvailableCount",
-        available
-    );
-
-
-    setSeatMapText(
-        "seatMapBookedCount",
-        protectedCount
-    );
-}
-
-
-/* =========================================================
-   GENERATOR STATE
-   ========================================================= */
-
-function configureSeatMapGenerator() {
-
-    const existing =
-        adminSeatMapSeats.length >
-        0;
-
-
-    const warning =
-        document.getElementById(
-            "existingSeatMapWarning"
-        );
-
-
-    const generateButton =
-        document.getElementById(
-            "generateSeatMapButton"
-        );
-
-
-    const addButton =
-        document.getElementById(
-            "addSeatRowButton"
-        );
-
-
-    const suggestButton =
-        document.getElementById(
-            "suggestSeatRowsButton"
-        );
-
-
-    if (warning) {
-
-        warning.classList.toggle(
-            "hidden",
-            !existing
-        );
-    }
-
-
-    if (generateButton) {
-
-        generateButton.disabled =
-            existing;
-    }
-
-
-    if (addButton) {
-
-        addButton.disabled =
-            existing;
-    }
-
-
-    if (suggestButton) {
-
-        suggestButton.disabled =
-            existing;
-    }
-
-
-    if (!existing) {
-
-        createSuggestedSeatRows();
-
-    } else {
-
-        clearSeatConfigurationRows();
-
-        updateSeatConfigurationTotal();
-    }
-}
-
-
-/* =========================================================
-   AUTO ROW ARRANGEMENT
-   ========================================================= */
-
-function createSuggestedSeatRows() {
-
-    if (
-        adminSeatMapSeats.length >
-        0
-    ) {
-
         return;
     }
-
-
-    const capacity =
-        getSeatMapEventCapacity(
-            selectedSeatMapEvent
-        );
-
-
-    if (
-        capacity <= 0
-    ) {
-
-        return;
-    }
-
-
-    clearSeatConfigurationRows();
-
-
-    /*
-     * Simple readable layout:
-     * maximum 20 seats per row.
-     *
-     * Example:
-     * Capacity 50
-     * A = 20
-     * B = 20
-     * C = 10
-     */
-
-    const maximumPerRow =
-        20;
-
-
-    let remaining =
-        capacity;
-
-
-    const price =
-        getSelectedEventTicketPrice();
-
-
-    while (
-        remaining > 0
-    ) {
-
-        const seatsInRow =
-            Math.min(
-                remaining,
-                maximumPerRow
-            );
-
-
-        addSeatConfigurationRow(
-            seatsInRow,
-            price
-        );
-
-
-        remaining -=
-            seatsInRow;
-    }
-
-
-    updateSeatConfigurationTotal();
-}
-
-
-/* =========================================================
-   ADD CONFIG ROW
-   ========================================================= */
-
-function addSeatConfigurationRow(
-    seatCount = 1,
-    rowPrice = 0
-) {
-
-    const container =
-        document.getElementById(
-            "seatRowsContainer"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    const rowIndex =
-        container.children.length;
-
-
-    const rowLabel =
-        convertSeatRowIndexToLabel(
-            rowIndex
-        );
-
-
-    const row =
-        document.createElement(
-            "div"
-        );
-
-
-    row.className =
-        "admin-seat-row-config";
-
-
-    row.innerHTML = `
-
-        <div
-            class="admin-seat-row-label"
-            data-seat-row-label
-        >
-            ${escapeSeatMapHtml(rowLabel)}
-        </div>
-
-
-        <input
-            type="number"
-            class="form-control"
-            data-seat-count
-            min="1"
-            step="1"
-            value="${Number(seatCount) || 1}"
-            aria-label="Seats in row ${escapeSeatMapHtml(rowLabel)}"
-        >
-
-
-        <input
-            type="number"
-            class="form-control"
-            data-row-price
-            min="0"
-            step="0.01"
-            value="${Number(rowPrice) || 0}"
-            aria-label="Price for row ${escapeSeatMapHtml(rowLabel)}"
-        >
-
-
-        <button
-            type="button"
-            class="btn btn-danger admin-seat-remove-row"
-        >
-            Remove
-        </button>
-    `;
-
-
-    row
-        .querySelectorAll(
-            "input"
-        )
-        .forEach(
-            function (input) {
-
-                input.addEventListener(
-                    "input",
-                    updateSeatConfigurationTotal
-                );
-            }
-        );
-
-
-    row
-        .querySelector(
-            ".admin-seat-remove-row"
-        )
-        ?.addEventListener(
-            "click",
-            function () {
-
-                row.remove();
-
-
-                refreshSeatRowLabels();
-
-                updateSeatConfigurationTotal();
-            }
-        );
-
-
-    container.appendChild(
-        row
-    );
-}
-
-
-/* =========================================================
-   ROW LABELS
-   ========================================================= */
-
-function refreshSeatRowLabels() {
-
-    document
-        .querySelectorAll(
-            "#seatRowsContainer .admin-seat-row-config"
-        )
-        .forEach(
-            function (row, index) {
-
-                const label =
-                    convertSeatRowIndexToLabel(
-                        index
-                    );
-
-
-                const element =
-                    row.querySelector(
-                        "[data-seat-row-label]"
-                    );
-
-
-                if (element) {
-
-                    element.textContent =
-                        label;
-                }
-            }
-        );
-}
-
-
-/* =========================================================
-   A, B, C ... Z, AA
-   ========================================================= */
-
-function convertSeatRowIndexToLabel(
-    index
-) {
-
-    let value =
-        Number(index) + 1;
-
-
-    let result =
-        "";
-
-
-    while (
-        value > 0
-    ) {
-
-        value--;
-
-
-        result =
-            String.fromCharCode(
-                65 +
-                (
-                    value %
-                    26
-                )
-            ) +
-            result;
-
-
-        value =
-            Math.floor(
-                value /
-                26
-            );
-    }
-
-
-    return result;
-}
-
-
-/* =========================================================
-   CLEAR CONFIG ROWS
-   ========================================================= */
-
-function clearSeatConfigurationRows() {
-
-    const container =
-        document.getElementById(
-            "seatRowsContainer"
-        );
 
 
     if (container) {
 
-        container.innerHTML =
-            "";
+        container.classList.remove(
+            "hidden"
+        );
     }
-}
 
 
-/* =========================================================
-   CONFIGURED TOTAL
-   ========================================================= */
+    if (nameElement) {
 
-function updateSeatConfigurationTotal() {
+        nameElement.textContent =
+            selectedEvent.name;
+    }
 
-    const total =
-        getConfiguredSeatRows()
-            .reduce(
-                function (
-                    sum,
-                    row
-                ) {
 
-                    return (
-                        sum +
-                        row.seatCount
-                    );
-                },
-                0
+    if (metaElement) {
+
+        const venue =
+            selectedEvent.venueName ||
+            "Venue unavailable";
+
+
+        const category =
+            selectedEvent.categoryName ||
+            "Uncategorized";
+
+
+        const date =
+            formatSeatEventDate(
+                selectedEvent.eventDate
             );
 
 
+        metaElement.textContent =
+            `${venue} • ${category} • ${date}`;
+    }
+
+
     const capacity =
-        getSeatMapEventCapacity(
-            selectedSeatMapEvent
+        Number(
+            selectedEvent.capacity || 0
         );
 
 
-    setSeatMapText(
-        "seatConfiguredCount",
-        total
+    if (selectedCapacity) {
+
+        selectedCapacity.textContent =
+            capacity.toLocaleString();
+    }
+
+
+    if (headerCapacity) {
+
+        headerCapacity.textContent =
+            capacity.toLocaleString();
+    }
+
+
+    if (requiredCapacity) {
+
+        requiredCapacity.textContent =
+            capacity.toLocaleString();
+    }
+}
+
+
+/* =========================================================
+   LOAD SEATS
+   GET /api/events/{eventId}/seats
+   ========================================================= */
+
+async function loadSeatsForSelectedEvent() {
+
+    if (!selectedEventId) {
+
+        return;
+    }
+
+
+    showSeatLoading(
+        true
     );
 
 
+    try {
+
+        const response =
+            await apiGet(
+                `/events/${selectedEventId}/seats`
+            );
+
+
+        currentSeats =
+            Array.isArray(response)
+                ? response
+                : response?.data || [];
+
+
+        updateGeneratedSeatCount();
+
+        updateGenerationStatus();
+
+        updateSeatSummary();
+
+        renderSeatMap();
+
+        populateRowPriceDropdown();
+
+        clearSelectedSeat();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Load Seats Error:",
+            error
+        );
+
+
+        currentSeats =
+            [];
+
+
+        updateGeneratedSeatCount();
+
+        updateGenerationStatus();
+
+        updateSeatSummary();
+
+        renderSeatMap();
+
+
+        showSeatMessage(
+            error?.message ||
+            "Unable to load the seat map.",
+            "error"
+        );
+
+    }
+    finally {
+
+        showSeatLoading(
+            false
+        );
+    }
+}
+
+
+/* =========================================================
+   GENERATED COUNT
+   ========================================================= */
+
+function updateGeneratedSeatCount() {
+
+    const element =
+        document.getElementById(
+            "seatGeneratedCount"
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            currentSeats.length
+                .toLocaleString();
+    }
+}
+
+
+/* =========================================================
+   GENERATION STATUS
+   ========================================================= */
+
+function updateGenerationStatus() {
+
     const status =
         document.getElementById(
-            "seatCapacityMatchStatus"
+            "seatGenerationStatus"
         );
-
-
-    if (!status) {
-        return;
-    }
-
-
-    status.className =
-        "admin-seat-capacity-status";
-
-
-    if (
-        total === capacity &&
-        capacity > 0
-    ) {
-
-        status.textContent =
-            "Exact Match ✓";
-
-
-        status.classList.add(
-            "match"
-        );
-
-
-    } else {
-
-        const difference =
-            capacity -
-            total;
-
-
-        if (
-            difference > 0
-        ) {
-
-            status.textContent =
-                `${difference} seats missing`;
-
-        } else if (
-            difference < 0
-        ) {
-
-            status.textContent =
-                `${Math.abs(difference)} seats over capacity`;
-
-        } else {
-
-            status.textContent =
-                "Configure rows";
-        }
-
-
-        status.classList.add(
-            "invalid"
-        );
-    }
-}
-
-
-/* =========================================================
-   GET ROW CONFIG
-   ========================================================= */
-
-function getConfiguredSeatRows() {
-
-    return Array.from(
-        document.querySelectorAll(
-            "#seatRowsContainer .admin-seat-row-config"
-        )
-    )
-        .map(
-            function (row) {
-
-                const count =
-                    Number(
-                        row
-                            .querySelector(
-                                "[data-seat-count]"
-                            )
-                            ?.value ||
-                        0
-                    );
-
-
-                const price =
-                    Number(
-                        row
-                            .querySelector(
-                                "[data-row-price]"
-                            )
-                            ?.value ||
-                        0
-                    );
-
-
-                return {
-
-                    seatCount:
-                        Number.isInteger(count)
-                            ? count
-                            : 0,
-
-                    rowPrice:
-                        Number.isNaN(price)
-                            ? 0
-                            : price
-                };
-            }
-        );
-}
-
-
-/* =========================================================
-   GENERATE MAP
-   ========================================================= */
-
-async function generateAdminSeatMap() {
-
-    if (
-        seatMapGenerateInProgress ||
-        !selectedSeatMapEventId
-    ) {
-
-        return;
-    }
-
-
-    clearSeatMapMessage();
-
-
-    if (
-        adminSeatMapSeats.length >
-        0
-    ) {
-
-        showSeatMapMessage(
-            "A seat map already exists for this event.",
-            "error"
-        );
-
-
-        return;
-    }
-
-
-    const rows =
-        getConfiguredSeatRows();
-
-
-    if (
-        rows.length === 0
-    ) {
-
-        showSeatMapMessage(
-            "Add at least one seat row.",
-            "error"
-        );
-
-
-        return;
-    }
-
-
-    const invalidRow =
-        rows.some(
-            function (row) {
-
-                return (
-                    row.seatCount <= 0 ||
-                    row.rowPrice < 0
-                );
-            }
-        );
-
-
-    if (invalidRow) {
-
-        showSeatMapMessage(
-            "Every row must contain at least one seat and the price cannot be negative.",
-            "error"
-        );
-
-
-        return;
-    }
-
-
-    const configuredTotal =
-        rows.reduce(
-            function (total, row) {
-
-                return (
-                    total +
-                    row.seatCount
-                );
-            },
-            0
-        );
-
-
-    const capacity =
-        getSeatMapEventCapacity(
-            selectedSeatMapEvent
-        );
-
-
-    /*
-     * BRD critical rule:
-     * seat count MUST exactly equal
-     * event capacity.
-     */
-
-    if (
-        configuredTotal !==
-        capacity
-    ) {
-
-        showSeatMapMessage(
-            `Seat map cannot be generated. Event capacity is ${capacity}, but the configured rows contain ${configuredTotal} seats.`,
-            "error"
-        );
-
-
-        return;
-    }
-
-
-    const confirmed =
-        await openConfirmationModal({
-
-            title:
-                "Generate Seat Map",
-
-            message:
-                `Generate ${configuredTotal} seats for ${getSeatMapEventName(selectedSeatMapEvent)}?`,
-
-            confirmText:
-                "Generate Seats",
-
-            cancelText:
-                "Review Rows"
-        });
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    seatMapGenerateInProgress =
-        true;
 
 
     const button =
         document.getElementById(
-            "generateSeatMapButton"
+            "generateSeatsButton"
+        );
+
+
+    if (!status) {
+
+        return;
+    }
+
+
+    if (
+        currentSeats.length > 0
+    ) {
+
+        status.textContent =
+            "Generated";
+
+
+        status.className =
+            "seat-generation-status generated";
+
+
+        if (button) {
+
+            button.disabled =
+                true;
+
+
+            button.textContent =
+                "Seats Already Generated";
+        }
+
+    }
+    else {
+
+        status.textContent =
+            "Not generated";
+
+
+        status.className =
+            "seat-generation-status";
+
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+
+            button.textContent =
+                "Generate Seat Layout";
+        }
+    }
+}
+
+
+/* =========================================================
+   LAYOUT CALCULATION
+   ========================================================= */
+
+function updateSeatLayoutCalculation() {
+
+    const rowsInput =
+        document.getElementById(
+            "seatRows"
+        );
+
+
+    const perRowInput =
+        document.getElementById(
+            "seatPerRow"
+        );
+
+
+    const totalElement =
+        document.getElementById(
+            "seatLayoutTotal"
+        );
+
+
+    const helper =
+        document.getElementById(
+            "seatLayoutHelper"
+        );
+
+
+    const requiredElement =
+        document.getElementById(
+            "seatRequiredCapacity"
+        );
+
+
+    const rows =
+        Number(
+            rowsInput?.value || 0
+        );
+
+
+    const seatsPerRow =
+        Number(
+            perRowInput?.value || 0
+        );
+
+
+    const total =
+        rows *
+        seatsPerRow;
+
+
+    const required =
+        Number(
+            selectedEvent?.capacity || 0
+        );
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            total.toLocaleString();
+    }
+
+
+    if (requiredElement) {
+
+        requiredElement.textContent =
+            required.toLocaleString();
+    }
+
+
+    if (!helper) {
+
+        return;
+    }
+
+
+    if (!selectedEvent) {
+
+        helper.textContent =
+            "Select an event before generating the seat layout.";
+
+
+        helper.className =
+            "form-helper-text";
+
+
+        return;
+    }
+
+
+    if (
+        rows <= 0 ||
+        seatsPerRow <= 0
+    ) {
+
+        helper.textContent =
+            `Rows × Seats Per Row must exactly match ${required} seats.`;
+
+
+        helper.className =
+            "form-helper-text";
+
+
+        return;
+    }
+
+
+    if (
+        total === required
+    ) {
+
+        helper.textContent =
+            `Perfect match — ${rows} × ${seatsPerRow} = ${required} seats.`;
+
+
+        helper.className =
+            "form-helper-text seat-layout-valid";
+
+    }
+    else {
+
+        helper.textContent =
+            `Layout creates ${total} seats, but this event requires exactly ${required}.`;
+
+
+        helper.className =
+            "form-helper-text seat-layout-invalid";
+    }
+}
+
+
+/* =========================================================
+   GENERATE SEATS
+   POST /api/events/{eventId}/seats/generate
+   ========================================================= */
+
+async function generateSeatLayout() {
+
+    clearSeatMessage();
+
+    clearSeatErrors();
+
+
+    if (!selectedEventId) {
+
+        showSeatFieldError(
+            "seatEventSelect",
+            "seatEventError",
+            "Please select an event."
+        );
+
+
+        return;
+    }
+
+
+    if (
+        currentSeats.length > 0
+    ) {
+
+        showSeatMessage(
+            "Seats have already been generated for this event.",
+            "error"
+        );
+
+
+        return;
+    }
+
+
+    const rowsInput =
+        document.getElementById(
+            "seatRows"
+        );
+
+
+    const perRowInput =
+        document.getElementById(
+            "seatPerRow"
+        );
+
+
+    const rows =
+        Number(
+            rowsInput?.value || 0
+        );
+
+
+    const seatsPerRow =
+        Number(
+            perRowInput?.value || 0
+        );
+
+
+    let valid =
+        true;
+
+
+    if (
+        !Number.isInteger(rows) ||
+        rows <= 0
+    ) {
+
+        showSeatFieldError(
+            "seatRows",
+            "seatRowsError",
+            "Enter a valid number of rows."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    if (
+        !Number.isInteger(seatsPerRow) ||
+        seatsPerRow <= 0
+    ) {
+
+        showSeatFieldError(
+            "seatPerRow",
+            "seatPerRowError",
+            "Enter a valid number of seats per row."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    const requiredCapacity =
+        Number(
+            selectedEvent?.capacity || 0
+        );
+
+
+    if (
+        valid &&
+        rows * seatsPerRow !==
+        requiredCapacity
+    ) {
+
+        showSeatMessage(
+            `The layout must contain exactly ${requiredCapacity} seats.`,
+            "error"
+        );
+
+
+        return;
+    }
+
+
+    if (!valid) {
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "generateSeatsButton"
         );
 
 
@@ -1524,155 +925,153 @@ async function generateAdminSeatMap() {
 
     try {
 
-        /*
-         * The BRD specifies the endpoint
-         * but not the POST JSON DTO.
-         *
-         * This frontend keeps the request
-         * shape inside one adapter function.
-         */
-
-        const request =
-            buildSeatMapGenerateRequest(
-                rows
-            );
-
-
         await apiPost(
-            `/events/${encodeURIComponent(
-                selectedSeatMapEventId
-            )}/seats`,
-            request
+            `/events/${selectedEventId}/seats/generate`,
+            {
+                rows:
+                    rows,
+
+                seatsPerRow:
+                    seatsPerRow
+            }
         );
 
 
-        showSeatMapMessage(
-            "Seat map generated successfully.",
+        await loadSeatsForSelectedEvent();
+
+
+        showSeatMessage(
+            "Seat layout generated successfully.",
             "success"
         );
 
-
-        await loadSelectedEventAndSeatMap();
-
-
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
-            "Generate Seat Map Error:",
+            "Generate Seats Error:",
             error
         );
 
 
-        showSeatMapMessage(
-            getSeatMapApiError(
-                error
-            ),
+        showSeatMessage(
+            error?.message ||
+            "Unable to generate the seat layout.",
             "error"
         );
 
 
-    } finally {
-
-        seatMapGenerateInProgress =
-            false;
-
-
-        if (button) {
-
-            button.textContent =
-                "Generate Seat Map";
-        }
+        updateGenerationStatus();
     }
 }
 
 
 /* =========================================================
-   GENERATE REQUEST ADAPTER
+   SEAT SUMMARY
    ========================================================= */
 
-function buildSeatMapGenerateRequest(
-    rows
-) {
+function updateSeatSummary() {
 
-    /*
-     * Row-based DTO:
-     *
-     * {
-     *   rows: [
-     *     {
-     *       seatCount: 20,
-     *       rowPrice: 2500
-     *     }
-     *   ]
-     * }
-     *
-     * If Swagger uses a different DTO,
-     * change ONLY this function.
-     */
+    const available =
+        currentSeats.filter(
+            seat =>
+                normalizeSeatStatus(
+                    seat.status
+                ) === "available"
+        ).length;
 
-    return {
 
-        rows:
-            rows.map(
-                function (row) {
+    const held =
+        currentSeats.filter(
+            seat =>
+                normalizeSeatStatus(
+                    seat.status
+                ) === "held"
+        ).length;
 
-                    return {
 
-                        seatCount:
-                            row.seatCount,
+    const booked =
+        currentSeats.filter(
+            seat =>
+                normalizeSeatStatus(
+                    seat.status
+                ) === "booked"
+        ).length;
 
-                        rowPrice:
-                            row.rowPrice
-                    };
-                }
-            )
-    };
+
+    const unavailable =
+        currentSeats.filter(
+            seat =>
+                normalizeSeatStatus(
+                    seat.status
+                ) === "unavailable"
+        ).length;
+
+
+    setSeatText(
+        "availableSeatCount",
+        available
+    );
+
+
+    setSeatText(
+        "heldSeatCount",
+        held
+    );
+
+
+    setSeatText(
+        "bookedSeatCount",
+        booked
+    );
+
+
+    setSeatText(
+        "unavailableSeatCount",
+        unavailable
+    );
 }
 
 
 /* =========================================================
-   VISUAL MAP
+   RENDER SEAT MAP
    ========================================================= */
 
-function renderAdminSeatVisualMap() {
+function renderSeatMap() {
 
-    const map =
+    const container =
         document.getElementById(
-            "adminSeatVisualMap"
+            "seatRowsContainer"
         );
 
 
-    const empty =
+    const mapContent =
         document.getElementById(
-            "adminSeatMapEmpty"
+            "seatMapContent"
         );
 
 
-    if (
-        !map ||
-        !empty
-    ) {
+    const emptyState =
+        document.getElementById(
+            "seatEmptyState"
+        );
+
+
+    if (!container) {
 
         return;
     }
 
 
-    map.innerHTML =
+    container.innerHTML =
         "";
 
 
-    if (
-        adminSeatMapSeats.length ===
-        0
-    ) {
+    if (!selectedEvent) {
 
-        map.classList.add(
-            "hidden"
-        );
-
-
-        empty.classList.remove(
-            "hidden"
+        showSeatEmptyState(
+            "Select an event",
+            "Choose an event to load or generate its seat layout."
         );
 
 
@@ -1680,177 +1079,201 @@ function renderAdminSeatVisualMap() {
     }
 
 
-    empty.classList.add(
-        "hidden"
-    );
+    if (
+        currentSeats.length === 0
+    ) {
+
+        if (mapContent) {
+
+            mapContent.classList.add(
+                "hidden"
+            );
+        }
 
 
-    map.classList.remove(
-        "hidden"
-    );
+        if (emptyState) {
+
+            emptyState.classList.remove(
+                "hidden"
+            );
+        }
 
 
-    const grouped =
-        groupSeatsByRow(
-            adminSeatMapSeats
+        showSeatEmptyState(
+            "No seats generated",
+            "Use the Seat Layout Setup panel to generate seats for this event."
         );
 
 
-    Object.keys(grouped)
-        .sort(
-            function (a, b) {
-
-                return String(a)
-                    .localeCompare(
-                        String(b),
-                        undefined,
-                        {
-                            numeric:
-                                true
-                        }
-                    );
-            }
-        )
-        .forEach(
-            function (rowLabel) {
-
-                const row =
-                    document.createElement(
-                        "div"
-                    );
+        return;
+    }
 
 
-                row.className =
-                    "admin-seat-visual-row";
+    if (emptyState) {
 
-
-                const label =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                label.className =
-                    "admin-seat-visual-row-label";
-
-
-                label.textContent =
-                    rowLabel;
-
-
-                const buttons =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                buttons.className =
-                    "admin-seat-row-buttons";
-
-
-                grouped[rowLabel]
-                    .sort(
-                        function (a, b) {
-
-                            return (
-                                getAdminSeatColumn(a) -
-                                getAdminSeatColumn(b)
-                            );
-                        }
-                    )
-                    .forEach(
-                        function (seat) {
-
-                            buttons.appendChild(
-                                createAdminSeatButton(
-                                    seat
-                                )
-                            );
-                        }
-                    );
-
-
-                row.appendChild(
-                    label
-                );
-
-
-                row.appendChild(
-                    buttons
-                );
-
-
-                map.appendChild(
-                    row
-                );
-            }
+        emptyState.classList.add(
+            "hidden"
         );
-}
+    }
 
 
-/* =========================================================
-   GROUP BY ROW
-   ========================================================= */
+    if (mapContent) {
 
-function groupSeatsByRow(
-    seats
-) {
-
-    const grouped =
-        {};
+        mapContent.classList.remove(
+            "hidden"
+        );
+    }
 
 
-    seats.forEach(
+    const rowMap =
+        new Map();
+
+
+    currentSeats.forEach(
         function (seat) {
 
             const row =
-                getAdminSeatRow(
-                    seat
-                ) ||
-                "Other";
+                String(
+                    seat.rowLabel || ""
+                )
+                .trim()
+                .toUpperCase();
 
 
-            if (!grouped[row]) {
+            if (
+                !rowMap.has(row)
+            ) {
 
-                grouped[row] =
-                    [];
+                rowMap.set(
+                    row,
+                    []
+                );
             }
 
 
-            grouped[row].push(
-                seat
-            );
+            rowMap
+                .get(row)
+                .push(seat);
         }
     );
 
 
-    return grouped;
+    const rows =
+        Array.from(
+            rowMap.keys()
+        )
+        .sort(
+            compareSeatRowLabels
+        );
+
+
+    rows.forEach(
+        function (rowLabel) {
+
+            const seats =
+                rowMap
+                    .get(rowLabel)
+                    .sort(
+                        function (
+                            first,
+                            second
+                        ) {
+
+                            return Number(
+                                first.columnNumber
+                            )
+                            -
+                            Number(
+                                second.columnNumber
+                            );
+                        }
+                    );
+
+
+            const row =
+                document.createElement(
+                    "div"
+                );
+
+
+            row.className =
+                "seat-visual-row";
+
+
+            const rowLabelElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            rowLabelElement.className =
+                "seat-visual-row-label";
+
+
+            rowLabelElement.textContent =
+                rowLabel;
+
+
+            const seatsContainer =
+                document.createElement(
+                    "div"
+                );
+
+
+            seatsContainer.className =
+                "seat-visual-row-seats";
+
+
+            seats.forEach(
+                function (seat) {
+
+                    const button =
+                        createSeatButton(
+                            seat
+                        );
+
+
+                    seatsContainer.appendChild(
+                        button
+                    );
+                }
+            );
+
+
+            row.appendChild(
+                rowLabelElement
+            );
+
+
+            row.appendChild(
+                seatsContainer
+            );
+
+
+            container.appendChild(
+                row
+            );
+        }
+    );
 }
 
 
 /* =========================================================
-   SEAT BUTTON
+   CREATE INDIVIDUAL SEAT BUTTON
    ========================================================= */
-
-function createAdminSeatButton(
+function createSeatButton(
     seat
 ) {
-
-    const status =
-        getAdminSeatStatus(
-            seat
-        );
-
-
-    const protectedSeat =
-        isAdminSeatProtected(
-            seat
-        );
-
 
     const button =
         document.createElement(
             "button"
+        );
+
+
+    const status =
+        normalizeSeatStatus(
+            seat.status
         );
 
 
@@ -1859,29 +1282,121 @@ function createAdminSeatButton(
 
 
     button.className =
-        `admin-seat-button ${status}${
-            protectedSeat
-                ? " protected"
-                : ""
-        }`;
+        `seat-map-seat seat-${status}`;
 
 
     button.textContent =
-        getAdminSeatNumber(
-            seat
-        );
+        seat.seatNumber;
 
 
     button.title =
-        `${getAdminSeatNumber(seat)} - ${formatAdminSeatStatus(status)}`;
+        `${seat.seatNumber} • ${seat.status} • ${formatSeatPrice(
+            seat.effectivePrice
+        )}`;
 
+
+    // =====================================================
+    // BOOKED SEAT - NOT CLICKABLE
+    // =====================================================
+
+    if (status === "booked") {
+
+        button.disabled =
+            true;
+
+
+        button.setAttribute(
+            "aria-disabled",
+            "true"
+        );
+
+
+        button.classList.add(
+            "seat-not-clickable"
+        );
+
+
+        button.title =
+            `${seat.seatNumber} • Booked • This seat cannot be selected`;
+
+
+        return button;
+    }
+
+
+    // =====================================================
+    // SELECTED SEAT
+    // =====================================================
+
+    function selectSeat(
+    seatId
+) {
+
+    const seat =
+        currentSeats.find(
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(seatId);
+            }
+        );
+
+
+    if (!seat) {
+
+        return;
+    }
+
+
+    // =====================================================
+    // BOOKED SEAT SAFETY CHECK
+    // =====================================================
+
+    if (
+        normalizeSeatStatus(
+            seat.status
+        ) === "booked"
+    ) {
+
+        selectedSeat =
+            null;
+
+
+        renderSeatMap();
+
+        renderSelectedSeatPanel();
+
+
+        showSeatMessage(
+            `${seat.seatNumber} is already booked and cannot be selected.`,
+            "error"
+        );
+
+
+        return;
+    }
+
+
+    selectedSeat =
+        seat;
+
+
+    renderSeatMap();
+
+    renderSelectedSeatPanel();
+}
+
+    // =====================================================
+    // CLICKABLE SEATS
+    // Available / Held / Unavailable
+    // =====================================================
 
     button.addEventListener(
         "click",
         function () {
 
-            openAdminSeatEditModal(
-                seat
+            selectSeat(
+                seat.id
             );
         }
     );
@@ -1889,203 +1404,154 @@ function createAdminSeatButton(
 
     return button;
 }
-
-
 /* =========================================================
-   OPEN EDIT MODAL
+   SELECTED SEAT PANEL
    ========================================================= */
 
-function openAdminSeatEditModal(
-    seat
-) {
+function renderSelectedSeatPanel() {
 
-    selectedAdminSeat =
-        seat;
-
-
-    const protectedSeat =
-        isAdminSeatProtected(
-            seat
-        );
-
-
-    setSeatMapInputValue(
-        "editSeatId",
-        getAdminSeatId(
-            seat
-        )
-    );
-
-
-    setSeatMapInputValue(
-        "editSeatNumber",
-        getAdminSeatNumber(
-            seat
-        )
-    );
-
-
-    setSeatMapInputValue(
-        "editSeatRow",
-        getAdminSeatRow(
-            seat
-        )
-    );
-
-
-    setSeatMapInputValue(
-        "editSeatColumn",
-        getAdminSeatColumn(
-            seat
-        )
-    );
-
-
-    setSeatMapInputValue(
-        "editSeatPrice",
-        getAdminSeatPrice(
-            seat
-        )
-    );
-
-
-    setSeatMapText(
-        "editSeatStatus",
-        formatAdminSeatStatus(
-            getAdminSeatStatus(
-                seat
-            )
-        )
-    );
-
-
-    [
-        "editSeatNumber",
-        "editSeatRow",
-        "editSeatColumn",
-        "editSeatPrice"
-    ]
-        .forEach(
-            function (id) {
-
-                const element =
-                    document.getElementById(
-                        id
-                    );
-
-
-                if (element) {
-
-                    element.disabled =
-                        protectedSeat;
-                }
-            }
-        );
-
-
-    const saveButton =
+    const emptyPanel =
         document.getElementById(
-            "saveSeatButton"
+            "noSeatSelected"
         );
 
 
-    const deleteButton =
+    const panel =
         document.getElementById(
-            "deleteSeatButton"
+            "selectedSeatPanel"
         );
 
 
-    if (saveButton) {
+    if (!selectedSeat) {
 
-        saveButton.classList.toggle(
-            "hidden",
-            protectedSeat
-        );
-    }
+        if (emptyPanel) {
 
-
-    if (deleteButton) {
-
-        deleteButton.classList.toggle(
-            "hidden",
-            protectedSeat
-        );
-    }
+            emptyPanel.classList.remove(
+                "hidden"
+            );
+        }
 
 
-    document
-        .getElementById(
-            "protectedSeatMessage"
-        )
-        ?.classList.toggle(
-            "hidden",
-            !protectedSeat
-        );
+        if (panel) {
+
+            panel.classList.add(
+                "hidden"
+            );
+        }
 
 
-    document
-        .getElementById(
-            "editSeatModal"
-        )
-        ?.classList.add(
-            "active"
-        );
-}
-
-
-/* =========================================================
-   CLOSE EDIT MODAL
-   ========================================================= */
-
-function closeSeatEditModal() {
-
-    if (seatActionInProgress) {
         return;
     }
 
 
-    selectedAdminSeat =
+    if (emptyPanel) {
+
+        emptyPanel.classList.add(
+            "hidden"
+        );
+    }
+
+
+    if (panel) {
+
+        panel.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    setSeatText(
+        "selectedSeatNumber",
+        selectedSeat.seatNumber
+    );
+
+
+    setSeatText(
+        "selectedSeatRow",
+        selectedSeat.rowLabel
+    );
+
+
+    setSeatText(
+        "selectedSeatColumn",
+        selectedSeat.columnNumber
+    );
+
+
+    setSeatText(
+        "selectedSeatPrice",
+        formatSeatPrice(
+            selectedSeat.effectivePrice
+        )
+    );
+
+
+    const statusBadge =
+        document.getElementById(
+            "selectedSeatStatusBadge"
+        );
+
+
+    const statusSelect =
+        document.getElementById(
+            "selectedSeatStatus"
+        );
+
+
+    const status =
+        String(
+            selectedSeat.status ||
+            "Available"
+        );
+
+
+    if (statusBadge) {
+
+        statusBadge.textContent =
+            status;
+
+
+        statusBadge.className =
+            `seat-status-badge ${normalizeSeatStatus(status)}`;
+    }
+
+
+    if (statusSelect) {
+
+        statusSelect.value =
+            status;
+    }
+}
+
+
+/* =========================================================
+   CLEAR SELECTED SEAT
+   ========================================================= */
+
+function clearSelectedSeat() {
+
+    selectedSeat =
         null;
 
 
-    document
-        .getElementById(
-            "editSeatModal"
-        )
-        ?.classList.remove(
-            "active"
-        );
+    renderSelectedSeatPanel();
 }
 
 
 /* =========================================================
-   UPDATE SEAT
+   UPDATE SEAT STATUS
+   PUT /api/seats/{id}/status
    ========================================================= */
 
-async function updateAdminSeat(
-    event
-) {
+async function saveSelectedSeatStatus() {
 
-    event.preventDefault();
+    clearSeatMessage();
 
 
-    if (
-        !selectedAdminSeat ||
-        seatActionInProgress
-    ) {
+    if (!selectedSeat) {
 
-        return;
-    }
-
-
-    if (
-        isAdminSeatProtected(
-            selectedAdminSeat
-        )
-    ) {
-
-        showSeatMapMessage(
-            "A booked or protected seat cannot be modified.",
+        showSeatMessage(
+            "Please select a seat first.",
             "error"
         );
 
@@ -2094,330 +1560,31 @@ async function updateAdminSeat(
     }
 
 
-    const seatId =
-        getAdminSeatId(
-            selectedAdminSeat
-        );
-
-
-    const seatNumber =
-        document
-            .getElementById(
-                "editSeatNumber"
-            )
-            ?.value
-            .trim() ||
-        "";
-
-
-    const rowLabel =
-        document
-            .getElementById(
-                "editSeatRow"
-            )
-            ?.value
-            .trim() ||
-        "";
-
-
-    const columnNumber =
-        Number(
-            document
-                .getElementById(
-                    "editSeatColumn"
-                )
-                ?.value ||
-            0
-        );
-
-
-    const price =
-        Number(
-            document
-                .getElementById(
-                    "editSeatPrice"
-                )
-                ?.value ||
-            0
-        );
-
-
-    if (!seatNumber) {
-
-        showSeatMapMessage(
-            "Seat number is required.",
-            "error"
-        );
-
-
-        return;
-    }
-
-
-    if (
-        columnNumber <= 0 ||
-        !Number.isInteger(
-            columnNumber
-        )
-    ) {
-
-        showSeatMapMessage(
-            "Column number must be a positive whole number.",
-            "error"
-        );
-
-
-        return;
-    }
-
-
-    if (
-        Number.isNaN(price) ||
-        price < 0
-    ) {
-
-        showSeatMapMessage(
-            "Seat price cannot be negative.",
-            "error"
-        );
-
-
-        return;
-    }
-
-
-    const confirmed =
-        await openConfirmationModal({
-
-            title:
-                "Update Seat",
-
-            message:
-                `Save changes to seat ${getAdminSeatNumber(selectedAdminSeat)}?`,
-
-            confirmText:
-                "Save Changes",
-
-            cancelText:
-                "Cancel"
-        });
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    seatActionInProgress =
-        true;
-
-
-    const saveButton =
+    const statusSelect =
         document.getElementById(
-            "saveSeatButton"
+            "selectedSeatStatus"
         );
 
 
-    if (saveButton) {
-
-        saveButton.disabled =
-            true;
+    const status =
+        statusSelect?.value;
 
 
-        saveButton.textContent =
-            "Saving...";
-    }
+    if (!status) {
 
-
-    try {
-
-        const request =
-            buildSeatUpdateRequest({
-
-                seatNumber:
-                    seatNumber,
-
-                rowLabel:
-                    rowLabel,
-
-                columnNumber:
-                    columnNumber,
-
-                price:
-                    price
-            });
-
-
-        await apiPut(
-            `/events/${encodeURIComponent(
-                selectedSeatMapEventId
-            )}/seats/${encodeURIComponent(
-                seatId
-            )}`,
-            request
-        );
-
-
-        document
-            .getElementById(
-                "editSeatModal"
-            )
-            ?.classList.remove(
-                "active"
-            );
-
-
-        selectedAdminSeat =
-            null;
-
-
-        showSeatMapMessage(
-            "Seat updated successfully.",
-            "success"
-        );
-
-
-        await loadSelectedEventAndSeatMap();
-
-
-    } catch (error) {
-
-        showSeatMapMessage(
-            getSeatMapApiError(
-                error
-            ),
-            "error"
-        );
-
-
-    } finally {
-
-        seatActionInProgress =
-            false;
-
-
-        if (saveButton) {
-
-            saveButton.disabled =
-                false;
-
-
-            saveButton.textContent =
-                "Save Changes";
-        }
-    }
-}
-
-
-/* =========================================================
-   UPDATE REQUEST ADAPTER
-   ========================================================= */
-
-function buildSeatUpdateRequest(
-    values
-) {
-
-    /*
-     * BRD does not define the exact
-     * PUT request JSON.
-     *
-     * If Swagger uses another DTO,
-     * change ONLY this function.
-     */
-
-    return {
-
-        seatNumber:
-            values.seatNumber,
-
-        rowLabel:
-            values.rowLabel,
-
-        columnNumber:
-            values.columnNumber,
-
-        price:
-            values.price
-    };
-}
-
-
-/* =========================================================
-   DELETE CONFIRM
-   ========================================================= */
-
-async function confirmDeleteAdminSeat() {
-
-    if (
-        !selectedAdminSeat ||
-        seatActionInProgress
-    ) {
-
-        return;
-    }
-
-
-    if (
-        isAdminSeatProtected(
-            selectedAdminSeat
-        )
-    ) {
-
-        showSeatMapMessage(
-            "This seat cannot be deleted because it has an active booking or hold.",
+        showSeatMessage(
+            "Please select a seat status.",
             "error"
         );
 
 
         return;
     }
-
-
-    const confirmed =
-        await openConfirmationModal({
-
-            title:
-                "Delete Seat",
-
-            message:
-                `Delete seat ${getAdminSeatNumber(selectedAdminSeat)}?`,
-
-            confirmText:
-                "Delete Seat",
-
-            cancelText:
-                "Keep Seat"
-        });
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    await deleteAdminSeat();
-}
-
-
-/* =========================================================
-   DELETE SEAT
-   ========================================================= */
-
-async function deleteAdminSeat() {
-
-    const seatId =
-        getAdminSeatId(
-            selectedAdminSeat
-        );
-
-
-    seatActionInProgress =
-        true;
 
 
     const button =
         document.getElementById(
-            "deleteSeatButton"
+            "updateSeatStatusButton"
         );
 
 
@@ -2428,65 +1595,89 @@ async function deleteAdminSeat() {
 
 
         button.textContent =
-            "Deleting...";
+            "Updating...";
     }
 
 
     try {
 
-        /*
-         * BRD:
-         * DELETE /events/{eventId}/seats/{seatId}
-         *
-         * Backend must reject if booked.
-         */
-
-        await apiDelete(
-            `/events/${encodeURIComponent(
-                selectedSeatMapEventId
-            )}/seats/${encodeURIComponent(
-                seatId
-            )}`
+        await apiPut(
+            `/seats/${selectedSeat.id}/status`,
+            {
+                status:
+                    status
+            }
         );
 
 
-        document
-            .getElementById(
-                "editSeatModal"
-            )
-            ?.classList.remove(
-                "active"
+        const selectedSeatId =
+            selectedSeat.id;
+
+
+        await loadSeatsForSelectedEvent();
+
+
+        const refreshedSeat =
+            currentSeats.find(
+                seat =>
+                    Number(seat.id) ===
+                    Number(selectedSeatId)
             );
 
 
-        selectedAdminSeat =
+       if (refreshedSeat) {
+
+    if (
+        normalizeSeatStatus(
+            refreshedSeat.status
+        ) === "booked"
+    ) {
+
+        selectedSeat =
             null;
 
 
-        showSeatMapMessage(
-            "Seat deleted successfully.",
-            "success"
+        renderSeatMap();
+
+        renderSelectedSeatPanel();
+
+    }
+    else {
+
+        selectedSeat =
+            refreshedSeat;
+
+
+        renderSeatMap();
+
+        renderSelectedSeatPanel();
+    }
+}
+
+
+showSeatMessage(
+    normalizeSeatStatus(status) === "booked"
+        ? "Seat status updated to Booked. Booked seats can no longer be selected."
+        : "Seat status updated successfully.",
+    "success"
+);
+    }
+    catch (error) {
+
+        console.error(
+            "Update Seat Status Error:",
+            error
         );
 
 
-        await loadSelectedEventAndSeatMap();
-
-
-    } catch (error) {
-
-        showSeatMapMessage(
-            getSeatMapApiError(
-                error
-            ),
+        showSeatMessage(
+            error?.message ||
+            "Unable to update seat status.",
             "error"
         );
 
-
-    } finally {
-
-        seatActionInProgress =
-            false;
-
+    }
+    finally {
 
         if (button) {
 
@@ -2495,389 +1686,670 @@ async function deleteAdminSeat() {
 
 
             button.textContent =
-                "Delete Seat";
+                "Update Seat Status";
         }
     }
 }
 
 
 /* =========================================================
-   EVENT HELPERS
+   POPULATE ROW PRICE SELECT
    ========================================================= */
 
-function getSeatMapEventId(event) {
+function populateRowPriceDropdown() {
 
-    return (
-        event?.eventId ||
-        event?.EventId ||
-        event?.id ||
-        event?.Id ||
-        null
-    );
-}
-
-
-function getSeatMapEventName(event) {
-
-    return String(
-        event?.name ||
-        event?.Name ||
-        event?.eventName ||
-        event?.EventName ||
-        "Event"
-    );
-}
-
-
-function getSeatMapEventCapacity(event) {
-
-    const number =
-        Number(
-            event?.capacity ??
-            event?.Capacity ??
-            event?.eventCapacity ??
-            event?.EventCapacity ??
-            0
+    const select =
+        document.getElementById(
+            "rowPriceLabel"
         );
 
 
-    return Number.isNaN(number)
-        ? 0
-        : number;
-}
+    if (!select) {
 
-
-function getSelectedEventTicketPrice() {
-
-    const number =
-        Number(
-            selectedSeatMapEvent?.ticketPrice ??
-            selectedSeatMapEvent?.TicketPrice ??
-            selectedSeatMapEvent?.price ??
-            0
-        );
-
-
-    return Number.isNaN(number)
-        ? 0
-        : number;
-}
-
-
-/* =========================================================
-   SEAT HELPERS
-   ========================================================= */
-
-function getAdminSeatId(seat) {
-
-    return (
-        seat?.seatId ||
-        seat?.SeatId ||
-        seat?.id ||
-        seat?.Id ||
-        null
-    );
-}
-
-
-function getAdminSeatNumber(seat) {
-
-    return String(
-        seat?.seatNumber ||
-        seat?.SeatNumber ||
-        seat?.number ||
-        "-"
-    );
-}
-
-
-function getAdminSeatRow(seat) {
-
-    return String(
-        seat?.rowLabel ||
-        seat?.RowLabel ||
-        seat?.row ||
-        ""
-    );
-}
-
-
-function getAdminSeatColumn(seat) {
-
-    const number =
-        Number(
-            seat?.columnNumber ??
-            seat?.ColumnNumber ??
-            seat?.column ??
-            0
-        );
-
-
-    return Number.isNaN(number)
-        ? 0
-        : number;
-}
-
-
-function getAdminSeatPrice(seat) {
-
-    const number =
-        Number(
-            seat?.price ??
-            seat?.Price ??
-            seat?.seatPrice ??
-            0
-        );
-
-
-    return Number.isNaN(number)
-        ? 0
-        : number;
-}
-
-
-function getAdminSeatStatus(seat) {
-
-    return String(
-        seat?.status ||
-        seat?.Status ||
-        seat?.seatStatus ||
-        "Available"
-    )
-        .trim()
-        .toLowerCase();
-}
-
-
-/* =========================================================
-   PROTECTED STATUS
-   ========================================================= */
-
-function isAdminSeatProtected(seat) {
-
-    const status =
-        getAdminSeatStatus(
-            seat
-        );
-
-
-    return (
-        status === "booked" ||
-        status === "held" ||
-        status === "reserved" ||
-        status === "occupied"
-    );
-}
-
-
-/* =========================================================
-   STATUS DISPLAY
-   ========================================================= */
-
-function formatAdminSeatStatus(status) {
-
-    if (!status) {
-
-        return "Available";
+        return;
     }
 
 
-    return (
-        status
-            .charAt(0)
-            .toUpperCase() +
-        status.slice(1)
+    select.innerHTML =
+        `
+        <option value="">
+            Select row
+        </option>
+        `;
+
+
+    const rows =
+        [
+            ...new Set(
+                currentSeats
+                    .map(
+                        seat =>
+                            String(
+                                seat.rowLabel || ""
+                            )
+                            .toUpperCase()
+                    )
+            )
+        ]
+        .filter(Boolean)
+        .sort(
+            compareSeatRowLabels
+        );
+
+
+    rows.forEach(
+        function (rowLabel) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                rowLabel;
+
+
+            option.textContent =
+                `Row ${rowLabel}`;
+
+
+            select.appendChild(
+                option
+            );
+        }
     );
+
+
+    updateSelectedRowPriceInfo();
 }
 
 
 /* =========================================================
-   API ERRORS
+   ROW PRICE CURRENT INFORMATION
    ========================================================= */
 
-function getSeatMapApiError(error) {
+function updateSelectedRowPriceInfo() {
+
+    const rowSelect =
+        document.getElementById(
+            "rowPriceLabel"
+        );
+
+
+    const info =
+        document.getElementById(
+            "rowPriceCurrentInfo"
+        );
+
+
+    const input =
+        document.getElementById(
+            "rowPriceOverride"
+        );
+
+
+    const rowLabel =
+        rowSelect?.value;
+
+
+    if (!rowLabel) {
+
+        if (info) {
+
+            info.classList.add(
+                "hidden"
+            );
+        }
+
+
+        if (input) {
+
+            input.value =
+                "";
+        }
+
+
+        return;
+    }
+
+
+    const rowSeats =
+        currentSeats.filter(
+            seat =>
+                String(
+                    seat.rowLabel
+                )
+                .toUpperCase() ===
+                String(
+                    rowLabel
+                )
+                .toUpperCase()
+        );
+
 
     if (
-        error?.data?.errors
+        rowSeats.length === 0
     ) {
 
-        const messages =
-            [];
+        return;
+    }
 
 
-        Object.values(
-            error.data.errors
+    const firstSeat =
+        rowSeats[0];
+
+
+    const basePrice =
+        Number(
+            selectedEvent?.ticketPrice || 0
+        );
+
+
+    const currentPrice =
+        firstSeat.priceOverride === null ||
+        firstSeat.priceOverride === undefined
+            ? basePrice
+            : Number(
+                firstSeat.priceOverride
+            );
+
+
+    setSeatText(
+        "rowEventBasePrice",
+        formatSeatPrice(
+            basePrice
         )
-            .forEach(
-                function (items) {
+    );
 
-                    if (
-                        Array.isArray(items)
-                    ) {
 
-                        messages.push(
-                            ...items
-                        );
-                    }
-                }
+    setSeatText(
+        "rowCurrentPrice",
+        formatSeatPrice(
+            currentPrice
+        )
+    );
+
+
+    if (input) {
+
+        input.value =
+            firstSeat.priceOverride === null ||
+            firstSeat.priceOverride === undefined
+                ? ""
+                : firstSeat.priceOverride;
+    }
+
+
+    if (info) {
+
+        info.classList.remove(
+            "hidden"
+        );
+    }
+}
+
+
+/* =========================================================
+   UPDATE ROW PRICE
+   PUT /api/events/{eventId}/seats/row-price
+   ========================================================= */
+
+async function updateRowPrice(
+    event
+) {
+
+    event.preventDefault();
+
+
+    clearSeatMessage();
+
+    clearSeatErrors();
+
+
+    if (!selectedEventId) {
+
+        showSeatMessage(
+            "Please select an event first.",
+            "error"
+        );
+
+
+        return;
+    }
+
+
+    const rowSelect =
+        document.getElementById(
+            "rowPriceLabel"
+        );
+
+
+    const priceInput =
+        document.getElementById(
+            "rowPriceOverride"
+        );
+
+
+    const rowLabel =
+        rowSelect?.value;
+
+
+    if (!rowLabel) {
+
+        showSeatFieldError(
+            "rowPriceLabel",
+            "rowPriceLabelError",
+            "Please select a row."
+        );
+
+
+        return;
+    }
+
+
+    let priceOverride =
+        null;
+
+
+    if (
+        priceInput &&
+        priceInput.value.trim() !== ""
+    ) {
+
+        priceOverride =
+            Number(
+                priceInput.value
             );
 
 
         if (
-            messages.length
+            !Number.isFinite(
+                priceOverride
+            ) ||
+            priceOverride < 0
         ) {
 
-            return messages.join(
-                " "
+            showSeatFieldError(
+                "rowPriceOverride",
+                "rowPriceOverrideError",
+                "Price override cannot be negative."
             );
+
+
+            return;
         }
     }
 
 
-    if (
-        error.status === 409
-    ) {
-
-        return (
-            error.message ||
-            "The seat operation conflicts with an existing booking or seat."
+    const button =
+        document.getElementById(
+            "updateRowPriceButton"
         );
+
+
+    if (button) {
+
+        button.disabled =
+            true;
+
+
+        button.textContent =
+            "Updating...";
     }
 
 
-    if (
-        error.status === 400
-    ) {
+    try {
 
-        return (
-            error.message ||
-            "The seat operation does not satisfy the seat-map rules."
+        await apiPut(
+            `/events/${selectedEventId}/seats/row-price`,
+            {
+                rowLabel:
+                    rowLabel,
+
+                priceOverride:
+                    priceOverride
+            }
         );
+
+
+        await loadSeatsForSelectedEvent();
+
+
+        const select =
+            document.getElementById(
+                "rowPriceLabel"
+            );
+
+
+        if (select) {
+
+            select.value =
+                rowLabel;
+        }
+
+
+        updateSelectedRowPriceInfo();
+
+
+        showSeatMessage(
+            `Row ${rowLabel} price updated successfully.`,
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Update Row Price Error:",
+            error
+        );
+
+
+        showSeatMessage(
+            error?.message ||
+            "Unable to update row price.",
+            "error"
+        );
+
+    }
+    finally {
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+
+            button.textContent =
+                "Update Row Price";
+        }
+    }
+}
+
+
+/* =========================================================
+   RESET ROW PRICE TO EVENT PRICE
+   ========================================================= */
+
+async function resetRowPrice() {
+
+    const rowSelect =
+        document.getElementById(
+            "rowPriceLabel"
+        );
+
+
+    const rowLabel =
+        rowSelect?.value;
+
+
+    if (!rowLabel) {
+
+        showSeatMessage(
+            "Please select a row first.",
+            "error"
+        );
+
+
+        return;
     }
 
 
-    return (
-        error.message ||
-        "Unable to complete the seat operation."
+    const input =
+        document.getElementById(
+            "rowPriceOverride"
+        );
+
+
+    if (input) {
+
+        input.value =
+            "";
+    }
+
+
+    const form =
+        document.getElementById(
+            "rowPriceForm"
+        );
+
+
+    if (form) {
+
+        form.dispatchEvent(
+            new Event(
+                "submit",
+                {
+                    cancelable: true,
+                    bubbles: true
+                }
+            )
+        );
+    }
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+function showSeatEmptyState(
+    title,
+    description
+) {
+
+    const emptyState =
+        document.getElementById(
+            "seatEmptyState"
+        );
+
+
+    if (!emptyState) {
+
+        return;
+    }
+
+
+    const heading =
+        emptyState.querySelector(
+            "h3"
+        );
+
+
+    const paragraph =
+        emptyState.querySelector(
+            "p"
+        );
+
+
+    if (heading) {
+
+        heading.textContent =
+            title;
+    }
+
+
+    if (paragraph) {
+
+        paragraph.textContent =
+            description;
+    }
+
+
+    emptyState.classList.remove(
+        "hidden"
     );
 }
 
 
 /* =========================================================
-   UI STATES
+   RESET PAGE
    ========================================================= */
 
-function showSeatMapContent() {
+function resetSeatPage() {
 
-    document
-        .getElementById(
-            "seatMapNoEvent"
-        )
-        ?.classList.add(
-            "hidden"
+    selectedEventId =
+        null;
+
+
+    selectedEvent =
+        null;
+
+
+    currentSeats =
+        [];
+
+
+    selectedSeat =
+        null;
+
+
+    const info =
+        document.getElementById(
+            "selectedEventInfo"
         );
 
 
-    document
-        .getElementById(
-            "seatMapContent"
-        )
-        ?.classList.remove(
+    if (info) {
+
+        info.classList.add(
             "hidden"
         );
-}
+    }
 
 
-function showSeatMapNoEvent() {
-
-    document
-        .getElementById(
-            "seatMapContent"
-        )
-        ?.classList.add(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "seatMapNoEvent"
-        )
-        ?.classList.remove(
-            "hidden"
-        );
-
-
-    setSeatMapText(
-        "seatMapSelectedEventName",
-        "-"
+    setSeatText(
+        "seatEventCapacity",
+        0
     );
-}
 
 
-function showSeatMapLoading() {
-
-    document
-        .getElementById(
-            "seatMapLoading"
-        )
-        ?.classList.remove(
-            "hidden"
-        );
-}
+    setSeatText(
+        "seatGeneratedCount",
+        0
+    );
 
 
-function hideSeatMapLoading() {
+    setSeatText(
+        "seatRequiredCapacity",
+        0
+    );
 
-    document
-        .getElementById(
-            "seatMapLoading"
-        )
-        ?.classList.add(
-            "hidden"
-        );
+
+    updateSeatSummary();
+
+    updateGenerationStatus();
+
+    updateSeatLayoutCalculation();
+
+    populateRowPriceDropdown();
+
+    renderSeatMap();
+
+    renderSelectedSeatPanel();
 }
 
 
 /* =========================================================
-   TEXT / INPUT
+   ERROR DISPLAY
    ========================================================= */
 
-function setSeatMapText(
-    id,
-    value
+function showSeatFieldError(
+    inputId,
+    errorId,
+    message
 ) {
 
-    const element =
+    const input =
         document.getElementById(
-            id
+            inputId
         );
 
 
-    if (element) {
+    const error =
+        document.getElementById(
+            errorId
+        );
 
-        element.textContent =
-            value ?? "";
+
+    if (input) {
+
+        input.classList.add(
+            "input-error"
+        );
+    }
+
+
+    if (error) {
+
+        error.textContent =
+            message;
     }
 }
 
 
-function setSeatMapInputValue(
-    id,
-    value
-) {
+/* =========================================================
+   CLEAR ERRORS
+   ========================================================= */
 
-    const element =
-        document.getElementById(
-            id
-        );
+function clearSeatErrors() {
+
+    const inputIds =
+    [
+        "seatEventSelect",
+        "seatRows",
+        "seatPerRow",
+        "rowPriceLabel",
+        "rowPriceOverride"
+    ];
 
 
-    if (element) {
+    inputIds.forEach(
+        function (id) {
 
-        element.value =
-            value ?? "";
-    }
+            const input =
+                document.getElementById(
+                    id
+                );
+
+
+            if (input) {
+
+                input.classList.remove(
+                    "input-error"
+                );
+            }
+        }
+    );
+
+
+    const errorIds =
+    [
+        "seatEventError",
+        "seatRowsError",
+        "seatPerRowError",
+        "rowPriceLabelError",
+        "rowPriceOverrideError"
+    ];
+
+
+    errorIds.forEach(
+        function (id) {
+
+            const error =
+                document.getElementById(
+                    id
+                );
+
+
+            if (error) {
+
+                error.textContent =
+                    "";
+            }
+        }
+    );
 }
 
 
@@ -2885,42 +2357,87 @@ function setSeatMapInputValue(
    MESSAGE
    ========================================================= */
 
-function showSeatMapMessage(
+function showSeatMessage(
     message,
     type
 ) {
 
     const element =
         document.getElementById(
-            "adminSeatMapMessage"
+            "seatMessage"
         );
 
 
     if (!element) {
+
         return;
     }
+
+
+    element.className =
+        "alert";
+
+
+    element.classList.add(
+        type === "success"
+            ? "alert-success"
+            : "alert-error"
+    );
 
 
     element.textContent =
         message;
 
 
-    element.className =
-        type === "success"
-            ? "alert alert-success"
-            : "alert alert-error";
+    element.classList.remove(
+        "hidden"
+    );
+
+
+    // =====================================================
+    // AUTO SCROLL TO MESSAGE
+    // =====================================================
+
+    element.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "center"
+        }
+    );
+
+
+    window.setTimeout(
+        function () {
+
+            if (
+                element.textContent ===
+                message
+            ) {
+
+                element.classList.add(
+                    "hidden"
+                );
+            }
+
+        },
+        5000
+    );
 }
 
+/* =========================================================
+   CLEAR MESSAGE
+   ========================================================= */
 
-function clearSeatMapMessage() {
+function clearSeatMessage() {
 
     const element =
         document.getElementById(
-            "adminSeatMapMessage"
+            "seatMessage"
         );
 
 
     if (!element) {
+
         return;
     }
 
@@ -2935,20 +2452,212 @@ function clearSeatMapMessage() {
 
 
 /* =========================================================
-   ESCAPE HTML
+   LOADING
    ========================================================= */
 
-function escapeSeatMapHtml(value) {
+function showSeatLoading(
+    loading
+) {
 
-    const div =
-        document.createElement(
-            "div"
+    const element =
+        document.getElementById(
+            "seatLoading"
         );
 
 
-    div.textContent =
-        value ?? "";
+    if (!element) {
+
+        return;
+    }
 
 
-    return div.innerHTML;
+    element.classList.toggle(
+        "hidden",
+        !loading
+    );
+}
+
+
+/* =========================================================
+   STATUS NORMALIZER
+   ========================================================= */
+
+function normalizeSeatStatus(
+    status
+) {
+
+    const value =
+        String(
+            status || "Available"
+        )
+        .trim()
+        .toLowerCase();
+
+
+    const allowed =
+    [
+        "available",
+        "held",
+        "booked",
+        "unavailable"
+    ];
+
+
+    return allowed.includes(
+        value
+    )
+        ? value
+        : "available";
+}
+
+
+/* =========================================================
+   ROW SORT
+   A, B ... Z, AA, AB
+   ========================================================= */
+
+function compareSeatRowLabels(
+    first,
+    second
+) {
+
+    return rowLabelToNumber(first)
+        -
+        rowLabelToNumber(second);
+}
+
+
+function rowLabelToNumber(
+    value
+) {
+
+    const text =
+        String(value)
+            .toUpperCase();
+
+
+    let result =
+        0;
+
+
+    for (
+        let index = 0;
+        index < text.length;
+        index++
+    ) {
+
+        result =
+            result * 26
+            +
+            (
+                text.charCodeAt(index)
+                -
+                64
+            );
+    }
+
+
+    return result;
+}
+
+
+/* =========================================================
+   FORMAT PRICE
+   ========================================================= */
+
+function formatSeatPrice(
+    value
+) {
+
+    const amount =
+        Number(
+            value || 0
+        );
+
+
+    return `Rs. ${amount.toLocaleString(
+        "en-LK",
+        {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        }
+    )}`;
+}
+
+
+/* =========================================================
+   FORMAT EVENT DATE
+   ========================================================= */
+
+function formatSeatEventDate(
+    value
+) {
+
+    if (!value) {
+
+        return "Date unavailable";
+    }
+
+
+    const raw =
+        String(value)
+            .substring(
+                0,
+                10
+            );
+
+
+    const parts =
+        raw.split(
+            "-"
+        );
+
+
+    if (
+        parts.length !== 3
+    ) {
+
+        return raw;
+    }
+
+
+    const date =
+        new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        );
+
+
+    return date.toLocaleDateString(
+        "en-LK",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+}
+
+
+/* =========================================================
+   TEXT HELPER
+   ========================================================= */
+
+function setSeatText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+    }
 }

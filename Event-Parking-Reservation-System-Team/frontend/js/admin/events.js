@@ -1,264 +1,167 @@
 ﻿/* =========================================================
-   Event & Parking Reservation System
-   Admin Event Management - Event List
+   EventPark
+   Premium Admin Event Management
    ========================================================= */
 
 
-let adminEvents = [];
+/* =========================================================
+   STATE
+   ========================================================= */
 
-let adminEventVenues = [];
+let events = [];
 
-let adminEventCategories = [];
+let venues = [];
 
-let eventDeleteInProgress = false;
+let categories = [];
+
+let editingEventId = null;
 
 
 /* =========================================================
-   START
+   PAGE LOAD
    ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    async function () {
 
-        initializeAdminEventsPage();
+        initializeEventForm();
+
+        initializeEventButtons();
+
+        initializeImagePreview();
+
+        initializeVenueCapacityHelper();
+
+        await loadEventDependencies();
+
+        await loadEvents();
     }
 );
 
 
 /* =========================================================
-   INITIALIZE
+   INITIALIZE EVENT FORM
    ========================================================= */
 
-async function initializeAdminEventsPage() {
+function initializeEventForm() {
 
-    if (!validateAdminEventsAccess()) {
+    const form =
+        document.getElementById(
+            "eventForm"
+        );
+
+
+    if (!form) {
+
         return;
     }
 
 
-    await loadEventsAdminSidebar();
-
-
-    initializeAdminEventFilters();
-
-
-    await loadAdminEventPageData();
+    form.addEventListener(
+        "submit",
+        handleEventSubmit
+    );
 }
 
 
 /* =========================================================
-   ACCESS
+   INITIALIZE BUTTONS
    ========================================================= */
 
-function validateAdminEventsAccess() {
+function initializeEventButtons() {
 
-    const token =
-        localStorage.getItem(
-            APP_CONFIG.STORAGE_KEYS.TOKEN
+    const refreshButton =
+        document.getElementById(
+            "refreshEventsButton"
         );
 
 
-    const role =
-        String(
-            localStorage.getItem(
-                APP_CONFIG.STORAGE_KEYS.ROLE
-            ) || ""
-        )
-            .trim()
-            .toLowerCase();
+    const cancelButton =
+        document.getElementById(
+            "cancelEventEditButton"
+        );
 
 
-    if (!token) {
+    if (refreshButton) {
 
-        window.location.href =
-            "../auth/login.html";
+        refreshButton.addEventListener(
+            "click",
+            async function () {
 
-        return false;
-    }
-
-
-    if (
-        role !== "admin" &&
-        role !== "administrator"
-    ) {
-
-        window.location.href =
-            "../auth/login.html";
-
-        return false;
-    }
-
-
-    return true;
-}
-
-
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-
-async function loadEventsAdminSidebar() {
-
-    await loadComponent(
-        "adminSidebarContainer",
-        "components/admin-sidebar.html"
-    );
-
-
-    document
-        .querySelectorAll(
-            "[data-admin-page]"
-        )
-        .forEach(
-            function (link) {
-
-                link.classList.remove(
-                    "active"
-                );
-
-
-                if (
-                    link.dataset.adminPage ===
-                    "events"
-                ) {
-
-                    link.classList.add(
-                        "active"
-                    );
-                }
+                await loadEvents();
             }
         );
-
-
-    initializeEventsAdminLogout();
-}
-
-
-/* =========================================================
-   LOGOUT
-   ========================================================= */
-
-function initializeEventsAdminLogout() {
-
-    const button =
-        document.getElementById(
-            "adminSidebarLogoutButton"
-        );
-
-
-    if (!button) {
-        return;
     }
 
 
-    button.addEventListener(
-        "click",
-        function () {
+    if (cancelButton) {
 
-            localStorage.removeItem(
-                APP_CONFIG.STORAGE_KEYS.TOKEN
-            );
+        cancelButton.addEventListener(
+            "click",
+            function () {
 
-            localStorage.removeItem(
-                APP_CONFIG.STORAGE_KEYS.USER
-            );
-
-            localStorage.removeItem(
-                APP_CONFIG.STORAGE_KEYS.ROLE
-            );
-
-            localStorage.removeItem(
-                APP_CONFIG.STORAGE_KEYS.CUSTOMER_ID
-            );
-
-
-            sessionStorage.clear();
-
-
-            window.location.href =
-                "../auth/login.html";
-        }
-    );
+                resetEventForm();
+            }
+        );
+    }
 }
 
 
 /* =========================================================
-   LOAD PAGE DATA
+   LOAD DEPENDENCIES
+   Venue + Category
    ========================================================= */
 
-async function loadAdminEventPageData() {
-
-    clearAdminEventsMessage();
-
-    showAdminEventsLoading();
-
+async function loadEventDependencies() {
 
     try {
 
         const results =
-            await Promise.all([
-
-                apiGet("/events"),
-
-                apiGet("/venues"),
-
-                apiGet("/categories")
-
-            ]);
-
-
-        adminEvents =
-            normalizeAdminEventArray(
-                results[0],
-                "events"
+            await Promise.all(
+                [
+                    apiGet("/venues"),
+                    apiGet("/categories")
+                ]
             );
 
 
-        adminEventVenues =
-            normalizeAdminEventArray(
-                results[1],
-                "venues"
-            );
+        const venueResponse =
+            results[0];
 
 
-        adminEventCategories =
-            normalizeAdminEventArray(
-                results[2],
-                "categories"
-            );
+        const categoryResponse =
+            results[1];
 
 
-        sortAdminEvents();
+        venues =
+            Array.isArray(venueResponse)
+                ? venueResponse
+                : venueResponse?.data || [];
 
 
-        populateAdminEventVenueFilter();
-
-        populateAdminEventCategoryFilter();
-
-        renderAdminEventSummary();
-
-
-        hideAdminEventsLoading();
+        categories =
+            Array.isArray(categoryResponse)
+                ? categoryResponse
+                : categoryResponse?.data || [];
 
 
-        applyAdminEventFilters();
+        populateVenueDropdown();
 
+        populateCategoryDropdown();
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
-            "Admin Events Error:",
+            "Load Event Dependencies Error:",
             error
         );
 
 
-        hideAdminEventsLoading();
-
-
-        showAdminEventsMessage(
-            error.message ||
-            "Unable to load event information.",
+        showEventMessage(
+            error?.message ||
+            "Unable to load venues and categories.",
             "error"
         );
     }
@@ -266,183 +169,36 @@ async function loadAdminEventPageData() {
 
 
 /* =========================================================
-   NORMALIZE ARRAY
+   POPULATE VENUE DROPDOWN
    ========================================================= */
 
-function normalizeAdminEventArray(
-    response,
-    collectionName
-) {
-
-    if (
-        Array.isArray(response)
-    ) {
-
-        return response;
-    }
-
-
-    if (
-        Array.isArray(
-            response?.data
-        )
-    ) {
-
-        return response.data;
-    }
-
-
-    if (
-        Array.isArray(
-            response?.items
-        )
-    ) {
-
-        return response.items;
-    }
-
-
-    if (
-        Array.isArray(
-            response?.[collectionName]
-        )
-    ) {
-
-        return response[
-            collectionName
-        ];
-    }
-
-
-    return [];
-}
-
-
-/* =========================================================
-   SORT EVENTS
-   ========================================================= */
-
-function sortAdminEvents() {
-
-    adminEvents.sort(
-        function (a, b) {
-
-            return (
-                new Date(
-                    getAdminEventDate(a) ||
-                    0
-                ) -
-                new Date(
-                    getAdminEventDate(b) ||
-                    0
-                )
-            );
-        }
-    );
-}
-
-
-/* =========================================================
-   FILTER CONTROLS
-   ========================================================= */
-
-function initializeAdminEventFilters() {
-
-    [
-        "adminEventSearch",
-        "adminEventDateFilter",
-        "adminEventVenueFilter",
-        "adminEventCategoryFilter"
-    ]
-        .forEach(
-            function (id) {
-
-                const element =
-                    document.getElementById(
-                        id
-                    );
-
-
-                if (!element) {
-                    return;
-                }
-
-
-                element.addEventListener(
-                    id === "adminEventSearch"
-                        ? "input"
-                        : "change",
-                    applyAdminEventFilters
-                );
-            }
-        );
-
-
-    const clear =
-        document.getElementById(
-            "clearAdminEventFilters"
-        );
-
-
-    if (clear) {
-
-        clear.addEventListener(
-            "click",
-            function () {
-
-                setAdminEventInputValue(
-                    "adminEventSearch",
-                    ""
-                );
-
-
-                setAdminEventInputValue(
-                    "adminEventDateFilter",
-                    ""
-                );
-
-
-                setAdminEventInputValue(
-                    "adminEventVenueFilter",
-                    ""
-                );
-
-
-                setAdminEventInputValue(
-                    "adminEventCategoryFilter",
-                    ""
-                );
-
-
-                applyAdminEventFilters();
-            }
-        );
-    }
-}
-
-
-/* =========================================================
-   VENUE FILTER
-   ========================================================= */
-
-function populateAdminEventVenueFilter() {
+function populateVenueDropdown() {
 
     const select =
         document.getElementById(
-            "adminEventVenueFilter"
+            "eventVenue"
         );
 
 
     if (!select) {
+
         return;
     }
 
 
+    const currentValue =
+        select.value;
+
+
     select.innerHTML =
-        `<option value="">All Venues</option>`;
+        `
+        <option value="">
+            Select venue
+        </option>
+        `;
 
 
-    adminEventVenues.forEach(
+    venues.forEach(
         function (venue) {
 
             const option =
@@ -452,15 +208,11 @@ function populateAdminEventVenueFilter() {
 
 
             option.value =
-                getAdminVenueId(
-                    venue
-                );
+                venue.id;
 
 
             option.textContent =
-                getAdminVenueName(
-                    venue
-                );
+                `${venue.name} — Capacity ${venue.totalCapacity}`;
 
 
             select.appendChild(
@@ -468,31 +220,47 @@ function populateAdminEventVenueFilter() {
             );
         }
     );
+
+
+    if (currentValue) {
+
+        select.value =
+            currentValue;
+    }
 }
 
 
 /* =========================================================
-   CATEGORY FILTER
+   POPULATE CATEGORY DROPDOWN
    ========================================================= */
 
-function populateAdminEventCategoryFilter() {
+function populateCategoryDropdown() {
 
     const select =
         document.getElementById(
-            "adminEventCategoryFilter"
+            "eventCategory"
         );
 
 
     if (!select) {
+
         return;
     }
 
 
+    const currentValue =
+        select.value;
+
+
     select.innerHTML =
-        `<option value="">All Categories</option>`;
+        `
+        <option value="">
+            Select category
+        </option>
+        `;
 
 
-    adminEventCategories.forEach(
+    categories.forEach(
         function (category) {
 
             const option =
@@ -502,15 +270,11 @@ function populateAdminEventCategoryFilter() {
 
 
             option.value =
-                getAdminCategoryId(
-                    category
-                );
+                category.id;
 
 
             option.textContent =
-                getAdminCategoryName(
-                    category
-                );
+                category.name;
 
 
             select.appendChild(
@@ -518,180 +282,105 @@ function populateAdminEventCategoryFilter() {
             );
         }
     );
+
+
+    if (currentValue) {
+
+        select.value =
+            currentValue;
+    }
 }
 
 
 /* =========================================================
-   FILTER
+   LOAD EVENTS
+   GET /api/Events
    ========================================================= */
 
-function applyAdminEventFilters() {
+async function loadEvents() {
 
-    const search =
-        document
-            .getElementById(
-                "adminEventSearch"
-            )
-            ?.value
-            .trim()
-            .toLowerCase() ||
-        "";
+    showEventLoading(
+        true
+    );
 
 
-    const date =
-        document
-            .getElementById(
-                "adminEventDateFilter"
-            )
-            ?.value ||
-        "";
+    try {
+
+        const response =
+            await apiGet(
+                "/events"
+            );
 
 
-    const venueId =
-        document
-            .getElementById(
-                "adminEventVenueFilter"
-            )
-            ?.value ||
-        "";
+        events =
+            Array.isArray(response)
+                ? response
+                : response?.data || [];
 
 
-    const categoryId =
-        document
-            .getElementById(
-                "adminEventCategoryFilter"
-            )
-            ?.value ||
-        "";
+        updateEventCounts();
 
+        renderEvents();
 
-    const filtered =
-        adminEvents.filter(
-            function (event) {
+    }
+    catch (error) {
 
-                const matchesSearch =
-                    !search ||
-                    getAdminEventName(event)
-                        .toLowerCase()
-                        .includes(search);
-
-
-                const matchesDate =
-                    !date ||
-                    normalizeAdminEventDate(
-                        getAdminEventDate(event)
-                    ) === date;
-
-
-                const matchesVenue =
-                    !venueId ||
-                    String(
-                        getAdminEventVenueId(event)
-                    ) ===
-                    String(venueId);
-
-
-                const matchesCategory =
-                    !categoryId ||
-                    String(
-                        getAdminEventCategoryId(event)
-                    ) ===
-                    String(categoryId);
-
-
-                return (
-                    matchesSearch &&
-                    matchesDate &&
-                    matchesVenue &&
-                    matchesCategory
-                );
-            }
+        console.error(
+            "Load Events Error:",
+            error
         );
 
 
-    renderAdminEvents(
-        filtered
-    );
+        showEventMessage(
+            error?.message ||
+            "Unable to load events.",
+            "error"
+        );
+
+    }
+    finally {
+
+        showEventLoading(
+            false
+        );
+    }
 }
 
 
 /* =========================================================
-   SUMMARY
+   EVENT COUNTS
    ========================================================= */
 
-function renderAdminEventSummary() {
+function updateEventCounts() {
 
-    const now =
-        new Date();
-
-
-    const upcoming =
-        adminEvents.filter(
-            function (event) {
-
-                const date =
-                    new Date(
-                        getAdminEventDate(event)
-                    );
+    const count =
+        events.length;
 
 
-                return (
-                    !Number.isNaN(
-                        date.getTime()
-                    ) &&
-                    date >=
-                    new Date(
-                        now.getFullYear(),
-                        now.getMonth(),
-                        now.getDate()
-                    )
-                );
-            }
-        ).length;
-
-
-    const totalCapacity =
-        adminEvents.reduce(
-            function (total, event) {
-
-                return (
-                    total +
-                    getAdminEventCapacity(
-                        event
-                    )
-                );
-            },
-            0
+    const totalElement =
+        document.getElementById(
+            "eventTotalCount"
         );
 
 
-    setAdminEventText(
-        "adminEventTotalCount",
-        adminEvents.length
-    );
-
-
-    setAdminEventText(
-        "adminUpcomingEventCount",
-        upcoming
-    );
-
-
-    setAdminEventText(
-        "adminEventTotalCapacity",
-        totalCapacity.toLocaleString(
-            "en-LK"
-        )
-    );
-
-
-    document
-        .getElementById(
-            "adminEventSummary"
-        )
-        ?.classList.remove(
-            "hidden"
+    const summaryElement =
+        document.getElementById(
+            "eventSummaryCount"
         );
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            count;
+    }
+
+
+    if (summaryElement) {
+
+        summaryElement.textContent =
+            count;
+    }
 }
 
 
@@ -699,85 +388,361 @@ function renderAdminEventSummary() {
    RENDER EVENTS
    ========================================================= */
 
-function renderAdminEvents(
-    events
-) {
+function renderEvents() {
 
-    const table =
+    const tableBody =
         document.getElementById(
-            "adminEventsTableContainer"
+            "eventTableBody"
         );
 
 
-    const body =
+    const emptyState =
         document.getElementById(
-            "adminEventsTableBody"
+            "eventEmpty"
         );
 
 
-    const empty =
+    const tableWrapper =
         document.getElementById(
-            "adminEventsEmpty"
+            "eventTableWrapper"
         );
 
 
-    if (
-        !table ||
-        !body ||
-        !empty
-    ) {
+    if (!tableBody) {
 
         return;
     }
 
 
-    body.innerHTML =
+    tableBody.innerHTML =
         "";
 
 
-    setAdminEventText(
-        "adminEventResultCount",
-        events.length === 1
-            ? "1 event"
-            : `${events.length} events`
-    );
-
-
     if (
+        !events ||
         events.length === 0
     ) {
 
-        table.classList.add(
-            "hidden"
-        );
+        if (emptyState) {
+
+            emptyState.classList.remove(
+                "hidden"
+            );
+        }
 
 
-        empty.classList.remove(
-            "hidden"
-        );
+        if (tableWrapper) {
+
+            tableWrapper.classList.add(
+                "hidden"
+            );
+        }
 
 
         return;
     }
 
 
-    empty.classList.add(
-        "hidden"
-    );
+    if (emptyState) {
+
+        emptyState.classList.add(
+            "hidden"
+        );
+    }
 
 
-    table.classList.remove(
-        "hidden"
-    );
+    if (tableWrapper) {
+
+        tableWrapper.classList.remove(
+            "hidden"
+        );
+    }
 
 
     events.forEach(
-        function (event) {
+        function (eventItem) {
 
-            body.appendChild(
-                createAdminEventRow(
-                    event
-                )
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            const imageUrl =
+                eventItem.imageUrl || "";
+
+
+            const safeImageUrl =
+                escapeEventAttribute(
+                    imageUrl
+                );
+
+
+            const safeName =
+                escapeEventHtml(
+                    eventItem.name
+                );
+
+
+            const safeVenue =
+                escapeEventHtml(
+                    eventItem.venueName ||
+                    "Venue unavailable"
+                );
+
+
+            const safeCategory =
+                escapeEventHtml(
+                    eventItem.categoryName ||
+                    "Uncategorized"
+                );
+
+
+            const formattedDate =
+                formatEventDate(
+                    eventItem.eventDate
+                );
+
+
+            const formattedStartTime =
+                formatEventTime(
+                    eventItem.startTime
+                );
+
+
+            const formattedEndTime =
+                formatEventTime(
+                    eventItem.endTime
+                );
+
+
+            const ticketPrice =
+                formatEventPrice(
+                    eventItem.ticketPrice
+                );
+
+
+            const capacity =
+                Number(
+                    eventItem.capacity || 0
+                ).toLocaleString();
+
+
+            row.innerHTML =
+                `
+                <td>
+
+                    <div class="event-table-main">
+
+                        <div class="event-table-image-wrap">
+
+                            ${
+                                imageUrl
+                                    ?
+                                    `
+                                    <img
+                                        class="event-table-image"
+                                        src="${safeImageUrl}"
+                                        alt="${escapeEventAttribute(eventItem.name)}"
+                                        data-event-image="true"
+                                    >
+                                    `
+                                    :
+                                    `
+                                    <div class="event-table-image-fallback">
+                                        ${getEventInitial(eventItem.name)}
+                                    </div>
+                                    `
+                            }
+
+                        </div>
+
+
+                        <div class="event-table-info">
+
+                            <strong>
+                                ${safeName}
+                            </strong>
+
+
+                            <span class="event-category-chip">
+                                ${safeCategory}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="event-venue-cell">
+
+                        <strong>
+                            ${safeVenue}
+                        </strong>
+
+                        <span>
+                            Venue #${escapeEventHtml(eventItem.venueId)}
+                        </span>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="event-schedule-cell">
+
+                        <strong>
+                            ${escapeEventHtml(formattedDate)}
+                        </strong>
+
+                        <span>
+                            ${escapeEventHtml(formattedStartTime)}
+                            –
+                            ${escapeEventHtml(formattedEndTime)}
+                        </span>
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <span class="event-price-badge">
+                        ${escapeEventHtml(ticketPrice)}
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <span class="event-capacity-badge">
+                        ${escapeEventHtml(capacity)}
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    <div class="table-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-edit"
+                            data-action="edit"
+                            data-id="${eventItem.id}"
+                        >
+                            Edit
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-sm btn-danger"
+                            data-action="delete"
+                            data-id="${eventItem.id}"
+                        >
+                            Delete
+                        </button>
+
+                    </div>
+
+                </td>
+                `;
+
+
+            tableBody.appendChild(
+                row
+            );
+        }
+    );
+
+
+    initializeEventTableActions();
+
+    initializeEventTableImages();
+}
+
+
+/* =========================================================
+   TABLE IMAGE ERROR FALLBACK
+   ========================================================= */
+
+function initializeEventTableImages() {
+
+    const images =
+        document.querySelectorAll(
+            "#eventTableBody img[data-event-image='true']"
+        );
+
+
+    images.forEach(
+        function (image) {
+
+            image.addEventListener(
+                "error",
+                function () {
+
+                    const wrapper =
+                        image.parentElement;
+
+
+                    if (!wrapper) {
+
+                        return;
+                    }
+
+
+                    const eventRow =
+                        image.closest(
+                            "tr"
+                        );
+
+
+                    let initial =
+                        "E";
+
+
+                    if (eventRow) {
+
+                        const title =
+                            eventRow.querySelector(
+                                ".event-table-info strong"
+                            );
+
+
+                        if (
+                            title &&
+                            title.textContent
+                        ) {
+
+                            initial =
+                                title.textContent
+                                    .trim()
+                                    .charAt(0)
+                                    .toUpperCase();
+                        }
+                    }
+
+
+                    wrapper.innerHTML =
+                        `
+                        <div class="event-table-image-fallback">
+                            ${escapeEventHtml(initial)}
+                        </div>
+                        `;
+                },
+                {
+                    once: true
+                }
             );
         }
     );
@@ -785,258 +750,1116 @@ function renderAdminEvents(
 
 
 /* =========================================================
-   EVENT ROW
+   TABLE ACTIONS
    ========================================================= */
 
-function createAdminEventRow(
-    event
-) {
+function initializeEventTableActions() {
 
-    const id =
-        getAdminEventId(
-            event
+    const buttons =
+        document.querySelectorAll(
+            "#eventTableBody button[data-action]"
         );
 
 
-    const name =
-        getAdminEventName(
-            event
-        );
+    buttons.forEach(
+        function (button) {
 
+            button.addEventListener(
+                "click",
+                function () {
 
-    const row =
-        document.createElement(
-            "tr"
-        );
+                    const action =
+                        button.dataset.action;
 
 
-    row.innerHTML = `
+                    const eventId =
+                        Number(
+                            button.dataset.id
+                        );
 
-        <td>
 
-            <div class="admin-event-name-cell">
+                    if (
+                        action === "edit"
+                    ) {
 
-                <div class="admin-event-icon">
-                    ★
-                </div>
+                        startEventEdit(
+                            eventId
+                        );
 
-                <div>
 
-                    <strong>
-                        ${escapeAdminEventHtml(name)}
-                    </strong>
+                        return;
+                    }
 
-                    <span>
-                        ID:
-                        ${escapeAdminEventHtml(id || "-")}
-                    </span>
 
-                </div>
+                    if (
+                        action === "delete"
+                    ) {
 
-            </div>
-
-        </td>
-
-
-        <td>
-
-            <strong class="admin-event-table-main-text">
-
-                ${escapeAdminEventHtml(
-                    formatAdminEventDate(
-                        getAdminEventDate(
-                            event
-                        )
-                    )
-                )}
-
-            </strong>
-
-            <span class="admin-event-table-sub-text">
-
-                ${escapeAdminEventHtml(
-                    formatAdminEventTimeRange(
-                        event
-                    )
-                )}
-
-            </span>
-
-        </td>
-
-
-        <td>
-
-            ${escapeAdminEventHtml(
-                getAdminEventVenueName(
-                    event
-                )
-            )}
-
-        </td>
-
-
-        <td>
-
-            <span class="admin-event-category-badge">
-
-                ${escapeAdminEventHtml(
-                    getAdminEventCategoryName(
-                        event
-                    )
-                )}
-
-            </span>
-
-        </td>
-
-
-        <td>
-
-            <strong>
-
-                ${escapeAdminEventHtml(
-                    formatAdminEventCurrency(
-                        getAdminEventTicketPrice(
-                            event
-                        )
-                    )
-                )}
-
-            </strong>
-
-        </td>
-
-
-        <td>
-
-            ${getAdminEventCapacity(
-                event
-            ).toLocaleString("en-LK")}
-
-        </td>
-
-
-        <td>
-
-            <div class="admin-event-actions">
-
-
-                <a
-                    href="event-form.html?id=${encodeURIComponent(id)}&mode=view"
-                    class="btn btn-outline"
-                >
-                    View
-                </a>
-
-
-                <a
-                    href="event-form.html?id=${encodeURIComponent(id)}"
-                    class="btn btn-primary"
-                >
-                    Edit
-                </a>
-
-
-                <a
-                    href="seat-map-builder.html?eventId=${encodeURIComponent(id)}"
-                    class="btn btn-outline"
-                >
-                    Seats
-                </a>
-
-
-                <a
-                    href="parking-layout-builder.html?eventId=${encodeURIComponent(id)}"
-                    class="btn btn-outline"
-                >
-                    Parking
-                </a>
-
-
-                <button
-                    type="button"
-                    class="btn btn-danger"
-                    data-delete-event-id="${escapeAdminEventHtml(id)}"
-                    data-event-name="${escapeAdminEventHtml(name)}"
-                >
-                    Delete
-                </button>
-
-
-            </div>
-
-        </td>
-    `;
-
-
-    const deleteButton =
-        row.querySelector(
-            "[data-delete-event-id]"
-        );
-
-
-    if (deleteButton) {
-
-        deleteButton.addEventListener(
-            "click",
-            async function () {
-
-                await confirmAdminEventDeletion(
-                    this.dataset.deleteEventId,
-                    this.dataset.eventName,
-                    this
-                );
-            }
-        );
-    }
-
-
-    return row;
+                        deleteEvent(
+                            eventId
+                        );
+                    }
+                }
+            );
+        }
+    );
 }
 
 
 /* =========================================================
-   DELETE CONFIRM
+   IMAGE LIVE PREVIEW
    ========================================================= */
 
-async function confirmAdminEventDeletion(
-    eventId,
-    eventName,
-    button
+function initializeImagePreview() {
+
+    const input =
+        document.getElementById(
+            "eventImageUrl"
+        );
+
+
+    if (!input) {
+
+        return;
+    }
+
+
+    input.addEventListener(
+        "input",
+        function () {
+
+            updateEventImagePreview();
+        }
+    );
+
+
+    input.addEventListener(
+        "change",
+        function () {
+
+            updateEventImagePreview();
+        }
+    );
+
+
+    updateEventImagePreview();
+}
+
+
+/* =========================================================
+   UPDATE IMAGE PREVIEW
+   ========================================================= */
+
+function updateEventImagePreview() {
+
+    const input =
+        document.getElementById(
+            "eventImageUrl"
+        );
+
+
+    const image =
+        document.getElementById(
+            "eventImagePreview"
+        );
+
+
+    const placeholder =
+        document.getElementById(
+            "eventImagePlaceholder"
+        );
+
+
+    const status =
+        document.getElementById(
+            "eventImagePreviewStatus"
+        );
+
+
+    if (
+        !input ||
+        !image ||
+        !placeholder
+    ) {
+
+        return;
+    }
+
+
+    const imageUrl =
+        input.value.trim();
+
+
+    if (!imageUrl) {
+
+        image.removeAttribute(
+            "src"
+        );
+
+
+        image.classList.add(
+            "hidden"
+        );
+
+
+        placeholder.classList.remove(
+            "hidden"
+        );
+
+
+        if (status) {
+
+            status.textContent =
+                "No image";
+
+
+            status.className =
+                "preview-status";
+        }
+
+
+        return;
+    }
+
+
+    if (
+        !isValidHttpUrl(
+            imageUrl
+        )
+    ) {
+
+        image.classList.add(
+            "hidden"
+        );
+
+
+        placeholder.classList.remove(
+            "hidden"
+        );
+
+
+        if (status) {
+
+            status.textContent =
+                "Invalid URL";
+
+
+            status.className =
+                "preview-status preview-status-error";
+        }
+
+
+        return;
+    }
+
+
+    if (status) {
+
+        status.textContent =
+            "Loading...";
+
+
+        status.className =
+            "preview-status preview-status-loading";
+    }
+
+
+    image.onload =
+        function () {
+
+            image.classList.remove(
+                "hidden"
+            );
+
+
+            placeholder.classList.add(
+                "hidden"
+            );
+
+
+            if (status) {
+
+                status.textContent =
+                    "Image ready";
+
+
+                status.className =
+                    "preview-status preview-status-success";
+            }
+        };
+
+
+    image.onerror =
+        function () {
+
+            image.classList.add(
+                "hidden"
+            );
+
+
+            placeholder.classList.remove(
+                "hidden"
+            );
+
+
+            if (status) {
+
+                status.textContent =
+                    "Unable to load";
+
+
+                status.className =
+                    "preview-status preview-status-error";
+            }
+        };
+
+
+    image.src =
+        imageUrl;
+}
+
+
+/* =========================================================
+   URL VALIDATION
+   ========================================================= */
+
+function isValidHttpUrl(
+    value
 ) {
 
-    if (eventDeleteInProgress) {
+    try {
+
+        const url =
+            new URL(
+                value
+            );
+
+
+        return (
+            url.protocol === "http:"
+            ||
+            url.protocol === "https:"
+        );
+
+    }
+    catch {
+
+        return false;
+    }
+}
+
+
+/* =========================================================
+   VENUE CAPACITY HELPER
+   ========================================================= */
+
+function initializeVenueCapacityHelper() {
+
+    const venueSelect =
+        document.getElementById(
+            "eventVenue"
+        );
+
+
+    if (!venueSelect) {
+
         return;
     }
 
 
-    const confirmed =
-        await openConfirmationModal({
+    venueSelect.addEventListener(
+        "change",
+        function () {
 
-            title:
-                "Delete Event",
-
-            message:
-                `Delete ${eventName}? The operation should only succeed if the event has no protected active bookings.`,
-
-            confirmText:
-                "Delete Event",
-
-            cancelText:
-                "Keep Event"
-        });
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    await deleteAdminEvent(
-        eventId,
-        button
+            updateVenueCapacityHelper();
+        }
     );
+}
+
+
+/* =========================================================
+   UPDATE VENUE CAPACITY
+   ========================================================= */
+
+function updateVenueCapacityHelper() {
+
+    const venueSelect =
+        document.getElementById(
+            "eventVenue"
+        );
+
+
+    const helper =
+        document.getElementById(
+            "eventCapacityHelper"
+        );
+
+
+    const capacityInput =
+        document.getElementById(
+            "eventCapacity"
+        );
+
+
+    if (
+        !venueSelect ||
+        !helper
+    ) {
+
+        return;
+    }
+
+
+    const venueId =
+        Number(
+            venueSelect.value
+        );
+
+
+    if (!venueId) {
+
+        helper.textContent =
+            "Select a venue to see its maximum capacity.";
+
+
+        if (capacityInput) {
+
+            capacityInput.removeAttribute(
+                "max"
+            );
+        }
+
+
+        return;
+    }
+
+
+    const venue =
+        venues.find(
+            function (item) {
+
+                return Number(item.id) ===
+                    venueId;
+            }
+        );
+
+
+    if (!venue) {
+
+        helper.textContent =
+            "Venue capacity information is unavailable.";
+
+
+        return;
+    }
+
+
+    const maximumCapacity =
+        Number(
+            venue.totalCapacity
+        );
+
+
+    helper.textContent =
+        `Maximum venue capacity: ${maximumCapacity.toLocaleString()} people.`;
+
+
+    if (capacityInput) {
+
+        capacityInput.max =
+            maximumCapacity;
+    }
+}
+
+
+/* =========================================================
+   HANDLE EVENT CREATE / UPDATE
+   ========================================================= */
+
+async function handleEventSubmit(
+    submitEvent
+) {
+
+    submitEvent.preventDefault();
+
+
+    clearEventMessage();
+
+    clearEventValidation();
+
+
+    const nameInput =
+        document.getElementById(
+            "eventName"
+        );
+
+
+    const imageInput =
+        document.getElementById(
+            "eventImageUrl"
+        );
+
+
+    const venueInput =
+        document.getElementById(
+            "eventVenue"
+        );
+
+
+    const categoryInput =
+        document.getElementById(
+            "eventCategory"
+        );
+
+
+    const dateInput =
+        document.getElementById(
+            "eventDate"
+        );
+
+
+    const startTimeInput =
+        document.getElementById(
+            "eventStartTime"
+        );
+
+
+    const endTimeInput =
+        document.getElementById(
+            "eventEndTime"
+        );
+
+
+    const priceInput =
+        document.getElementById(
+            "eventTicketPrice"
+        );
+
+
+    const capacityInput =
+        document.getElementById(
+            "eventCapacity"
+        );
+
+
+    if (
+        !nameInput ||
+        !imageInput ||
+        !venueInput ||
+        !categoryInput ||
+        !dateInput ||
+        !startTimeInput ||
+        !endTimeInput ||
+        !priceInput ||
+        !capacityInput
+    ) {
+
+        showEventMessage(
+            "Event form is not configured correctly.",
+            "error"
+        );
+
+
+        return;
+    }
+
+
+    const formData =
+    {
+        name:
+            nameInput.value.trim(),
+
+        imageUrl:
+            imageInput.value.trim(),
+
+        venueId:
+            Number(
+                venueInput.value
+            ),
+
+        categoryId:
+            Number(
+                categoryInput.value
+            ),
+
+        eventDate:
+            dateInput.value,
+
+        startTime:
+            startTimeInput.value,
+
+        endTime:
+            endTimeInput.value,
+
+        ticketPrice:
+            Number(
+                priceInput.value
+            ),
+
+        capacity:
+            Number(
+                capacityInput.value
+            )
+    };
+
+
+    const valid =
+        validateEventForm(
+            formData
+        );
+
+
+    if (!valid) {
+
+        return;
+    }
+
+
+    const request =
+    {
+        name:
+            formData.name,
+
+        imageUrl:
+            formData.imageUrl || "",
+
+        venueId:
+            formData.venueId,
+
+        categoryId:
+            formData.categoryId,
+
+        eventDate:
+            formData.eventDate,
+
+        startTime:
+            normalizeTimeForApi(
+                formData.startTime
+            ),
+
+        endTime:
+            normalizeTimeForApi(
+                formData.endTime
+            ),
+
+        ticketPrice:
+            formData.ticketPrice,
+
+        capacity:
+            formData.capacity
+    };
+
+
+    const wasEditing =
+        editingEventId !== null;
+
+
+    const eventIdToUpdate =
+        editingEventId;
+
+
+    setEventFormLoading(
+        true
+    );
+
+
+    try {
+
+        // =================================================
+        // CREATE
+        // =================================================
+
+        if (!wasEditing) {
+
+            await apiPost(
+                "/events",
+                request
+            );
+        }
+
+        // =================================================
+        // UPDATE
+        // =================================================
+
+        else {
+
+            await apiPut(
+                `/events/${eventIdToUpdate}`,
+                request
+            );
+        }
+
+
+        resetEventForm(
+            false
+        );
+
+
+        await loadEvents();
+
+
+        showEventMessage(
+            wasEditing
+                ? "Event updated successfully."
+                : "Event created successfully.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Save Event Error:",
+            error
+        );
+
+
+        showEventMessage(
+            error?.message ||
+            "Unable to save event.",
+            "error"
+        );
+
+    }
+    finally {
+
+        setEventFormLoading(
+            false
+        );
+    }
+}
+
+
+/* =========================================================
+   EVENT FORM VALIDATION
+   ========================================================= */
+
+function validateEventForm(
+    data
+) {
+
+    let valid =
+        true;
+
+
+    // Event name
+
+    if (!data.name) {
+
+        showEventFieldError(
+            "eventName",
+            "eventNameError",
+            "Event name is required."
+        );
+
+
+        valid =
+            false;
+    }
+    else if (
+        data.name.length < 2
+    ) {
+
+        showEventFieldError(
+            "eventName",
+            "eventNameError",
+            "Event name must contain at least 2 characters."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Image URL
+
+    if (
+        data.imageUrl &&
+        !isValidHttpUrl(
+            data.imageUrl
+        )
+    ) {
+
+        showEventFieldError(
+            "eventImageUrl",
+            "eventImageUrlError",
+            "Enter a valid http or https image URL."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Venue
+
+    if (
+        !Number.isInteger(
+            data.venueId
+        ) ||
+        data.venueId <= 0
+    ) {
+
+        showEventFieldError(
+            "eventVenue",
+            "eventVenueError",
+            "Please select a venue."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Category
+
+    if (
+        !Number.isInteger(
+            data.categoryId
+        ) ||
+        data.categoryId <= 0
+    ) {
+
+        showEventFieldError(
+            "eventCategory",
+            "eventCategoryError",
+            "Please select a category."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Date
+
+    if (!data.eventDate) {
+
+        showEventFieldError(
+            "eventDate",
+            "eventDateError",
+            "Event date is required."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Start Time
+
+    if (!data.startTime) {
+
+        showEventFieldError(
+            "eventStartTime",
+            "eventStartTimeError",
+            "Start time is required."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // End Time
+
+    if (!data.endTime) {
+
+        showEventFieldError(
+            "eventEndTime",
+            "eventEndTimeError",
+            "End time is required."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Time order
+
+    if (
+        data.startTime &&
+        data.endTime &&
+        data.startTime >= data.endTime
+    ) {
+
+        showEventFieldError(
+            "eventEndTime",
+            "eventEndTimeError",
+            "End time must be later than start time."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Ticket price
+
+    if (
+        !Number.isFinite(
+            data.ticketPrice
+        ) ||
+        data.ticketPrice < 0
+    ) {
+
+        showEventFieldError(
+            "eventTicketPrice",
+            "eventTicketPriceError",
+            "Ticket price cannot be negative."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Capacity
+
+    if (
+        !Number.isInteger(
+            data.capacity
+        ) ||
+        data.capacity <= 0
+    ) {
+
+        showEventFieldError(
+            "eventCapacity",
+            "eventCapacityError",
+            "Event capacity must be greater than zero."
+        );
+
+
+        valid =
+            false;
+    }
+
+
+    // Venue capacity
+
+    if (
+        data.venueId > 0 &&
+        data.capacity > 0
+    ) {
+
+        const venue =
+            venues.find(
+                function (item) {
+
+                    return Number(item.id) ===
+                        Number(data.venueId);
+                }
+            );
+
+
+        if (
+            venue &&
+            data.capacity >
+            Number(venue.totalCapacity)
+        ) {
+
+            showEventFieldError(
+                "eventCapacity",
+                "eventCapacityError",
+                `Capacity cannot exceed venue capacity of ${venue.totalCapacity}.`
+            );
+
+
+            valid =
+                false;
+        }
+    }
+
+
+    return valid;
+}
+
+
+/* =========================================================
+   START EVENT EDIT
+   ========================================================= */
+
+function startEventEdit(
+    eventId
+) {
+
+    clearEventMessage();
+
+    clearEventValidation();
+
+
+    const eventItem =
+        events.find(
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(eventId);
+            }
+        );
+
+
+    if (!eventItem) {
+
+        showEventMessage(
+            "Event could not be found.",
+            "error"
+        );
+
+
+        return;
+    }
+
+
+    editingEventId =
+        eventItem.id;
+
+
+    setInputValue(
+        "eventId",
+        eventItem.id
+    );
+
+
+    setInputValue(
+        "eventName",
+        eventItem.name
+    );
+
+
+    setInputValue(
+        "eventImageUrl",
+        eventItem.imageUrl || ""
+    );
+
+
+    setInputValue(
+        "eventVenue",
+        eventItem.venueId
+    );
+
+
+    setInputValue(
+        "eventCategory",
+        eventItem.categoryId
+    );
+
+
+    setInputValue(
+        "eventDate",
+        normalizeDateForInput(
+            eventItem.eventDate
+        )
+    );
+
+
+    setInputValue(
+        "eventStartTime",
+        normalizeTimeForInput(
+            eventItem.startTime
+        )
+    );
+
+
+    setInputValue(
+        "eventEndTime",
+        normalizeTimeForInput(
+            eventItem.endTime
+        )
+    );
+
+
+    setInputValue(
+        "eventTicketPrice",
+        eventItem.ticketPrice
+    );
+
+
+    setInputValue(
+        "eventCapacity",
+        eventItem.capacity
+    );
+
+
+    const title =
+        document.getElementById(
+            "eventFormTitle"
+        );
+
+
+    const saveButton =
+        document.getElementById(
+            "saveEventButton"
+        );
+
+
+    const cancelButton =
+        document.getElementById(
+            "cancelEventEditButton"
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            "Edit Event";
+    }
+
+
+    if (saveButton) {
+
+        saveButton.textContent =
+            "Update Event";
+    }
+
+
+    if (cancelButton) {
+
+        cancelButton.classList.remove(
+            "hidden"
+        );
+    }
+
+
+    updateVenueCapacityHelper();
+
+    updateEventImagePreview();
+
+
+    window.scrollTo(
+        {
+            top: 0,
+            behavior: "smooth"
+        }
+    );
+
+
+    const nameInput =
+        document.getElementById(
+            "eventName"
+        );
+
+
+    if (nameInput) {
+
+        setTimeout(
+            function () {
+
+                nameInput.focus();
+
+            },
+            250
+        );
+    }
 }
 
 
@@ -1044,51 +1867,75 @@ async function confirmAdminEventDeletion(
    DELETE EVENT
    ========================================================= */
 
-async function deleteAdminEvent(
-    eventId,
-    button
+async function deleteEvent(
+    eventId
 ) {
 
-    eventDeleteInProgress =
-        true;
+    clearEventMessage();
 
 
-    clearAdminEventsMessage();
+    const eventItem =
+        events.find(
+            function (item) {
+
+                return Number(item.id) ===
+                    Number(eventId);
+            }
+        );
 
 
-    if (button) {
+    if (!eventItem) {
 
-        button.disabled = true;
+        showEventMessage(
+            "Event could not be found.",
+            "error"
+        );
 
-        button.textContent =
-            "Deleting...";
+
+        return;
+    }
+
+
+    const confirmed =
+        window.confirm(
+            `Are you sure you want to delete "${eventItem.name}"?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
     }
 
 
     try {
 
-        /*
-         * BRD:
-         * DELETE /api/events/{id}
-         */
-
         await apiDelete(
-            `/events/${encodeURIComponent(
-                eventId
-            )}`
+            `/events/${eventId}`
         );
 
 
-        showAdminEventsMessage(
+        if (
+            Number(editingEventId) ===
+            Number(eventId)
+        ) {
+
+            resetEventForm(
+                false
+            );
+        }
+
+
+        await loadEvents();
+
+
+        showEventMessage(
             "Event deleted successfully.",
             "success"
         );
 
-
-        await loadAdminEventPageData();
-
-
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Delete Event Error:",
@@ -1096,620 +1943,319 @@ async function deleteAdminEvent(
         );
 
 
-        if (
-            error.status === 400 ||
-            error.status === 409
-        ) {
-
-            showAdminEventsMessage(
-                getAdminEventApiError(
-                    error
-                ) ||
-                "This event cannot be deleted because active bookings exist.",
-                "error"
-            );
-
-
-        } else {
-
-            showAdminEventsMessage(
-                getAdminEventApiError(
-                    error
-                ),
-                "error"
-            );
-        }
-
-
-        if (button) {
-
-            button.disabled = false;
-
-            button.textContent =
-                "Delete";
-        }
-
-
-    } finally {
-
-        eventDeleteInProgress =
-            false;
+        showEventMessage(
+            error?.message ||
+            "Unable to delete event.",
+            "error"
+        );
     }
 }
 
 
 /* =========================================================
-   EVENT HELPERS
+   RESET EVENT FORM
    ========================================================= */
 
-function getAdminEventId(event) {
+function resetEventForm(
+    clearMessage = true
+) {
 
-    return (
-        event?.eventId ||
-        event?.EventId ||
-        event?.id ||
-        event?.Id ||
-        null
-    );
-}
+    editingEventId =
+        null;
 
 
-function getAdminEventName(event) {
-
-    return String(
-        event?.name ||
-        event?.Name ||
-        event?.eventName ||
-        event?.EventName ||
-        event?.title ||
-        "Event"
-    );
-}
+    const form =
+        document.getElementById(
+            "eventForm"
+        );
 
 
-function getAdminEventDate(event) {
-
-    return (
-        event?.eventDate ||
-        event?.EventDate ||
-        event?.date ||
-        event?.Date ||
-        null
-    );
-}
+    const title =
+        document.getElementById(
+            "eventFormTitle"
+        );
 
 
-function getAdminEventStartTime(event) {
+    const saveButton =
+        document.getElementById(
+            "saveEventButton"
+        );
 
-    return String(
-        event?.startTime ||
-        event?.StartTime ||
+
+    const cancelButton =
+        document.getElementById(
+            "cancelEventEditButton"
+        );
+
+
+    if (form) {
+
+        form.reset();
+    }
+
+
+    setInputValue(
+        "eventId",
         ""
     );
-}
 
 
-function getAdminEventEndTime(event) {
+    if (title) {
 
-    return String(
-        event?.endTime ||
-        event?.EndTime ||
-        ""
-    );
-}
+        title.textContent =
+            "Add New Event";
+    }
 
 
-function getAdminEventTicketPrice(event) {
+    if (saveButton) {
 
-    const number =
-        Number(
-            event?.ticketPrice ??
-            event?.TicketPrice ??
-            event?.price ??
-            0
+        saveButton.textContent =
+            "Create Event";
+    }
+
+
+    if (cancelButton) {
+
+        cancelButton.classList.add(
+            "hidden"
         );
+    }
 
 
-    return Number.isNaN(number)
-        ? 0
-        : number;
-}
+    clearEventValidation();
+
+    updateVenueCapacityHelper();
+
+    updateEventImagePreview();
 
 
-function getAdminEventCapacity(event) {
+    if (clearMessage) {
 
-    const number =
-        Number(
-            event?.capacity ??
-            event?.Capacity ??
-            event?.eventCapacity ??
-            event?.EventCapacity ??
-            0
-        );
-
-
-    return Number.isNaN(number)
-        ? 0
-        : number;
+        clearEventMessage();
+    }
 }
 
 
 /* =========================================================
-   VENUE HELPERS
+   SET INPUT VALUE
    ========================================================= */
 
-function getAdminEventVenueId(event) {
-
-    return (
-        event?.venueId ||
-        event?.VenueId ||
-        event?.venue?.venueId ||
-        event?.venue?.id ||
-        null
-    );
-}
-
-
-function getAdminEventVenueName(event) {
-
-    return String(
-        event?.venueName ||
-        event?.VenueName ||
-        event?.venue?.name ||
-        getVenueNameFromAdminList(
-            getAdminEventVenueId(event)
-        ) ||
-        "Venue"
-    );
-}
-
-
-function getVenueNameFromAdminList(
-    venueId
-) {
-
-    const venue =
-        adminEventVenues.find(
-            function (item) {
-
-                return (
-                    String(
-                        getAdminVenueId(item)
-                    ) ===
-                    String(venueId)
-                );
-            }
-        );
-
-
-    return venue
-        ? getAdminVenueName(venue)
-        : "";
-}
-
-
-function getAdminVenueId(venue) {
-
-    return (
-        venue?.venueId ||
-        venue?.VenueId ||
-        venue?.id ||
-        venue?.Id ||
-        null
-    );
-}
-
-
-function getAdminVenueName(venue) {
-
-    return String(
-        venue?.name ||
-        venue?.Name ||
-        venue?.venueName ||
-        "Venue"
-    );
-}
-
-
-/* =========================================================
-   CATEGORY HELPERS
-   ========================================================= */
-
-function getAdminEventCategoryId(event) {
-
-    return (
-        event?.categoryId ||
-        event?.CategoryId ||
-        event?.eventCategoryId ||
-        event?.category?.categoryId ||
-        event?.category?.id ||
-        null
-    );
-}
-
-
-function getAdminEventCategoryName(event) {
-
-    return String(
-        event?.categoryName ||
-        event?.CategoryName ||
-        event?.category?.name ||
-        getCategoryNameFromAdminList(
-            getAdminEventCategoryId(event)
-        ) ||
-        "Category"
-    );
-}
-
-
-function getCategoryNameFromAdminList(
-    categoryId
-) {
-
-    const category =
-        adminEventCategories.find(
-            function (item) {
-
-                return (
-                    String(
-                        getAdminCategoryId(item)
-                    ) ===
-                    String(categoryId)
-                );
-            }
-        );
-
-
-    return category
-        ? getAdminCategoryName(category)
-        : "";
-}
-
-
-function getAdminCategoryId(category) {
-
-    return (
-        category?.categoryId ||
-        category?.CategoryId ||
-        category?.id ||
-        category?.Id ||
-        null
-    );
-}
-
-
-function getAdminCategoryName(category) {
-
-    return String(
-        category?.name ||
-        category?.Name ||
-        category?.categoryName ||
-        "Category"
-    );
-}
-
-
-/* =========================================================
-   DATE / TIME
-   ========================================================= */
-
-function normalizeAdminEventDate(
-    value
-) {
-
-    if (!value) {
-        return "";
-    }
-
-
-    const text =
-        String(value);
-
-
-    if (
-        /^\d{4}-\d{2}-\d{2}$/.test(
-            text
-        )
-    ) {
-
-        return text;
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
-        return "";
-    }
-
-
-    const year =
-        date.getFullYear();
-
-
-    const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0");
-
-
-    const day =
-        String(
-            date.getDate()
-        ).padStart(2, "0");
-
-
-    return `${year}-${month}-${day}`;
-}
-
-
-function formatAdminEventDate(
-    value
-) {
-
-    if (!value) {
-        return "Not available";
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
-        return String(value);
-    }
-
-
-    return date.toLocaleDateString(
-        "en-LK",
-        {
-            year: "numeric",
-            month: "short",
-            day: "numeric"
-        }
-    );
-}
-
-
-function formatAdminEventTimeRange(
-    event
-) {
-
-    const start =
-        getAdminEventStartTime(
-            event
-        );
-
-
-    const end =
-        getAdminEventEndTime(
-            event
-        );
-
-
-    if (
-        start &&
-        end
-    ) {
-
-        return `${start} - ${end}`;
-    }
-
-
-    return start || "-";
-}
-
-
-/* =========================================================
-   CURRENCY
-   ========================================================= */
-
-function formatAdminEventCurrency(
-    value
-) {
-
-    return new Intl.NumberFormat(
-        "en-LK",
-        {
-            style: "currency",
-            currency: "LKR",
-            minimumFractionDigits: 2
-        }
-    ).format(
-        Number(value) || 0
-    );
-}
-
-
-/* =========================================================
-   ERROR
-   ========================================================= */
-
-function getAdminEventApiError(error) {
-
-    if (
-        error?.data?.errors
-    ) {
-
-        const messages = [];
-
-
-        Object.values(
-            error.data.errors
-        )
-            .forEach(
-                function (items) {
-
-                    if (
-                        Array.isArray(items)
-                    ) {
-
-                        messages.push(
-                            ...items
-                        );
-                    }
-                }
-            );
-
-
-        if (
-            messages.length > 0
-        ) {
-
-            return messages.join(" ");
-        }
-    }
-
-
-    return (
-        error?.message ||
-        "Unable to complete the event operation."
-    );
-}
-
-
-/* =========================================================
-   INPUT / TEXT
-   ========================================================= */
-
-function setAdminEventInputValue(
+function setInputValue(
     id,
     value
 ) {
 
     const element =
-        document.getElementById(id);
+        document.getElementById(
+            id
+        );
 
 
-    if (element) {
+    if (!element) {
 
-        element.value =
-            value ?? "";
+        return;
     }
+
+
+    element.value =
+        value === null ||
+        value === undefined
+            ? ""
+            : value;
 }
 
 
-function setAdminEventText(
-    id,
-    value
+/* =========================================================
+   VALIDATION FIELD ERROR
+   ========================================================= */
+
+function showEventFieldError(
+    inputId,
+    errorId,
+    message
 ) {
 
-    const element =
-        document.getElementById(id);
+    const input =
+        document.getElementById(
+            inputId
+        );
 
 
-    if (element) {
+    const error =
+        document.getElementById(
+            errorId
+        );
 
-        element.textContent =
-            value ?? "";
+
+    if (input) {
+
+        input.classList.add(
+            "input-error"
+        );
+    }
+
+
+    if (error) {
+
+        error.textContent =
+            message;
     }
 }
 
 
 /* =========================================================
-   LOADING
+   CLEAR VALIDATION
    ========================================================= */
 
-function showAdminEventsLoading() {
+function clearEventValidation() {
 
-    document
-        .getElementById(
-            "adminEventsLoading"
-        )
-        ?.classList.remove(
-            "hidden"
-        );
-
-
-    document
-        .getElementById(
-            "adminEventsTableContainer"
-        )
-        ?.classList.add(
-            "hidden"
-        );
+    const inputIds =
+    [
+        "eventName",
+        "eventImageUrl",
+        "eventVenue",
+        "eventCategory",
+        "eventDate",
+        "eventStartTime",
+        "eventEndTime",
+        "eventTicketPrice",
+        "eventCapacity"
+    ];
 
 
-    document
-        .getElementById(
-            "adminEventsEmpty"
-        )
-        ?.classList.add(
-            "hidden"
-        );
-}
+    inputIds.forEach(
+        function (id) {
+
+            const input =
+                document.getElementById(
+                    id
+                );
 
 
-function hideAdminEventsLoading() {
+            if (input) {
 
-    document
-        .getElementById(
-            "adminEventsLoading"
-        )
-        ?.classList.add(
-            "hidden"
-        );
+                input.classList.remove(
+                    "input-error"
+                );
+            }
+        }
+    );
+
+
+    const errorIds =
+    [
+        "eventNameError",
+        "eventImageUrlError",
+        "eventVenueError",
+        "eventCategoryError",
+        "eventDateError",
+        "eventStartTimeError",
+        "eventEndTimeError",
+        "eventTicketPriceError",
+        "eventCapacityError"
+    ];
+
+
+    errorIds.forEach(
+        function (id) {
+
+            const error =
+                document.getElementById(
+                    id
+                );
+
+
+            if (error) {
+
+                error.textContent =
+                    "";
+            }
+        }
+    );
 }
 
 
 /* =========================================================
-   MESSAGE
+   EVENT MESSAGE
    ========================================================= */
 
-function showAdminEventsMessage(
+function showEventMessage(
     message,
     type
 ) {
 
     const element =
         document.getElementById(
-            "adminEventsMessage"
+            "eventMessage"
         );
 
 
     if (!element) {
+
         return;
     }
+
+
+    element.className =
+        "alert";
+
+
+    element.classList.add(
+        type === "success"
+            ? "alert-success"
+            : "alert-error"
+    );
 
 
     element.textContent =
         message;
 
 
-    element.className =
-        type === "success"
-            ? "alert alert-success"
-            : "alert alert-error";
+    element.classList.remove(
+        "hidden"
+    );
+
+
+    window.setTimeout(
+        function () {
+
+            if (
+                element.textContent ===
+                message
+            ) {
+
+                element.classList.add(
+                    "hidden"
+                );
+            }
+
+        },
+        5000
+    );
 }
 
 
-function clearAdminEventsMessage() {
+/* =========================================================
+   CLEAR MESSAGE
+   ========================================================= */
+
+function clearEventMessage() {
 
     const element =
         document.getElementById(
-            "adminEventsMessage"
+            "eventMessage"
         );
 
 
     if (!element) {
+
         return;
     }
 
 
-    element.textContent = "";
+    element.textContent =
+        "";
+
 
     element.className =
         "alert hidden";
@@ -1717,20 +2263,399 @@ function clearAdminEventsMessage() {
 
 
 /* =========================================================
-   ESCAPE
+   EVENT LOADING
    ========================================================= */
 
-function escapeAdminEventHtml(value) {
+function showEventLoading(
+    loading
+) {
 
-    const div =
+    const element =
+        document.getElementById(
+            "eventLoading"
+        );
+
+
+    if (!element) {
+
+        return;
+    }
+
+
+    element.classList.toggle(
+        "hidden",
+        !loading
+    );
+}
+
+
+/* =========================================================
+   FORM LOADING
+   ========================================================= */
+
+function setEventFormLoading(
+    loading
+) {
+
+    const button =
+        document.getElementById(
+            "saveEventButton"
+        );
+
+
+    if (!button) {
+
+        return;
+    }
+
+
+    button.disabled =
+        loading;
+
+
+    if (loading) {
+
+        button.textContent =
+            editingEventId === null
+                ? "Creating..."
+                : "Updating...";
+
+    }
+    else {
+
+        button.textContent =
+            editingEventId === null
+                ? "Create Event"
+                : "Update Event";
+    }
+}
+
+
+/* =========================================================
+   NORMALIZE TIME FOR API
+   HTML time = HH:mm
+   API       = HH:mm:ss
+   ========================================================= */
+
+function normalizeTimeForApi(
+    value
+) {
+
+    if (!value) {
+
+        return "";
+    }
+
+
+    if (
+        value.length === 5
+    ) {
+
+        return `${value}:00`;
+    }
+
+
+    return value;
+}
+
+
+/* =========================================================
+   NORMALIZE TIME FOR INPUT
+   API may return HH:mm:ss
+   HTML input needs HH:mm
+   ========================================================= */
+
+function normalizeTimeForInput(
+    value
+) {
+
+    if (!value) {
+
+        return "";
+    }
+
+
+    return String(value)
+        .substring(
+            0,
+            5
+        );
+}
+
+
+/* =========================================================
+   NORMALIZE DATE FOR INPUT
+   ========================================================= */
+
+function normalizeDateForInput(
+    value
+) {
+
+    if (!value) {
+
+        return "";
+    }
+
+
+    return String(value)
+        .substring(
+            0,
+            10
+        );
+}
+
+
+/* =========================================================
+   FORMAT DISPLAY DATE
+   ========================================================= */
+
+function formatEventDate(
+    value
+) {
+
+    if (!value) {
+
+        return "Date unavailable";
+    }
+
+
+    const rawDate =
+        String(value)
+            .substring(
+                0,
+                10
+            );
+
+
+    const parts =
+        rawDate.split(
+            "-"
+        );
+
+
+    if (
+        parts.length !== 3
+    ) {
+
+        return rawDate;
+    }
+
+
+    const date =
+        new Date(
+            Number(parts[0]),
+            Number(parts[1]) - 1,
+            Number(parts[2])
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return rawDate;
+    }
+
+
+    return date.toLocaleDateString(
+        "en-LK",
+        {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        }
+    );
+}
+
+
+/* =========================================================
+   FORMAT DISPLAY TIME
+   ========================================================= */
+
+function formatEventTime(
+    value
+) {
+
+    if (!value) {
+
+        return "--";
+    }
+
+
+    const parts =
+        String(value)
+            .split(
+                ":"
+            );
+
+
+    if (
+        parts.length < 2
+    ) {
+
+        return value;
+    }
+
+
+    const hours =
+        Number(parts[0]);
+
+
+    const minutes =
+        Number(parts[1]);
+
+
+    if (
+        !Number.isFinite(hours) ||
+        !Number.isFinite(minutes)
+    ) {
+
+        return value;
+    }
+
+
+    const temporaryDate =
+        new Date();
+
+
+    temporaryDate.setHours(
+        hours,
+        minutes,
+        0,
+        0
+    );
+
+
+    return temporaryDate
+        .toLocaleTimeString(
+            "en-US",
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+}
+
+
+/* =========================================================
+   FORMAT PRICE
+   ========================================================= */
+
+function formatEventPrice(
+    value
+) {
+
+    const amount =
+        Number(
+            value
+        );
+
+
+    if (
+        !Number.isFinite(
+            amount
+        )
+    ) {
+
+        return "Rs. 0";
+    }
+
+
+    return `Rs. ${amount.toLocaleString(
+        "en-LK",
+        {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2
+        }
+    )}`;
+}
+
+
+/* =========================================================
+   EVENT INITIAL
+   ========================================================= */
+
+function getEventInitial(
+    name
+) {
+
+    if (
+        !name ||
+        typeof name !== "string"
+    ) {
+
+        return "E";
+    }
+
+
+    return escapeEventHtml(
+        name
+            .trim()
+            .charAt(0)
+            .toUpperCase()
+    );
+}
+
+
+/* =========================================================
+   SAFE HTML
+   ========================================================= */
+
+function escapeEventHtml(
+    value
+) {
+
+    const element =
         document.createElement(
             "div"
         );
 
 
-    div.textContent =
-        value ?? "";
+    element.textContent =
+        value === null ||
+        value === undefined
+            ? ""
+            : String(value);
 
 
-    return div.innerHTML;
+    return element.innerHTML;
+}
+
+
+/* =========================================================
+   SAFE ATTRIBUTE
+   ========================================================= */
+
+function escapeEventAttribute(
+    value
+) {
+
+    return String(
+        value === null ||
+        value === undefined
+            ? ""
+            : value
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "\"",
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#39;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        );
 }
